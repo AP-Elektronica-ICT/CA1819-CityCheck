@@ -1,15 +1,10 @@
-# CA1819
-
 # Cloud Applications - City Check
 
 ## Groepsleden
-1)	Brent Van Tilborg
-2)  Stijn Van Engelgem
-3)  Elke Renard
-4)	Mirko Messina
-
-
-
+* Brent Van Tilborg
+* Stijn Van Engelgem
+* Elke Renard
+* Mirko Messina
 
 ## Documentatie
 

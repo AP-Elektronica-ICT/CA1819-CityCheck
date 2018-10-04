@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # CA1819
 
 # Cloud Applications - City Check
@@ -23,14 +22,3 @@ Presentatie verslag
 
 
 
-
-=======
-# Project Cloud Applications
-## City Check
-
-### Groepsleden
-* Mirko Messina
-* Elke Renard
-* Brent Van Tilborg
-* Stijn Van Engelgem
->>>>>>> 49d8e69aeeb97fc457e14be12ed2473131c54c44

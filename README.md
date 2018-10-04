@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # CA1819
 
 # Cloud Applications - City Check
@@ -16,12 +15,10 @@
 
 Analyse verslag
 
-
+link
 
 
 Presentatie verslag
 
-
-=======
->>>>>>> 398e6c45e5b6f19f4f48458c0086846ba9c2d1e4
+link
 

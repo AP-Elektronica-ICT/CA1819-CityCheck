@@ -8,15 +8,8 @@
 
 ## Documentatie
 
-Analyse verslag
+### Analyse verslag
+[PDF versie](doc/CAPP_Verslag.pdf)
 
-
-(pdf versie)
-https://github.com/AP-Elektronica-ICT/CA1819-CityCheck/blob/master/Documentatie/CAPP_Verslag.pdf
-
-
-Presentatie verslag
-
-(pptx versie)
-link
-
+### Presentatie verslag
+PPTX versie (link)

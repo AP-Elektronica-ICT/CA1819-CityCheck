@@ -5,3 +5,8 @@ https://github.com/AP-Elektronica-ICT/CA1819-CityCheck/blob/master/Documentatie/
 
 ---
 
+
+pptx versie van de pitch
+
+https://github.com/AP-Elektronica-ICT/CA1819-CityCheck/blob/master/doc/Pitch.pptx
+

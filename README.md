@@ -12,4 +12,4 @@
 [PDF versie](doc/CAPP_Verslag.pdf)
 
 ### Presentatie verslag
-PPTX versie (link)
+[PPTX versie] (doc/Pitch.pptx)

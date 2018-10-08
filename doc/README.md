@@ -41,17 +41,19 @@
 We beginnen met de creatie van de eerste schermen.
 Dit is het begin om teams en een spel te kunnen aanmaken via een gebruiksvriendelijke ui.
 Alsook moeten we gebruik gaan maken van de Google Maps API om hun map te verwerken in ons spel view (in-game scherm).
-[](img/jira/sprint1.jpg)
+![](img/jira/sprint1.jpg)
 
 #### Uitwerking user stories binnen sprint #1
 
 ##### Story 1
 **Description**
+
 Dit gaat een simpel selectiescherm zijn met de mogelijkheid om te kiezen tussen 2 knoppen, het aanmaken van een game en het joinen van
 een game.
 Als een game aanmaken word gekozen gaat men naar het volgende scherm. Hier komt men eerst bij een disclailmer pagina met wat extra info om dan door verwezen te worden naar de effectieve pagina. Om spelers te kunnen uitnodigen dmv een automatich gegenereerde passcode.
 
 **Sub tasks**
+
 * UI opmaken vanuit mockups naar xml voor een gebruiksvriendelijke werking
 * UI voorzien van achterliggende werking (buttons code, ...)
 * Game class object kunnen aanmaken via de frontend
@@ -63,6 +65,7 @@ Als een game aanmaken word gekozen gaat men naar het volgende scherm. Hier komt 
 
 ##### Story 2
 **Description**
+
 Dit gaat een simpel selectiescherm zijn met de mogelijkheid om te kiezen tussen 2 knoppen, het aanmaken van een game en het joinen van
 een game.
 Als het joinen van een game wordt gekozen gaat op het volgende scherm. Er gaat gevraagd worden om 
@@ -72,6 +75,7 @@ Als het joinen van een game wordt gekozen gaat op het volgende scherm. Er gaat g
 Als deze code juist wordt ingevoerd gaat men de mogelijkheid krijgen om naar de volgende pagina doorverwezen te worden.
 
 **Sub tasks**
+
 * UI opmaken vanuit mockups naar xml voor een gebruiksvriendelijke werking
 * UI voorzien van achterliggende werking (buttons code, ...)
 * Team class object kunnen aanmaken via de frontend
@@ -82,28 +86,30 @@ Als deze code juist wordt ingevoerd gaat men de mogelijkheid krijgen om naar de 
 
 ##### Story 3
 **Description**
+
 Op het moment dat een game wordt gestart krijgen alle spelers de map te zien met de eerste doelen random aangeduid op de map.
 
 **Sub tasks**
+
 * UI opmaken vanuit mockups naar xml voor een gebruiksvriendelijke werking
 * Inwerking Google Maps API in de app
 * Map instellen op een overzicht van het speeldomein (Antwerpen) (border)
 
 ## Mockups
 Beginscherm voor en na het aanmaken van het spel:
-[](img/mockups/start_game_flow.jpg)
+![](img/mockups/start_game_flow.jpg)
 
 Aanmaken en beheren van een spel:
-[](img/mockups/create_game_flow.jpg)
+![](img/mockups/create_game_flow.jpg)
 
 Team aanmaken en deelnemen aan een spel:
-[](img/mockups/create_team.jpg)
+![](img/mockups/create_team.jpg)
 
 Kaart tijdens het spel een vraag op een locatie:
-[](img/mockups/game_map.png) [](img/mockups/location_trivia.png)
+![](img/mockups/game_map.png) [](img/mockups/location_trivia.png)
 
 Einde spel:
-[](img/mockups/end_game.jpg)
+![](img/mockups/end_game.jpg)
 
 ## Architectuur
 

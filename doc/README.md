@@ -45,14 +45,14 @@ Alsook moeten we gebruik gaan maken van de Google Maps API om hun map te verwerk
 
 #### Uitwerking user stories binnen sprint #1
 
-##### Story 1
-**Description**
+**Story 1**
+##### Description
 
 Dit gaat een simpel selectiescherm zijn met de mogelijkheid om te kiezen tussen 2 knoppen, het aanmaken van een game en het joinen van
 een game.
 Als een game aanmaken word gekozen gaat men naar het volgende scherm. Hier komt men eerst bij een disclailmer pagina met wat extra info om dan door verwezen te worden naar de effectieve pagina. Om spelers te kunnen uitnodigen dmv een automatich gegenereerde passcode.
 
-**Sub tasks**
+##### Sub tasks
 
 * UI opmaken vanuit mockups naar xml voor een gebruiksvriendelijke werking
 * UI voorzien van achterliggende werking (buttons code, ...)
@@ -63,8 +63,8 @@ Als een game aanmaken word gekozen gaat men naar het volgende scherm. Hier komt 
 * Omzetten van de spel tabellen naar model classes voor het entity framework
 * Opstellen van een controller om functionaliteit en communicatie te voorzien
 
-##### Story 2
-**Description**
+**Story 2**
+##### Description
 
 Dit gaat een simpel selectiescherm zijn met de mogelijkheid om te kiezen tussen 2 knoppen, het aanmaken van een game en het joinen van
 een game.
@@ -74,7 +74,7 @@ Als het joinen van een game wordt gekozen gaat op het volgende scherm. Er gaat g
 3) Een code in te geven die gegenereerd is bij de persoon die de huidige game heeft aangemaakt.
 Als deze code juist wordt ingevoerd gaat men de mogelijkheid krijgen om naar de volgende pagina doorverwezen te worden.
 
-**Sub tasks**
+##### Sub tasks
 
 * UI opmaken vanuit mockups naar xml voor een gebruiksvriendelijke werking
 * UI voorzien van achterliggende werking (buttons code, ...)
@@ -84,12 +84,12 @@ Als deze code juist wordt ingevoerd gaat men de mogelijkheid krijgen om naar de 
 * Omzetten van de team tabellen naar model classes voor het entity framework
 * Opstellen van de controller functionaliteit voor een team aan te maken
 
-##### Story 3
-**Description**
+**Story 3**
+##### Description
 
 Op het moment dat een game wordt gestart krijgen alle spelers de map te zien met de eerste doelen random aangeduid op de map.
 
-**Sub tasks**
+##### Sub tasks
 
 * UI opmaken vanuit mockups naar xml voor een gebruiksvriendelijke werking
 * Inwerking Google Maps API in de app
@@ -97,18 +97,24 @@ Op het moment dat een game wordt gestart krijgen alle spelers de map te zien met
 
 ## Mockups
 Beginscherm voor en na het aanmaken van het spel:
+
 ![](img/mockups/start_game_flow.jpg)
 
 Aanmaken en beheren van een spel:
+
 ![](img/mockups/create_game_flow.jpg)
 
 Team aanmaken en deelnemen aan een spel:
+
 ![](img/mockups/create_team.jpg)
 
 Kaart tijdens het spel een vraag op een locatie:
-![](img/mockups/game_map.png) [](img/mockups/location_trivia.png)
+
+![](img/mockups/game_map.png) 
+![](img/mockups/location_trivia.png)
 
 Einde spel:
+
 ![](img/mockups/end_game.jpg)
 
 ## Architectuur

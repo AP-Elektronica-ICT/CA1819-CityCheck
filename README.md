@@ -12,4 +12,4 @@
 [PDF versie](doc/CAPP_Verslag.pdf)
 
 ### Presentatie verslag
-[PPTX versie] (doc/Pitch.pptx)
+PPTX versie https://github.com/AP-Elektronica-ICT/CA1819-CityCheck/blob/master/doc/Pitch.pptx

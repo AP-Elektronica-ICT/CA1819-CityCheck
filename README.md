@@ -9,7 +9,8 @@
 ## Documentatie
 
 ### Analyse verslag
+[Markdown versie](doc/README.md)
 [PDF versie](doc/CAPP_Verslag.pdf)
 
 ### Presentatie verslag
-PPTX versie https://github.com/AP-Elektronica-ICT/CA1819-CityCheck/blob/master/doc/Pitch.pptx
+[PPTX versie](doc/Pitch.pptx)

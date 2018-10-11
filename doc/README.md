@@ -129,3 +129,6 @@ Einde spel:
 ### Back-End
 * ASP.NET Core 2.0 framework
 * AZURE (hosting)
+
+### Data model
+![](img/datamodel/ModelPic.png)

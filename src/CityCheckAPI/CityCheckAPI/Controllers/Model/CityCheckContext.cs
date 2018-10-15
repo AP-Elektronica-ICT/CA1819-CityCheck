@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CityCheckAPI.Controllers.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace Model
 {
@@ -14,7 +15,9 @@ namespace Model
 
         //......
 
-
+        public DbSet<Team> Teams { get; set; }
+        public DbSet<TeamTrace> Traces {get; set;}
+        public DbSet<Locatie> Locaties { get; set; }
     }
 
 

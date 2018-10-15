@@ -11506,11 +11506,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Brent\\Documents\\school\\Jaar3\\Cloud Applications\\CA1819-CityCheck\\software\\CityCheckAPI\\CityCheckAPI\\CityCheckAPI.csproj",
+      "projectUniqueName": "C:\\Users\\Brent\\Documents\\school\\Jaar3\\Cloud Applications\\CA1819-CityCheck\\src\\CityCheckAPI\\CityCheckAPI\\CityCheckAPI.csproj",
       "projectName": "CityCheckAPI",
-      "projectPath": "C:\\Users\\Brent\\Documents\\school\\Jaar3\\Cloud Applications\\CA1819-CityCheck\\software\\CityCheckAPI\\CityCheckAPI\\CityCheckAPI.csproj",
+      "projectPath": "C:\\Users\\Brent\\Documents\\school\\Jaar3\\Cloud Applications\\CA1819-CityCheck\\src\\CityCheckAPI\\CityCheckAPI\\CityCheckAPI.csproj",
       "packagesPath": "C:\\Users\\Brent\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Brent\\Documents\\school\\Jaar3\\Cloud Applications\\CA1819-CityCheck\\software\\CityCheckAPI\\CityCheckAPI\\obj\\",
+      "outputPath": "C:\\Users\\Brent\\Documents\\school\\Jaar3\\Cloud Applications\\CA1819-CityCheck\\src\\CityCheckAPI\\CityCheckAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

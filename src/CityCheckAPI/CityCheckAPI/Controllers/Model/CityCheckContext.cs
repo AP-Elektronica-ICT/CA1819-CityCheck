@@ -14,6 +14,14 @@ namespace Model
 
         //......
 
+        public DbSet<Game> Games { get; set; }
+
+        public DbSet<DoelLocatie> DoelLocaties { get; set; }
+
+        public DbSet<Vraag> Vragen { get; set; }
+
+        public DbSet<Antwoord> Antwoorden { get; set; }
+
 
     }
 

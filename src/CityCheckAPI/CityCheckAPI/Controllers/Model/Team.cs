@@ -7,11 +7,11 @@ namespace CityCheckAPI.Controllers.Model
 {
     public class Team
     {
-        public int IdTeam { get; set; }
+        public int TeamId { get; set; }
         public int Punten { get; set; }
         public string Kleur { get; set; }
         public string TeamNaam { get; set; }
         public Locatie HuidigeLocatie { get; set;}
-        public List<TeamTrace> TeamTraces { get; set; }
+        public TeamTrace TeamTrace { get; set; }
     }
 }

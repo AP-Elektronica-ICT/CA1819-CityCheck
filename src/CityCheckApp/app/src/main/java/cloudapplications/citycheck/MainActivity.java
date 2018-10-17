@@ -13,10 +13,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button createGame = findViewById(R.id.button_create_game);
-        Button joinGame = findViewById(R.id.button_join_game);
+        Button createGameWindowButton = findViewById(R.id.button_create_game_window);
+        Button joinGameButton = findViewById(R.id.button_join_game);
 
-        createGame.setOnClickListener(new View.OnClickListener() {
+        createGameWindowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(view.getContext(), CreateGameActivity.class);
@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        joinGame.setOnClickListener(new View.OnClickListener() {
+        joinGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 

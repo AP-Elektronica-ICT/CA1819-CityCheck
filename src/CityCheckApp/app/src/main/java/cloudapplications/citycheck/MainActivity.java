@@ -1,5 +1,6 @@
 package cloudapplications.citycheck;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,13 +13,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button createGame = (Button) findViewById(R.id.button_create_game);
-        Button joinGame = (Button) findViewById(R.id.button_join_game);
+        Button createGame = findViewById(R.id.button_create_game);
+        Button joinGame = findViewById(R.id.button_join_game);
 
         createGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent i = new Intent(view.getContext(), CreateGameActivity.class);
+                startActivity(i);
             }
         });
 

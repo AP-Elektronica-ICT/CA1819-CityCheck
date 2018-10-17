@@ -11500,23 +11500,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Mirko\\.nuget\\packages\\": {},
+    "C:\\Users\\Miskude\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Mirko\\GitHub\\CA1819-CityCheck\\src\\CityCheckAPI\\CityCheckAPI\\CityCheckAPI.csproj",
+      "projectUniqueName": "M:\\GitHub\\CA1819-CityCheck\\src\\CityCheckAPI\\CityCheckAPI\\CityCheckAPI.csproj",
       "projectName": "CityCheckAPI",
-      "projectPath": "C:\\Users\\Mirko\\GitHub\\CA1819-CityCheck\\src\\CityCheckAPI\\CityCheckAPI\\CityCheckAPI.csproj",
-      "packagesPath": "C:\\Users\\Mirko\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Mirko\\GitHub\\CA1819-CityCheck\\src\\CityCheckAPI\\CityCheckAPI\\obj\\",
+      "projectPath": "M:\\GitHub\\CA1819-CityCheck\\src\\CityCheckAPI\\CityCheckAPI\\CityCheckAPI.csproj",
+      "packagesPath": "C:\\Users\\Miskude\\.nuget\\packages\\",
+      "outputPath": "M:\\GitHub\\CA1819-CityCheck\\src\\CityCheckAPI\\CityCheckAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\Mirko\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Miskude\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

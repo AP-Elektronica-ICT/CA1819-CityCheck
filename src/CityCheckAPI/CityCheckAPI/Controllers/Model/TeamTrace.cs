@@ -9,8 +9,8 @@ namespace CityCheckAPI.Controllers.Model
     public class TeamTrace
     {
         public int TeamTraceId { get; set; }
-        [ForeignKey("TeamId")]
-        public virtual Team Team { get; set; }
+       /* [ForeignKey("TeamId")]
+        public virtual Team Team { get; set; }*/
         public List<Locatie> Locaties { get; set; }
     }
 }

@@ -65,7 +65,7 @@ using Model;
         context.SaveChanges();
         return NoContent();
     }
-
+    /*
     //get huidige locatie
     [HttpGet]
     [Route("teams/{id}/huidigeLocatie")]
@@ -89,7 +89,7 @@ using Model;
             return NotFound();
         return Ok(query.ToList());
 
-    }
+    }*/
 
 
 

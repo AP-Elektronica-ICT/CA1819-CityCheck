@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button createGameWindowButton = findViewById(R.id.button_create_game_window);
-        Button joinGameButton = findViewById(R.id.button_join_game);
+        Button joinGameWindowButton = findViewById(R.id.button_join_game_window);
 
         createGameWindowButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -24,10 +24,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        joinGameButton.setOnClickListener(new View.OnClickListener() {
+        joinGameWindowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent i = new Intent(view.getContext(), JoinGameActivity.class);
+                startActivity(i);
             }
         });
     }

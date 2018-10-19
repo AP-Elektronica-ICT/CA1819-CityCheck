@@ -10,7 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -20,21 +24,17 @@
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/. 
         -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+        <!-- <meta-data -->
+        <!-- android:name="com.google.android.geo.API_KEY" -->
+        <!-- android:value="@string/google_maps_key" /> -->
 
-        <activity
-            android:name=".GameActivity"
-            android:label="@string/title_activity_game">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <!-- <activity -->
+        <!-- android:name=".GameActivity" -->
+        <!-- android:label="@string/title_activity_game"></activity> -->
         <activity android:name=".CreateGameActivity" />
-        <activity android:name=".GameCodeActivity"></activity>
+        <activity android:name=".GameCodeActivity" />
+        <activity android:name=".JoinGameActivity"></activity>
     </application>
 
 </manifest>

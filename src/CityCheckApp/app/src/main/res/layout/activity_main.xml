@@ -17,7 +17,7 @@
         android:text="Create game" />
 
     <Button
-        android:id="@+id/button_join_game"
+        android:id="@+id/button_join_game_window"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

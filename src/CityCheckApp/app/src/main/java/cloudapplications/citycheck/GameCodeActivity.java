@@ -7,7 +7,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Random;
 
 public class GameCodeActivity extends AppCompatActivity {
 
@@ -18,7 +21,10 @@ public class GameCodeActivity extends AppCompatActivity {
 
         Spinner gameTimeSpinner = findViewById(R.id.spinner_game_time);
         Button startGameButton = findViewById(R.id.button_start_game);
+        TextView codeTextView = findViewById(R.id.text_view_code);
 
+        int randomCode = new Random().nextInt(10000 - 1000) + 1000;
+        codeTextView.setText(Integer.toString(randomCode));
         String[] items = new String[]{"1", "2", "3"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         gameTimeSpinner.setAdapter(adapter);

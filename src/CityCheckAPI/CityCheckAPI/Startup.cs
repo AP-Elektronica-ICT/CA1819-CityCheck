@@ -6,15 +6,21 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Model;
 
 namespace CityCheckAPI
 {
     public class Startup
     {
+
+
+
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -22,14 +28,37 @@ namespace CityCheckAPI
 
         public IConfiguration Configuration { get; }
 
+
+
+
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddDbContext<CityCheckContext>(
+                options => options.UseSqlServer(
+                    Configuration.GetConnectionString("DefaultConnection")
+                )
+            );
+
+
+
+            services.AddCors();
+
+            services.AddMvc();
+
+
+
         }
 
+
+
+
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, CityCheckContext CCcontext)
         {
             if (env.IsDevelopment())
             {
@@ -42,6 +71,23 @@ namespace CityCheckAPI
 
             app.UseHttpsRedirection();
             app.UseMvc();
+
+
+            app.UseCors(builder =>
+                builder.WithOrigins("*").AllowAnyMethod()
+                    .AllowAnyHeader());
+
+            app.UseMvc();
+
+
+
+            DBInitializer.Initialize(CCcontext);
+
+
         }
+
+
+
+
     }
 }

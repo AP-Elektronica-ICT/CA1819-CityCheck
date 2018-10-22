@@ -9,8 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight=".10"
-        android:background="@color/RedAntw"
-        android:textColor="@color/White"
+        android:background="@color/redAntw"
+        android:textColor="@color/white"
         android:textAlignment="center"
         android:text="test"/>
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
@@ -27,7 +27,7 @@
         android:layout_height="0dp"
         android:layout_weight=".10"
         android:text="test"
-        android:background="@color/RedAntw"
-        android:textColor="@color/White"
+        android:background="@color/redAntw"
+        android:textColor="@color/white"
         android:textAlignment="center"/>
 </LinearLayout>

@@ -3,7 +3,8 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="RedAntw">#990000</color>
-    <color name="RedAntwDark">#660000</color>
-    <color name="White">#FFFFFF</color>
+    <color name="redAntw">#990000</color>
+    <color name="redAntwDark">#660000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="yellowAntw">#FFDB4E</color>
 </resources>

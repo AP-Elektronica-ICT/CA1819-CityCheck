@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#da4040"
+    android:background="@color/redAntw"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".JoinGameActivity">
@@ -14,6 +14,7 @@
         android:layout_gravity="start"
         android:layout_marginStart="50dp"
         android:text="Create team"
+        android:textColor="@color/white"
         android:textSize="30sp" />
 
     <LinearLayout
@@ -36,6 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Team name:"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <TextView
@@ -43,6 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Team color:"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <TextView
@@ -50,6 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Game code:"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
         </LinearLayout>
 
@@ -65,13 +69,15 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:inputType="text"
-                android:maxLength="20" />
+                android:maxLength="20"
+                android:textColor="@color/white" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Placeholder"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <EditText
@@ -80,7 +86,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:inputType="number"
-                android:maxLength="4" />
+                android:maxLength="4"
+                android:textColor="@color/white" />
         </LinearLayout>
 
     </LinearLayout>
@@ -90,7 +97,7 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:backgroundTint="#ffdb4e"
+        android:backgroundTint="@color/yellowAntw"
         android:text="Join" />
 
 </LinearLayout>

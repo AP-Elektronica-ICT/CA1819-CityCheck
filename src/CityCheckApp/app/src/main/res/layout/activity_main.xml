@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#da4040"
+    android:background="@color/redAntw"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".MainActivity">
@@ -14,7 +14,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Create game" />
+        android:text="Create game"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/button_join_game_window"
@@ -22,6 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Join game" />
+        android:text="Join game"
+        android:textColor="@color/white" />
 
 </LinearLayout>

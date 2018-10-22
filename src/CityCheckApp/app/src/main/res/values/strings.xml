@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">CityCheck</string>
     <string name="create_game_description">Once \"create\" is clicked you will receive a game code. All teams must enter this code to join the game.</string>
+    <string name="title_activity_game">GameMap</string>
 </resources>

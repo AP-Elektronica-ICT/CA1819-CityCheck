@@ -49,14 +49,29 @@ public class CityCheckController : Controller
         return Ok(game);
     }
 
+    //get teams from game
+    [HttpGet]
+    [Route ("currentgame/teams")]
+    public IActionResult getTeams(int gameId)
+    {
+        var game = context.Games.Find(gameId);
+        if (game == null)
+            return NotFound();
+        return Ok(game.Teams);
+    }
+
     //new team
     [HttpPost]
     [Route("teams")]
-    public IActionResult addteam([FromBody] Team newTeam)
+    public IActionResult addteam([FromBody] Team newTeam, [FromBody] int gameId)
     {
         int startBonus = 30;
         newTeam.Punten = startBonus;
         context.Teams.Add(newTeam);
+
+        var game = context.Games.Find(gameId);
+        game.Teams.Add(newTeam);
+
         context.SaveChanges();
         return Created("Created:", newTeam.TeamNaam);
     }

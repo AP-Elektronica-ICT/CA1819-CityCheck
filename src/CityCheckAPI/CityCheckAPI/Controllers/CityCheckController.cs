@@ -54,6 +54,8 @@ public class CityCheckController : Controller
     [Route("teams")]
     public IActionResult addteam([FromBody] Team newTeam)
     {
+        int startBonus = 30;
+        newTeam.Punten = startBonus;
         context.Teams.Add(newTeam);
         context.SaveChanges();
         return Created("Created:", newTeam.TeamNaam);

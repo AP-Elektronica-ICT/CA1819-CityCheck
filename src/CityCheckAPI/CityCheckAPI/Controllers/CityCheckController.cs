@@ -63,7 +63,7 @@ public class CityCheckController : Controller
     //new team
     [HttpPost]
     [Route("teams")]
-    public IActionResult addteam([FromBody] Team newTeam, [FromBody] int gameId)
+    public IActionResult addteam([FromBody] Team newTeam, int gameId)
     {
         int startBonus = 30;
         newTeam.Punten = startBonus;

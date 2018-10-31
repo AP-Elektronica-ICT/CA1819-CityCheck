@@ -154,6 +154,28 @@ public class CityCheckController : Controller
         return Created("Created:", newlat+""+newlong);
     }
 
+
+
+    //save team color
+    [HttpPost]
+    [Route("teams/{teamid}/teamcolor")]
+    public IActionResult SaveTeamColor(int teamid, [FromBody] string kleurcode)
+    {
+
+        var team = context.Teams.Find(teamid);
+
+
+        if (team == null)
+            return NotFound();
+
+        team.Kleur = kleurcode;
+
+
+
+        context.SaveChanges();
+        return Created("Accepted:", kleurcode);
+    }
+
     //get traces van een team
     /*
     [HttpGet]

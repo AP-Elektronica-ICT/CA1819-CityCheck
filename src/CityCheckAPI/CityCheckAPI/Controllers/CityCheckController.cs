@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CityCheckAPI.Controllers.Model;
 using Microsoft.AspNetCore.Cors;
@@ -27,10 +28,51 @@ public class CityCheckController : Controller
     [Route("newgame")]
     public IActionResult createGame([FromBody] Game newGame)
     {
+
+        IQueryable<Game> query = context.Games;
+
+
+
+        //random game code genereren
+        string gameCodeStr = "";
+        do
+        {
+            int tempGameCode;
+            gameCodeStr = "";
+            Random rnd = new Random();
+            for (int i = 0; i < 4; i++)
+            {
+                tempGameCode = rnd.Next(1, 9);
+                gameCodeStr += tempGameCode.ToString();
+            }
+            //controleren of er al een game is met deze code
+        } while (query.Where(d => d.GameCode == Int32.Parse(gameCodeStr)) == null);
+        newGame.GameCode = Int32.Parse(gameCodeStr);
+        //random game code einde
+
+
         context.Games.Add(newGame);
         context.SaveChanges();
         return Created("Created:", newGame);
     }
+
+
+
+    //get all games
+    [HttpGet]
+    [Route("allgames")]
+    public IActionResult getGames()
+    {
+
+        IQueryable<Game> query = context.Games;
+        if (query != null)
+            return Ok(query);
+        else
+            return NotFound();
+    }
+
+
+
 
     //get game info
     [HttpGet]

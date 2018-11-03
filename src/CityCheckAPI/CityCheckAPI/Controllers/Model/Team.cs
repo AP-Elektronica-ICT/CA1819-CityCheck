@@ -13,6 +13,6 @@ namespace CityCheckAPI.Controllers.Model
         public string TeamNaam { get; set; }
         public long HuidigeLong { get; set; }
         public long HuidigeLat { get; set; }
-        public TeamTrace TeamTrace { get; set; }
+        public List<TeamTrace> TeamTraces { get; set; }
     }
 }

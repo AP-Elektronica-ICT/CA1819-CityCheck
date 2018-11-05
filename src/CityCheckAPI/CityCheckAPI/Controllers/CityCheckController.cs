@@ -260,23 +260,4 @@ public class CityCheckController : Controller
     }
 
 
-
-
-    //get traces van een team
-    /*
-    [HttpGet]
-    [Route("teams/{id}/trace")]
-    public IActionResult getTeamTrace(int id)
-    {
-        IQueryable<TeamTrace> query = context.Traces;
-        query = query.Where(e => e.Team.Equals(id));
-
-        if (query == null)
-            return NotFound();
-        return Ok(query.ToList());
-
-    }*/
-
-
-
 }

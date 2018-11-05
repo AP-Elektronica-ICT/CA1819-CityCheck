@@ -1,6 +1,8 @@
 package cloudapplications.citycheck;
 
 import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +21,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -67,7 +70,7 @@ public class GameCodeActivity extends AppCompatActivity {
         });
     }
 
-    private void saveGameToDatabase() {
+    private void saveGameToDatabaseVolley() {
         RequestQueue queue = Volley.newRequestQueue(GameCodeActivity.this);
         String saveURL = "http://127.0.0.1:3000/api/citycheck/newgame";
         StringRequest postRequest = new StringRequest(Request.Method.POST, saveURL,
@@ -97,5 +100,12 @@ public class GameCodeActivity extends AppCompatActivity {
             }
         };
         queue.add(postRequest);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void saveGameToDatabase() throws IOException {
+        OkHttpCall call = new OkHttpCall();
+        String response = call.get("https://raw.github.com/square/okhttp/master/README.md");
+        System.out.println(response);
     }
 }

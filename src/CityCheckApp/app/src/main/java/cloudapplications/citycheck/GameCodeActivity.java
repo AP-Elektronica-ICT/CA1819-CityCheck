@@ -26,6 +26,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+
 public class GameCodeActivity extends AppCompatActivity {
 
     private int gameTime;
@@ -62,50 +65,86 @@ public class GameCodeActivity extends AppCompatActivity {
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                saveGameToDatabase();
+                saveGameToDatabase();
 
-                Intent i = new Intent(view.getContext(), GameActivity.class);
-                startActivity(i);
+//                Intent i = new Intent(view.getContext(), GameActivity.class);
+//                startActivity(i);
             }
         });
     }
 
-    private void saveGameToDatabaseVolley() {
-        RequestQueue queue = Volley.newRequestQueue(GameCodeActivity.this);
-        String saveURL = "http://127.0.0.1:3000/api/citycheck/newgame";
-        StringRequest postRequest = new StringRequest(Request.Method.POST, saveURL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Response
-                        Log.d("GameCodeActivity", "Database response: " + response);
-                        Toast.makeText(GameCodeActivity.this, "Database updated successfully", Toast.LENGTH_SHORT).show();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Error
-                        Log.d("GameCodeActivity", "Database error response: " + error);
-                        Toast.makeText(GameCodeActivity.this, "Error! Couldn't update the database", Toast.LENGTH_SHORT).show();
-                    }
-                }
-        ) {
+    private void saveGameToDatabase() {
+        OkHttpCall call = new OkHttpCall();
+        Call response = call.post("http://84.197.102.107/api/citycheck/newgame", "{'TijdsDuur':2}", new Callback() {
             @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("GameCode", Integer.toString(randomCode));
-                params.put("TijdsDuur", Integer.toString(gameTime));
-                return params;
+            public void onFailure(Call call, IOException e) {
+
             }
-        };
-        queue.add(postRequest);
+
+            @Override
+            public void onResponse(Call call, okhttp3.Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseStr = response.body().string();
+                    Log.d("GameCodeActivity", "saveGameToDatabase: " + responseStr);
+                    // Do what you want to do with the response.
+                } else {
+                    // Request not successful
+                }
+            }
+        });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void saveGameToDatabase() throws IOException {
+    private void getExample() {
         OkHttpCall call = new OkHttpCall();
-        String response = call.get("https://raw.github.com/square/okhttp/master/README.md");
-        System.out.println(response);
+        Call response = call.get("http://84.197.102.107/api/citycheck/allgames", new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, okhttp3.Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseStr = response.body().string();
+                    Log.d("GameCodeActivity", "saveGameToDatabase: " + responseStr);
+                    // Do what you want to do with the response.
+                } else {
+                    String responseStr = response.message();
+                    Log.d("GameCodeActivity", "ERROR: " + responseStr);
+                }
+            }
+        });
     }
+
+//    private void saveGameToDatabaseVolley() {
+//        RequestQueue queue = Volley.newRequestQueue(GameCodeActivity.this);
+//        String saveURL = "http://127.0.0.1:3000/api/citycheck/newgame";
+//        StringRequest postRequest = new StringRequest(Request.Method.POST, saveURL,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        // Response
+//                        Log.d("GameCodeActivity", "Database response: " + response);
+//                        Toast.makeText(GameCodeActivity.this, "Database updated successfully", Toast.LENGTH_SHORT).show();
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        // Error
+//                        Log.d("GameCodeActivity", "Database error response: " + error);
+//                        Toast.makeText(GameCodeActivity.this, "Error! Couldn't update the database", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//        ) {
+//            @Override
+//            protected Map<String, String> getParams() {
+//                Map<String, String> params = new HashMap<>();
+//                params.put("GameCode", Integer.toString(randomCode));
+//                params.put("TijdsDuur", Integer.toString(gameTime));
+//                return params;
+//            }
+//        };
+//        queue.add(postRequest);
+//    }
 }

@@ -1,42 +1,34 @@
 package cloudapplications.citycheck;
 
-import android.os.Build;
-import android.support.annotation.RequiresApi;
-
-import java.io.IOException;
-
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class OkHttpCall {
-    public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
+    private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
-    OkHttpClient client = new OkHttpClient();
+    private OkHttpClient client = new OkHttpClient();
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    String get(String url) throws IOException {
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        try (Response response = client.newCall(request).execute()) {
-            return response.body().string();
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    String post(String url, String json) throws IOException {
+    Call post(String url, String json, Callback callback) {
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)
                 .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+        return call;
+    }
 
-        try (Response response = client.newCall(request).execute()) {
-            return response.body().string();
-        }
+    Call get(String url, Callback callback) {
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+        return call;
     }
 }

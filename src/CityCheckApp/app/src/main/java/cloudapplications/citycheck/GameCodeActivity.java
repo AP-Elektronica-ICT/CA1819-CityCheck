@@ -49,8 +49,8 @@ public class GameCodeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 getExample();
 
-//                Intent i = new Intent(view.getContext(), GameActivity.class);
-//                startActivity(i);
+                Intent i = new Intent(view.getContext(), GameActivity.class);
+                startActivity(i);
             }
         });
     }

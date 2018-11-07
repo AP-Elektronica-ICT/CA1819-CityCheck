@@ -43,7 +43,12 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onSuccess(Location location) {
                 if (location != null){
-                    Toast.makeText(getApplicationContext(), ""+location , Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), ""+location , Toast.LENGTH_LONG).show();
+                    LatLng Currentlocation = new LatLng(location.getLatitude(),location.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(Currentlocation).title("Marker in Sydney"));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Currentlocation,14.0f));
+
+
                 }
             }
         });
@@ -56,12 +61,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
+
                 } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
+                                    }
                 return;
             }
 
@@ -85,7 +87,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         // Add a marker in Sydney and move the camera
         LatLng antwerpen = new LatLng(51.2120125,4.4115053);
-        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(antwerpen,14.0f));
     }
 }

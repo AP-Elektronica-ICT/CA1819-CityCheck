@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/redAntw"
     android:gravity="center"
     android:orientation="vertical"
@@ -72,13 +73,13 @@
                 android:maxLength="20"
                 android:textColor="@color/white" />
 
-            <TextView
+            <Button
+                android:id="@+id/button_pick_color"
+                android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Placeholder"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
+                android:backgroundTint="@color/yellowAntw"
+                android:text="Pick Color" />
 
             <EditText
                 android:id="@+id/edit_text_game_code"

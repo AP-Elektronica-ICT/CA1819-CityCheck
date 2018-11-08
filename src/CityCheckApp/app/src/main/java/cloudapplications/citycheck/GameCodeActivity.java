@@ -31,6 +31,7 @@ public class GameCodeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(view.getContext(), GameActivity.class);
+                i.putExtra("gameTime", currentGameTime);
                 startActivity(i);
             }
         });

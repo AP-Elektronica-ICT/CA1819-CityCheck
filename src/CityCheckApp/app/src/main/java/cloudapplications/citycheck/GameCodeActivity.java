@@ -31,7 +31,6 @@ import okhttp3.Callback;
 
 public class GameCodeActivity extends AppCompatActivity {
 
-    private int gameTime;
     private int randomCode;
 
     @Override
@@ -39,57 +38,19 @@ public class GameCodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_code);
 
-        Spinner gameTimeSpinner = findViewById(R.id.spinner_game_time);
         Button startGameButton = findViewById(R.id.button_start_game);
         TextView codeTextView = findViewById(R.id.text_view_code);
 
         randomCode = new Random().nextInt(10000 - 1000) + 1000;
         codeTextView.setText(Integer.toString(randomCode));
-        String[] items = new String[]{"1", "2", "3"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
-        gameTimeSpinner.setAdapter(adapter);
-
-        gameTimeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                gameTime = position + 1;
-                Toast.makeText(GameCodeActivity.this, Integer.toString(gameTime), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
 
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveGameToDatabase();
+                getExample();
 
-//                Intent i = new Intent(view.getContext(), GameActivity.class);
-//                startActivity(i);
-            }
-        });
-    }
-
-    private void saveGameToDatabase() {
-        OkHttpCall call = new OkHttpCall();
-        Call response = call.post("http://84.197.102.107/api/citycheck/newgame", "{'TijdsDuur':2}", new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, okhttp3.Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String responseStr = response.body().string();
-                    Log.d("GameCodeActivity", "saveGameToDatabase: " + responseStr);
-                    // Do what you want to do with the response.
-                } else {
-                    // Request not successful
-                }
+                Intent i = new Intent(view.getContext(), GameActivity.class);
+                startActivity(i);
             }
         });
     }

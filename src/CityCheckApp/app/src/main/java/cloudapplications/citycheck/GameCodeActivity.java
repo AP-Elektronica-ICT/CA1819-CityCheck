@@ -1,35 +1,16 @@
 package cloudapplications.citycheck;
 
 import android.content.Intent;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
-import okhttp3.Call;
-import okhttp3.Callback;
 
 public class GameCodeActivity extends AppCompatActivity {
+
+    String currentGameCode;
+    String currentGameTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,38 +19,19 @@ public class GameCodeActivity extends AppCompatActivity {
 
         Button startGameButton = findViewById(R.id.button_start_game);
         TextView codeTextView = findViewById(R.id.text_view_code);
+        TextView timeTextView = findViewById(R.id.text_view_time);
 
-        codeTextView.setText(getIntent().getExtras().getString("gameCode"));
+        currentGameCode = getIntent().getExtras().getString("gameCode");
+        currentGameTime = getIntent().getExtras().getString("gameTime");
+
+        codeTextView.setText(currentGameCode);
+        timeTextView.setText(currentGameTime + " hours");
 
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getExample();
-
                 Intent i = new Intent(view.getContext(), GameActivity.class);
                 startActivity(i);
-            }
-        });
-    }
-
-    private void getExample() {
-        OkHttpCall call = new OkHttpCall();
-        Call response = call.get("http://84.197.102.107/api/citycheck/allgames", new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, okhttp3.Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String responseStr = response.body().string();
-                    Log.d("GameCodeActivity", "saveGameToDatabase: " + responseStr);
-                    // Do what you want to do with the response.
-                } else {
-                    String responseStr = response.message();
-                    Log.d("GameCodeActivity", "ERROR: " + responseStr);
-                }
             }
         });
     }

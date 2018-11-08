@@ -1,6 +1,7 @@
 package cloudapplications.citycheck;
 
 import android.content.Intent;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Random;
+import java.util.Timer;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -40,7 +42,6 @@ public class CreateGameActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 gameTime = position + 1;
-                Toast.makeText(CreateGameActivity.this, Integer.toString(gameTime), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -83,6 +84,7 @@ public class CreateGameActivity extends AppCompatActivity {
                     Log.d("CreateGameActivity", "Game code: " + gameCode);
                     Intent i = new Intent(CreateGameActivity.this, GameCodeActivity.class);
                     i.putExtra("gameCode", gameCode);
+                    i.putExtra("gameTime", Integer.toString(gameTime));
                     startActivity(i);
                 } else {
                     // Als er een fout is bij de request

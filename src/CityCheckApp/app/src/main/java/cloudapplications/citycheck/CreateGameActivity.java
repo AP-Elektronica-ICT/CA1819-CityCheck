@@ -12,6 +12,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.Random;
 
@@ -68,8 +70,19 @@ public class CreateGameActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     // Als de request gelukt is
                     String responseStr = response.body().string();
-                    Log.d("GameCodeActivity", "saveGameToDatabase response: " + responseStr);
+                    JSONObject obj;
+                    String gameCode = "";
+                    try {
+                        // Converteer de response string naar een JSONObject en de code er uit halen
+                        obj = new JSONObject(responseStr);
+                        Log.d("CreateGameActivity", "JSON object response: " + obj.toString());
+                        gameCode = obj.getString("gameCode");
+                    } catch (Throwable t) {
+                        Log.e("CreateGameActivity", "Could not parse malformed JSON: \"" + responseStr + "\"");
+                    }
+                    Log.d("CreateGameActivity", "Game code: " + gameCode);
                     Intent i = new Intent(CreateGameActivity.this, GameCodeActivity.class);
+                    i.putExtra("gameCode", gameCode);
                     startActivity(i);
                 } else {
                     // Als er een fout is bij de request

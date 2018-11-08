@@ -1,6 +1,7 @@
 package cloudapplications.citycheck;
 
 import android.content.Intent;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,8 +13,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.Random;
+import java.util.Timer;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -38,7 +42,6 @@ public class CreateGameActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 gameTime = position + 1;
-                Toast.makeText(CreateGameActivity.this, Integer.toString(gameTime), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -68,8 +71,20 @@ public class CreateGameActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     // Als de request gelukt is
                     String responseStr = response.body().string();
-                    Log.d("GameCodeActivity", "saveGameToDatabase response: " + responseStr);
+                    JSONObject obj;
+                    String gameCode = "";
+                    try {
+                        // Converteer de response string naar een JSONObject en de code er uit halen
+                        obj = new JSONObject(responseStr);
+                        Log.d("CreateGameActivity", "JSON object response: " + obj.toString());
+                        gameCode = obj.getString("gameCode");
+                    } catch (Throwable t) {
+                        Log.e("CreateGameActivity", "Could not parse malformed JSON: \"" + responseStr + "\"");
+                    }
+                    Log.d("CreateGameActivity", "Game code: " + gameCode);
                     Intent i = new Intent(CreateGameActivity.this, GameCodeActivity.class);
+                    i.putExtra("gameCode", gameCode);
+                    i.putExtra("gameTime", Integer.toString(gameTime));
                     startActivity(i);
                 } else {
                     // Als er een fout is bij de request

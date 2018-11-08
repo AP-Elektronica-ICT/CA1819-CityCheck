@@ -114,7 +114,7 @@ public class CityCheckController : Controller
 
     //get all teams from a game
     [HttpGet]
-    [Route ("currentgame/teams")]
+    [Route ("currentgame/teams/{gameId}")]
     public IActionResult getTeams(int gameId)
     {
         var game = context.Games.Find(gameId);
@@ -142,7 +142,7 @@ public class CityCheckController : Controller
     //wrss nooit nodig
     [HttpPut]
     [Route("teams/{id}")]
-    public IActionResult updateTeam([FromBody] Team update)
+    public IActionResult updateTeam([FromBody] Team update, int id)
     {
         var team = context.Teams.Find(update.Id);
         if (team == null)

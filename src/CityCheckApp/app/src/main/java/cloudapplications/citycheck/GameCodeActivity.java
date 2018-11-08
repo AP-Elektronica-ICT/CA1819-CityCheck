@@ -31,8 +31,6 @@ import okhttp3.Callback;
 
 public class GameCodeActivity extends AppCompatActivity {
 
-    private int randomCode;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +39,7 @@ public class GameCodeActivity extends AppCompatActivity {
         Button startGameButton = findViewById(R.id.button_start_game);
         TextView codeTextView = findViewById(R.id.text_view_code);
 
-        randomCode = new Random().nextInt(10000 - 1000) + 1000;
-        codeTextView.setText(Integer.toString(randomCode));
+        codeTextView.setText(getIntent().getExtras().getString("gameCode"));
 
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override

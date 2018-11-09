@@ -1,6 +1,7 @@
 package cloudapplications.citycheck;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -61,11 +62,12 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 int seconds = (int) (millisUntilFinished / 1000) % 60;
                 int minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
                 int hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
-                timerTextView.setText("Time remaining: ");
-//                Toast.makeText(GameActivity.this, "seconds remaining: " + millisUntilFinished / 1000, Toast.LENGTH_SHORT).show();
+                timerTextView.setText("Time remaining: " + hours + ":" + minutes + ":" + seconds);
             }
 
             public void onFinish() {
+                Intent i = new Intent(GameActivity.this, EndGameActivity.class);
+                startActivity(i);
             }
         }.start();
     }
@@ -117,7 +119,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(Currentlocation).title("Marker in Sydney"));
         //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Currentlocation, ));
         Toast.makeText( getApplicationContext(),""+Currentlocation,
-                Toast.LENGTH_LONG).show();
+                Toast.LENGTH_SHORT).show();
     }
 
     @Override

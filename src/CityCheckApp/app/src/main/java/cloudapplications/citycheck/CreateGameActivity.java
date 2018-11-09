@@ -89,7 +89,16 @@ public class CreateGameActivity extends AppCompatActivity {
                 } else {
                     // Als er een fout is bij de request
                     Log.d("GameCodeActivity", "saveGameToDatabase error response: " + response.message());
-                    Toast.makeText(CreateGameActivity.this, "ERROR: " + response.message(), Toast.LENGTH_SHORT).show();
+                    final okhttp3.Response finalResponse = response;
+                    new Thread() {
+                        public void run() {
+                            CreateGameActivity.this.runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Toast.makeText(CreateGameActivity.this, "ERROR: " + finalResponse.message(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }.start();
                 }
             }
         });

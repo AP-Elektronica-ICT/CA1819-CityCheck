@@ -2,6 +2,7 @@ package cloudapplications.citycheck;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -22,6 +23,7 @@ public class OkHttpCall {
         call.enqueue(callback);
         return call;
     }
+
 
     Call get(String url, Callback callback) {
         Request request = new Request.Builder()

@@ -7,7 +7,7 @@ public class Team {
 
     //properties van een team
     private String Name;
-    private String Colour;
+    private int Colour;
     private long CurrentLong;
     private long CurrentLat;
     private int Id;
@@ -26,7 +26,7 @@ public class Team {
         return CurrentLat;
     }
 
-    public String getColour() {
+    public int getColour() {
         return Colour;
     }
 
@@ -40,5 +40,13 @@ public class Team {
 
     public List<TeamTrace> getTraces() {
         return Traces;
+    }
+
+    public void setName(String name) {
+        Name = name;
+    }
+
+    public void setColour(int colour) {
+        Colour = colour;
     }
 }

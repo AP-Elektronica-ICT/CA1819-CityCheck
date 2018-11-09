@@ -94,4 +94,27 @@ public class CreateGameActivity extends AppCompatActivity {
             }
         });
     }
+    private void addTeamToGame(String name, int color, final int gamecode) {
+
+        OkHttpCall call = new OkHttpCall();
+        Call response = call.post(String.format("http://84.197.102.107/api/citycheck/teams/%d", gamecode), "{'teamNaam':'" + name+"'}", new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, okhttp3.Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    // Als de request gelukt is
+                    String responseStr = response.body().string();
+                    Log.d("JoinGameActivity", "JSON object response: " + responseStr);
+
+                } else {
+                    // Als er een fout is bij de request
+                    Log.d("JoinGameActivity", "new team error response: " + response.message());
+                }
+            }
+        });
+    }
 }

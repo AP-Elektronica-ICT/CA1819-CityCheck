@@ -132,7 +132,7 @@ public class JoinGameActivity extends AppCompatActivity {
         newTeam.setName(name);
         newTeam.setColour(color);*/
         OkHttpCall call = new OkHttpCall();
-        Call response = call.post(String.format("http://84.197.102.107/api/citycheck/teams/%d", gamecode), "{'teamNaam':'" + name+"'}", new Callback() {
+        Call response = call.post(String.format("http://84.197.102.107/api/citycheck/teams/%d", gamecode), "{'teamNaam':'" + name+"', 'kleur':'"+ color +"'}", new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 

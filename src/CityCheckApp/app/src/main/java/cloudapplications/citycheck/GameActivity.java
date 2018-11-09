@@ -61,8 +61,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 int seconds = (int) (millisUntilFinished / 1000) % 60;
                 int minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
                 int hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
-                timerTextView.setText("Time remaining: ");
-//                Toast.makeText(GameActivity.this, "seconds remaining: " + millisUntilFinished / 1000, Toast.LENGTH_SHORT).show();
+                timerTextView.setText("Time remaining: " + hours + ":" + minutes + ":" + seconds);
             }
 
             public void onFinish() {
@@ -116,8 +115,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.clear();
         mMap.addMarker(new MarkerOptions().position(Currentlocation).title("Marker in Sydney"));
         //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Currentlocation, ));
-        Toast.makeText( getApplicationContext(),""+Currentlocation,
-                Toast.LENGTH_LONG).show();
+//        Toast.makeText( getApplicationContext(),""+Currentlocation,
+//                Toast.LENGTH_LONG).show();
     }
 
     @Override

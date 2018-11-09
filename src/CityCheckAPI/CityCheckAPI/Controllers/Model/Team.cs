@@ -9,7 +9,7 @@ namespace CityCheckAPI.Controllers.Model
     {
         public int Id { get; set; }
         public int Punten { get; set; }
-        public string Kleur { get; set; }
+        public int Kleur { get; set; }
         public string TeamNaam { get; set; }
         public long HuidigeLong { get; set; }
         public long HuidigeLat { get; set; }

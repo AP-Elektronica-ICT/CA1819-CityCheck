@@ -81,7 +81,7 @@ public class CityCheckController : Controller
     {
         //id is de code die voor een game aangemaakt wordt.
 
-        Game game = context.Games.Where(d => d.GameCode == id).Single<Game>();
+        Game game = context.Games.Where(d => d.GameCode == id).Include(r=> r.Teams).Single<Game>();
 
         if (game != null)
             return Ok(game);
@@ -98,14 +98,24 @@ public class CityCheckController : Controller
         int startBonus = 30;
         newTeam.Punten = startBonus;
 
-        Game game = context.Games.Where(d => d.GameCode == gameId).Single<Game>();
+        Game game = context.Games.Where(d => d.GameCode == gameId).Include(r=>r.Teams).Single<Game>();
 
         if (game != null)
         {
-            game.Teams.Add(newTeam);
+            if (game.Teams == null)
+            {
+                //Dit is het eerste team
+                game.Teams = new List<Team>(new Team[] { newTeam });
+                context.SaveChanges();
+                return Created("Created:", newTeam.TeamNaam);
+            }
+            else
+            {
+                game.Teams.Add(newTeam);
 
-            context.SaveChanges();
-            return Created("Created:", newTeam.TeamNaam);
+                context.SaveChanges();
+                return Created("Created:", newTeam.TeamNaam);
+            }
         }
         else
             return NotFound();
@@ -194,7 +204,7 @@ public class CityCheckController : Controller
         //id is de gamecode
         //we gaan het team selecteren volgens de teamnaam
 
-        Game game = context.Games.Where(d => d.GameCode == id).Single<Game>();
+        Game game = context.Games.Where(d => d.GameCode == id).Include(r=>r.Teams).Single<Game>();
         Team team = game.Teams.Where(d => d.TeamNaam == teamname).Single<Team>();
 
 
@@ -215,7 +225,7 @@ public class CityCheckController : Controller
     //save team color
     [HttpPost]
     [Route("teams/{id}/{teamname}/teamcolor")]
-    public IActionResult SaveTeamColor(int id, string teamname, [FromBody] string kleurcode)
+    public IActionResult SaveTeamColor(int id, string teamname, [FromBody] int kleurcode)
     {
         //id is de gamecode
 

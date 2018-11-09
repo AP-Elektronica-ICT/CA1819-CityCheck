@@ -1,6 +1,7 @@
 package cloudapplications.citycheck;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -65,6 +66,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
             public void onFinish() {
+                Intent i = new Intent(GameActivity.this, EndGameActivity.class);
+                startActivity(i);
             }
         }.start();
     }
@@ -115,8 +118,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.clear();
         mMap.addMarker(new MarkerOptions().position(Currentlocation).title("Marker in Sydney"));
         //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Currentlocation, ));
-//        Toast.makeText( getApplicationContext(),""+Currentlocation,
-//                Toast.LENGTH_LONG).show();
+        Toast.makeText( getApplicationContext(),""+Currentlocation,
+                Toast.LENGTH_SHORT).show();
     }
 
     @Override

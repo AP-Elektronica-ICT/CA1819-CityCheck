@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +26,7 @@ import okhttp3.Callback;
 public class CreateGameActivity extends AppCompatActivity {
 
     private int gameTime;
-
+    private EditText edit_team_name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +34,7 @@ public class CreateGameActivity extends AppCompatActivity {
 
         Button createGameButton = findViewById(R.id.button_create_game);
         Spinner gameTimeSpinner = findViewById(R.id.spinner_game_time);
+        edit_team_name = findViewById(R.id.edit_text_team_name);
 
         String[] items = new String[]{"1", "2", "3"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
@@ -82,10 +84,7 @@ public class CreateGameActivity extends AppCompatActivity {
                         Log.e("CreateGameActivity", "Could not parse malformed JSON: \"" + responseStr + "\"");
                     }
                     Log.d("CreateGameActivity", "Game code: " + gameCode);
-                    Intent i = new Intent(CreateGameActivity.this, GameCodeActivity.class);
-                    i.putExtra("gameCode", gameCode);
-                    i.putExtra("gameTime", Integer.toString(gameTime));
-                    startActivity(i);
+                    addTeamToGame(edit_team_name.getText().toString(),Integer.parseInt(gameCode));
                 } else {
                     // Als er een fout is bij de request
                     Log.d("GameCodeActivity", "saveGameToDatabase error response: " + response.message());
@@ -103,7 +102,7 @@ public class CreateGameActivity extends AppCompatActivity {
             }
         });
     }
-    private void addTeamToGame(String name, int color, final int gamecode) {
+    private void addTeamToGame(String name, final int gamecode) {
 
         OkHttpCall call = new OkHttpCall();
         Call response = call.post(String.format("http://84.197.102.107/api/citycheck/teams/%d", gamecode), "{'teamNaam':'" + name+"'}", new Callback() {
@@ -118,7 +117,10 @@ public class CreateGameActivity extends AppCompatActivity {
                     // Als de request gelukt is
                     String responseStr = response.body().string();
                     Log.d("JoinGameActivity", "JSON object response: " + responseStr);
-
+                    Intent i = new Intent(CreateGameActivity.this, GameCodeActivity.class);
+                    i.putExtra("gameCode", gamecode);
+                    i.putExtra("gameTime", Integer.toString(gameTime));
+                    startActivity(i);
                 } else {
                     // Als er een fout is bij de request
                     Log.d("JoinGameActivity", "new team error response: " + response.message());

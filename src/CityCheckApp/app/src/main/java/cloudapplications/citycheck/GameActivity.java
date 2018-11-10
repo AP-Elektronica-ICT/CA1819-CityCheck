@@ -3,6 +3,7 @@ package cloudapplications.citycheck;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -33,6 +34,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -45,6 +47,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -229,11 +232,14 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                                 for(int i=0; i<teams.size(); i++){
                                     Log.d("Teams", "teamnaam: "+teamNaam +", "+ teams.get(i).teamNaam);
                                     if(!teams.get(i).teamNaam.equals(teamNaam)){
+                                        Random rand = new Random();
+                                        float lat = (float)(rand.nextFloat() * ( 51.30- 50.00) + 50.00);
+                                        float lon = (float)(rand.nextFloat() * ( 5.30- 2.30) + 2.30);
                                         mMap.addMarker(new MarkerOptions()
-                                                .position(new LatLng(50.85, 4.34))
+                                                .position(new LatLng(lat, lon))
                                                 .title(teams.get(i).teamNaam)
-                                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-                                        Log.d("Teams", "marker added: "+i);
+                                                .icon(getMarkerIcon(teams.get(i).kleur)));
+                                        Log.d("Teams", "marker added: #" + Integer.toHexString(teams.get(i).kleur));
                                     }
 
                                 }
@@ -253,5 +259,11 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
         });
+    }
+
+    public BitmapDescriptor getMarkerIcon(int color) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(color, hsv);
+        return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
 }

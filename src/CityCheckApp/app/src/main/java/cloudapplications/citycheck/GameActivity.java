@@ -227,11 +227,15 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                             @Override
                             public void run() {
                                 for(int i=0; i<teams.size(); i++){
-                                    mMap.addMarker(new MarkerOptions()
-                                            .position(new LatLng(50.85, 4.34))
-                                            .title(teams.get(i).teamNaam)
-                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-                                    Log.d("Teams", "marker added: "+i);
+                                    Log.d("Teams", "teamnaam: "+teamNaam +", "+ teams.get(i).teamNaam);
+                                    if(!teams.get(i).teamNaam.equals(teamNaam)){
+                                        mMap.addMarker(new MarkerOptions()
+                                                .position(new LatLng(50.85, 4.34))
+                                                .title(teams.get(i).teamNaam)
+                                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                                        Log.d("Teams", "marker added: "+i);
+                                    }
+
                                 }
 
                             }

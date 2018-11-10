@@ -64,6 +64,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     OkHttpCall call = new OkHttpCall();
     private List<Team> teams = new ArrayList<>();
     private String teamNaam;
+    private int gamecode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +96,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         }.start();
 
         //get team locations
-        int gamecode = Integer.parseInt(getIntent().getExtras().getString("gameCode"));
+        gamecode = Integer.parseInt(getIntent().getExtras().getString("gameCode"));
         Log.d("Mapmarker", "gamecode to call: " + gamecode);
         getTeamsOnMap(gamecode);
 
@@ -150,6 +151,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Currentlocation, ));
         Toast.makeText(getApplicationContext(), "" + Currentlocation,
                 Toast.LENGTH_SHORT).show();
+
+        getTeamsOnMap(gamecode);
     }
 
     @Override

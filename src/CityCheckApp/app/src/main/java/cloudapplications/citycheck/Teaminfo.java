@@ -20,7 +20,7 @@ public class Teaminfo {
     OkHttpCall call = new OkHttpCall();
     private List<Team> teams = new ArrayList<>();
 
-    public List<Team> getTeams(int gameId){
+    public void getTeams(int gameId){
 
         Call response = call.get(String.format("http://84.197.102.107/api/citycheck/currentgame/%d", gameId), new Callback() {
             @Override
@@ -36,7 +36,7 @@ public class Teaminfo {
                     JSONObject obj;
                     JSONArray teamsArray;
                     try {
-                        // Converteer de response string naar een JSONObject en de code er uit halen
+                        // Converteer de response string naar een JSONObject, JSONArray eruit halen en de inhoud omzetten naar JSONObjecten en dan bewaren als Team object in list
                         obj = new JSONObject(responseStr);
                         Log.d("Teams", "JSON object response: " + obj.toString());
                         teamsArray = obj.getJSONArray("teams");
@@ -52,29 +52,19 @@ public class Teaminfo {
                             newTeam.huidigeLong = team.getLong("huidigeLong");
                             teams.add(newTeam);
                         }
-                        Log.d("Teams", "teams list: "+ teams.get(1).teamNaam);
+                        Log.d("Teams", "1 teams list: "+ teams);
                     } catch (Throwable t) {
                         Log.e("Teams", "error: " +t);
                     }
-                    /*try {
-                        JSONArray array = new JSONArray(response.body().toString());
-                        Log.d("Teams", "array: "+ array);
-                        for(int i=0; i<array.length(); i++){
-                            teams.add((Team)array.get(i));
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    Log.d("Teams", "getTeams: " + teams);
-                    // Do what you want to do with the response.*/
+                    Log.d("Teams", "2 response is sucessfull teams list: "+ teams);
 
                 } else {
                     // Request not successful
                     Log.d("Teams", "getTeams: bad request");
                 }
+                Log.d("Teams", "3 on response teams list: "+ teams);
             }
-        });
 
-        return teams;
+        });
     }
 }

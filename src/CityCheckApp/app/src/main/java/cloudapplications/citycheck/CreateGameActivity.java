@@ -27,6 +27,7 @@ public class CreateGameActivity extends AppCompatActivity {
 
     private int gameTime;
     private EditText edit_team_name;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,7 +103,7 @@ public class CreateGameActivity extends AppCompatActivity {
             }
         });
     }
-    private void addTeamToGame(String name, final int gamecode) {
+    private void addTeamToGame(final String name, final int gamecode) {
 
         OkHttpCall call = new OkHttpCall();
         Call response = call.post(String.format("http://84.197.102.107/api/citycheck/teams/%d", gamecode), "{'teamNaam':'" + name+"'}", new Callback() {
@@ -120,6 +121,7 @@ public class CreateGameActivity extends AppCompatActivity {
                     Intent i = new Intent(CreateGameActivity.this, GameCodeActivity.class);
                     i.putExtra("gameCode", Integer.toString(gamecode));
                     i.putExtra("gameTime", Integer.toString(gameTime));
+                    i.putExtra("teamNaam", name);
                     startActivity(i);
                 } else {
                     // Als er een fout is bij de request

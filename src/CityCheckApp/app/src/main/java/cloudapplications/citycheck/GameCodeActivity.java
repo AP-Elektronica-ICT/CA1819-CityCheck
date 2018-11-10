@@ -35,6 +35,7 @@ public class GameCodeActivity extends AppCompatActivity {
                 Intent i = new Intent(view.getContext(), GameActivity.class);
                 i.putExtra("gameTime", currentGameTime);
                 i.putExtra("gameCode", currentGameCode);
+                i.putExtra("teamNaam", getIntent().getExtras().getString("teamNaam"));
                 startActivity(i);
             }
         });

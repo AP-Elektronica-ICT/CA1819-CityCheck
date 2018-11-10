@@ -187,6 +187,7 @@ public class JoinGameActivity extends AppCompatActivity {
                     Intent i = new Intent(JoinGameActivity.this, GameActivity.class);
                     i.putExtra("gameCode", Integer.toString(gamecode));
                     i.putExtra("gameTime", gameTime);
+                    i.putExtra("teamNaam", name);
                     startActivity(i);
                 } else {
                     // Als er een fout is bij de request
@@ -194,5 +195,6 @@ public class JoinGameActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 }

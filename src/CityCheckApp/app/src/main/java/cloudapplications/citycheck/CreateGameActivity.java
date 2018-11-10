@@ -118,7 +118,7 @@ public class CreateGameActivity extends AppCompatActivity {
                     String responseStr = response.body().string();
                     Log.d("JoinGameActivity", "JSON object response: " + responseStr);
                     Intent i = new Intent(CreateGameActivity.this, GameCodeActivity.class);
-                    i.putExtra("gameCode", gamecode);
+                    i.putExtra("gameCode", Integer.toString(gamecode));
                     i.putExtra("gameTime", Integer.toString(gameTime));
                     startActivity(i);
                 } else {

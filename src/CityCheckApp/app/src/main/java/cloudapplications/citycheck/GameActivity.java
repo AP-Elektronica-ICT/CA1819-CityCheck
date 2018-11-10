@@ -36,12 +36,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.List;
+
 public class GameActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, LocationListener, com.google.android.gms.location.LocationListener {
 
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     LocationRequest mLocationRequest;
+    private Teaminfo teaminfo = new Teaminfo();
+    private List<Team> teams;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +74,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 startActivity(i);
             }
         }.start();
+        int gamecode = Integer.parseInt(getIntent().getExtras().getString("gameCode"));
+        Log.d("Teams", "gamecode to call: "+gamecode);
+        teams = teaminfo.getTeams(gamecode);
     }
 
 

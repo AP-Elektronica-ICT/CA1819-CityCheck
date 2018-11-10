@@ -185,7 +185,7 @@ public class JoinGameActivity extends AppCompatActivity {
 
                     Log.d("JoinGameActivity", "Gametime for intent is " + gameTime);
                     Intent i = new Intent(JoinGameActivity.this, GameActivity.class);
-                    i.putExtra("gameCode", gamecode);
+                    i.putExtra("gameCode", Integer.toString(gamecode));
                     i.putExtra("gameTime", gameTime);
                     startActivity(i);
                 } else {

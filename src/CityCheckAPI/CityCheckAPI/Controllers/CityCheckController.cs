@@ -127,10 +127,11 @@ public class CityCheckController : Controller
     [Route ("currentgame/teams/{gameId}")]
     public IActionResult getTeams(int gameId)
     {
-        var game = context.Games.Find(gameId);
+        var game = context.Games.Include(r=>r.Teams).Where(d=>d.GameCode == gameId).Single<Game>();
+        List<Team> teams = game.Teams;
         if (game == null)
             return NotFound();
-        return Ok(game.Teams);
+        return Ok(teams);
     }
 
     
@@ -254,7 +255,7 @@ public class CityCheckController : Controller
     {
         //id is de gamecode
 
-        Game game = context.Games.Where(d => d.GameCode == id).Single<Game>();
+        Game game = context.Games.Include(r=>r.Teams.Select(x=>x.TeamTraces)).Where(d => d.GameCode == id).Single<Game>();
         List<Team> teams = game.Teams;
 
 
@@ -262,9 +263,8 @@ public class CityCheckController : Controller
             return NotFound();
         else
         {
-            IEnumerable<TeamTrace> traces = teams.SelectMany(d => d.TeamTraces);
 
-            return Ok(traces);
+            return Ok(teams);
         }
 
     }

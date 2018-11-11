@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CityCheckAPI.Controllers.Model;
 using Microsoft.AspNetCore.Cors;
@@ -27,54 +28,132 @@ public class CityCheckController : Controller
     [Route("newgame")]
     public IActionResult createGame([FromBody] Game newGame)
     {
+
+        IQueryable<Game> query = context.Games;
+
+
+
+        //random game code genereren
+        string gameCodeStr = "";
+        do
+        {
+            int tempGameCode;
+            gameCodeStr = "";
+            Random rnd = new Random();
+            for (int i = 0; i < 4; i++)
+            {
+                tempGameCode = rnd.Next(1, 9);
+                gameCodeStr += tempGameCode.ToString();
+            }
+            //controleren of er al een game is met deze code
+        } while (query.Where(d => d.GameCode == Int32.Parse(gameCodeStr)) == null);
+        newGame.GameCode = Int32.Parse(gameCodeStr);
+        //random game code einde
+
+
         context.Games.Add(newGame);
         context.SaveChanges();
         return Created("Created:", newGame);
     }
 
+
+
+    //get all games
+    [HttpGet]
+    [Route("allgames")]
+    public IActionResult getGames()
+    {
+
+        IQueryable<Game> query = context.Games;
+        if (query != null)
+            return Ok(query);
+        else
+            return NotFound();
+    }
+
+
+
+
     //get game info
     [HttpGet]
-    [Route("currentgame")]
+    [Route("currentgame/{id}")]
     public IActionResult getGame(int id)
     {
         //id is de code die voor een game aangemaakt wordt.
 
-        var game = context.Games.Find(id);
+        Game game = context.Games.Where(d => d.GameCode == id).Include(r=> r.Teams).Single<Game>();
+
+        if (game != null)
+            return Ok(game);
+        else
+            return NotFound();
+    }
 
 
+    //new team in a game
+    [HttpPost]
+    [Route("teams/{gameId}")]
+    public IActionResult addteam([FromBody] Team newTeam, int gameId)
+    {
+        int startBonus = 30;
+        newTeam.Punten = startBonus;
+
+        Game game = context.Games.Where(d => d.GameCode == gameId).Include(r=>r.Teams).Single<Game>();
+
+        if (game != null)
+        {
+            if (game.Teams == null)
+            {
+                //Dit is het eerste team
+                game.Teams = new List<Team>(new Team[] { newTeam });
+                context.SaveChanges();
+                return Created("Created:", newTeam.TeamNaam);
+            }
+            else
+            {
+                game.Teams.Add(newTeam);
+
+                context.SaveChanges();
+                return Created("Created:", newTeam.TeamNaam);
+            }
+        }
+        else
+            return NotFound();
+        
+    }
+
+    //get all teams from a game
+    [HttpGet]
+    [Route ("currentgame/teams/{gameId}")]
+    public IActionResult getTeams(int gameId)
+    {
+        var game = context.Games.Include(r=>r.Teams).Where(d=>d.GameCode == gameId).Single<Game>();
+        List<Team> teams = game.Teams;
         if (game == null)
             return NotFound();
-
-
-        return Ok(game);
+        return Ok(teams);
     }
 
-    //new team
-    [HttpPost]
-    [Route("teams")]
-    public IActionResult addteam([FromBody] Team newTeam)
-    {
-        context.Teams.Add(newTeam);
-        context.SaveChanges();
-        return Created("Created:", newTeam.TeamNaam);
-    }
+    
 
-    //get team
-    [HttpGet]
-    [Route("teams/{id}")]
-    public IActionResult getTeam(int id)
-    {
-        var team = context.Teams.Find(id);
-        if (team == null)
-            return NotFound();
-        return Ok(team);
-    }
+    //get 1 team from a game
+    //Niet compleet / niet echt relevant meer door de bovenstaande functie imo
+    //[HttpGet]
+    //[Route("teams/{id}")]
+    //public IActionResult getTeam(int id)
+    //{
+    //    var team = context.Teams.Find(id);
+    //    if (team == null)
+    //        return NotFound();
+    //    return Ok(team);
+    //}
 
 
     //update team
+    //wrss nooit nodig
     [HttpPut]
     [Route("teams/{id}")]
-    public IActionResult updateTeam([FromBody] Team update)
+    public IActionResult updateTeam([FromBody] Team update, int id)
     {
         var team = context.Teams.Find(update.Id);
         if (team == null)
@@ -84,6 +163,7 @@ public class CityCheckController : Controller
     }
 
     //delete team
+    //wrss nooit nodig
     [HttpDelete]
     [Route("teams/{id}")]
     public IActionResult deleteTeam(int id)
@@ -99,59 +179,140 @@ public class CityCheckController : Controller
 
 
     //get huidige locatie van een team
-    [HttpGet]
-    [Route("teams/{id}/huidigeLocatie")]
-    public IActionResult getTeamLocation(int id)
-    {
-        var team = context.Teams.Find(id);
+    //Deze info halen we gewoon uit de all teams from game data
+    //[HttpGet]
+    //[Route("teams/{id}/huidigeLocatie")]
+    //public IActionResult getTeamLocation(int id)
+    //{
+    //    var team = context.Teams.Find(id);
 
 
-        if (team == null)
-            return NotFound();
+    //    if (team == null)
+    //        return NotFound();
 
-        string cureentLoc = team.HuidigeLong.ToString() + "/" + team.HuidigeLat.ToString();
+    //    string cureentLoc = team.HuidigeLong.ToString() + "/" + team.HuidigeLat.ToString();
 
-        return Ok(cureentLoc);
+    //    return Ok(cureentLoc);
 
 
-    }
+    //}
 
     //save teamloc
     [HttpPost]
-    [Route("teams/{id}/huidigeLocatie")]
-    public IActionResult SaveCurrentTeamLoc(int id, [FromBody] long newlat, long newlong)
+    [Route("teams/{id}/{teamname}/huidigeLocatie")]
+    public IActionResult SaveCurrentTeamLoc(int id, string teamname, [FromBody] long newlat, long newlong)
     {
+        //id is de gamecode
+        //we gaan het team selecteren volgens de teamnaam
 
-        var team = context.Teams.Find(id);
+        Game game = context.Games.Where(d => d.GameCode == id).Include(r=>r.Teams).Single<Game>();
+        Team team = game.Teams.Where(d => d.TeamNaam == teamname).Single<Team>();
 
 
         if (team == null)
             return NotFound();
+        else
+        {
+            team.HuidigeLat = newlat;
+            team.HuidigeLong = newlong;
 
-        team.HuidigeLat = newlat;
-        team.HuidigeLong = newlong;
-
-
-
-        context.SaveChanges();
-        return Created("Created:", newlat+""+newlong);
+            context.SaveChanges();
+            return Created("Created:", newlat + "" + newlong);
+        }
     }
 
-    //get traces van een team
-    /*
+
+
+    //save team color
+    [HttpPost]
+    [Route("teams/{id}/{teamname}/teamcolor")]
+    public IActionResult SaveTeamColor(int id, string teamname, [FromBody] int kleurcode)
+    {
+        //id is de gamecode
+
+        Game game = context.Games.Where(d => d.GameCode == id).Single<Game>();
+        Team team = game.Teams.Where(d => d.TeamNaam == teamname).Single<Team>();
+
+
+        if (team == null)
+            return NotFound();
+        else
+        {
+            team.Kleur = kleurcode;
+
+            context.SaveChanges();
+            return Created("Accepted:", kleurcode);
+        }
+    }
+
+
+
+    //get all traces of all teams in a game
+    
     [HttpGet]
     [Route("teams/{id}/trace")]
     public IActionResult getTeamTrace(int id)
     {
-        IQueryable<TeamTrace> query = context.Traces;
-        query = query.Where(e => e.Team.Equals(id));
+        //id is de gamecode
 
-        if (query == null)
+        Game game = context.Games.Include(r=>r.Teams.Select(x=>x.TeamTraces)).Where(d => d.GameCode == id).Single<Game>();
+        List<Team> teams = game.Teams;
+
+
+        if (teams == null)
             return NotFound();
-        return Ok(query.ToList());
+        else
+        {
 
-    }*/
+            return Ok(teams);
+        }
 
+    }
+
+
+    [HttpGet]
+    [Route("teams/{id}/{teamName}/myscore")]
+    public IActionResult getTeamScore(int id, string teamName)
+    {
+        //id is de gamecode
+
+        Game game = context.Games.Include(r => r.Teams).Where(d => d.GameCode == id).Single<Game>();
+        Team team = game.Teams.Where(r=>r.TeamNaam == teamName).Single<Team>();
+        int score = team.Punten;
+
+
+        if (team == null)
+            return NotFound();
+        else
+        {
+
+            return Ok(score);
+        }
+
+    }
+
+
+    [HttpPost]
+    [Route("teams/{id}/{teamName}/setmyscore")]
+    public IActionResult setTeamScore(int id, string teamName, [FromBody] int newScore)
+    {
+        //id is de gamecode
+
+        Game game = context.Games.Include(r => r.Teams).Where(d => d.GameCode == id).Single<Game>();
+        Team team = game.Teams.Where(r => r.TeamNaam == teamName).Single<Team>();
+        int score = team.Punten;
+
+
+        if (team == null)
+            return NotFound();
+        else
+        {
+            score = newScore;
+            context.SaveChanges();
+            return Ok(score);
+        }
+
+    }
 
 
 }

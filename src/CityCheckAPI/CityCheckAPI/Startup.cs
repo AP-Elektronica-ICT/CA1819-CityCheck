@@ -38,7 +38,7 @@ namespace CityCheckAPI
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddDbContext<CityCheckContext>(
-                options => options.UseSqlServer(
+                options => options.UseMySql(
                     Configuration.GetConnectionString("DefaultConnection")
                 )
             );

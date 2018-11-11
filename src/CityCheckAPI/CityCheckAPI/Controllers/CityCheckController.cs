@@ -270,4 +270,49 @@ public class CityCheckController : Controller
     }
 
 
+    [HttpGet]
+    [Route("teams/{id}/{teamName}/myscore")]
+    public IActionResult getTeamScore(int id, string teamName)
+    {
+        //id is de gamecode
+
+        Game game = context.Games.Include(r => r.Teams).Where(d => d.GameCode == id).Single<Game>();
+        Team team = game.Teams.Where(r=>r.TeamNaam == teamName).Single<Team>();
+        int score = team.Punten;
+
+
+        if (team == null)
+            return NotFound();
+        else
+        {
+
+            return Ok(score);
+        }
+
+    }
+
+
+    [HttpPost]
+    [Route("teams/{id}/{teamName}/setmyscore")]
+    public IActionResult setTeamScore(int id, string teamName, [FromBody] int newScore)
+    {
+        //id is de gamecode
+
+        Game game = context.Games.Include(r => r.Teams).Where(d => d.GameCode == id).Single<Game>();
+        Team team = game.Teams.Where(r => r.TeamNaam == teamName).Single<Team>();
+        int score = team.Punten;
+
+
+        if (team == null)
+            return NotFound();
+        else
+        {
+            score = newScore;
+            context.SaveChanges();
+            return Ok(score);
+        }
+
+    }
+
+
 }

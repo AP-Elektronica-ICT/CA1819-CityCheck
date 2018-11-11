@@ -43,6 +43,7 @@ import com.google.android.gms.tasks.Task;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,6 +67,11 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private String teamNaam;
     private int gamecode;
 
+
+    //Gamescore
+    private TextView scoreview;
+    private int score;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +80,10 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        scoreview = (TextView) findViewById(R.id.txt_Points);
+        score = 0;
+        setScore(30);
 
         final TextView timerTextView = findViewById(R.id.text_view_timer);
 
@@ -269,4 +279,13 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         Color.colorToHSV(color, hsv);
         return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
+
+
+    public void setScore(int newScore){
+        score = newScore;
+        scoreview.setText(""+score);
+    }
+
+
+
 }

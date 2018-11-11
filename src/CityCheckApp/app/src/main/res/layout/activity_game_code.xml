@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#da4040"
+    android:background="@color/redAntw"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".GameCodeActivity">
@@ -15,13 +15,40 @@
         android:layout_marginStart="50dp"
         android:layout_marginBottom="10dp"
         android:text="Start game"
+        android:textColor="@color/white"
         android:textSize="20sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="50dp"
+            android:layout_marginBottom="10dp"
+            android:text="Chosen game time: "
+            android:textColor="@color/white"
+            android:textSize="23sp" />
+
+        <TextView
+            android:id="@+id/text_view_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/white"
+            android:textSize="23sp" />
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="Your game code:"
+        android:textColor="@color/white"
         android:textSize="30sp" />
 
     <TextView
@@ -29,37 +56,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:textColor="@color/white"
         android:textSize="30sp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="50dp"
-            android:layout_marginEnd="10dp"
-            android:gravity="center"
-            android:text="Game time (in hours):"
-            android:textSize="20sp" />
-
-        <Spinner
-            android:id="@+id/spinner_game_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown" />
-    </LinearLayout>
 
     <Button
         android:id="@+id/button_start_game"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:backgroundTint="#ffdb4e"
+        android:backgroundTint="@color/yellowAntw"
         android:text="Start game" />
 
 

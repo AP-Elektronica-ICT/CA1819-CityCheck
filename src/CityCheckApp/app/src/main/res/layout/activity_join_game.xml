@@ -3,18 +3,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#da4040"
-    android:gravity="center"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/redAntw"
     android:orientation="vertical"
-    tools:context=".JoinGameActivity">
+    tools:context=".JoinGameActivity"
+    android:id="@+id/LYT_JoingGameLayout">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="125dp"
+        android:layout_marginBottom="35dp"
+        android:background="#4FFFFFFF"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/TV_TeamName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:text="Your Name"
+            android:textColor="@color/white"
+            android:textSize="50dp" />
+
+    </LinearLayout>
+
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginStart="50dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="5dp"
         android:text="Create team"
+        android:textColor="@color/white"
         android:textSize="30sp" />
+    <View
+        android:layout_width="200dp"
+        android:layout_height="1dp"
+        android:background="#ffffff"
+        android:layout_marginBottom="15dp"
+        android:layout_gravity="center"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,6 +52,7 @@
         android:layout_marginStart="50dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="50dp"
+        android:layout_marginBottom="25dp"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -36,6 +66,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Team name:"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <TextView
@@ -43,6 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Team color:"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <TextView
@@ -50,6 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Game code:"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
         </LinearLayout>
 
@@ -65,14 +98,16 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:inputType="text"
-                android:maxLength="20" />
+                android:maxLength="20"
+                android:textColor="@color/white" />
 
-            <TextView
+            <Button
+                android:id="@+id/button_pick_color"
+                android:layout_weight="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Placeholder"
-                android:textSize="20sp" />
+                android:backgroundTint="@color/yellowAntw"
+                android:text="Pick Color" />
 
             <EditText
                 android:id="@+id/edit_text_game_code"
@@ -80,7 +115,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:inputType="number"
-                android:maxLength="4" />
+                android:maxLength="4"
+                android:textColor="@color/white" />
         </LinearLayout>
 
     </LinearLayout>
@@ -90,7 +126,8 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:backgroundTint="#ffdb4e"
+        android:layout_gravity="center"
+        android:backgroundTint="@color/yellowAntw"
         android:text="Join" />
 
 </LinearLayout>

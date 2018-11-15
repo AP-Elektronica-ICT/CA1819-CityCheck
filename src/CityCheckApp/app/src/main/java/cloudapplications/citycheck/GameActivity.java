@@ -223,8 +223,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     LocationList.add(Currentlocation);
                     int i = LocationList.size()-1;
                     //show current value
-                    Toast.makeText(getApplicationContext(), "iets" + LocationList.get(i),
-                            Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), "iets" + LocationList.get(i),
+//                            Toast.LENGTH_SHORT).show();
                 }
             }catch (Throwable t) {
                 Log.e("LatLngRecording", "error: " + t);

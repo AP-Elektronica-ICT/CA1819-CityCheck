@@ -63,50 +63,28 @@ public class CreateGameActivity extends AppCompatActivity {
 
     private void saveGameToDatabase() {
         OkHttpCall call = new OkHttpCall();
-        Call response = call.post("http://84.197.102.107/api/citycheck/newgame", "{'TijdsDuur':" + Integer.toString(gameTime) + "}", new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
+        call.post("newgame", "{'TijdsDuur':" + Integer.toString(gameTime) + "}");
+        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
+        if (call.status == OkHttpCall.RequestStatus.Successful) {
+            JSONObject obj;
+            String gameCode = "";
+            try {
+                // Converteer de response string naar een JSONObject en de code er uit halen
+                obj = new JSONObject(call.responseStr);
+                Log.d("CreateGameActivity", "JSON object response: " + obj.toString());
+                gameCode = obj.getString("gameCode");
+            } catch (Throwable t) {
+                Log.e("CreateGameActivity", "Could not parse malformed JSON: \"" + call.responseStr + "\"");
             }
-
-            @Override
-            public void onResponse(Call call, okhttp3.Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    // Als de request gelukt is
-                    String responseStr = response.body().string();
-                    JSONObject obj;
-                    String gameCode = "";
-                    try {
-                        // Converteer de response string naar een JSONObject en de code er uit halen
-                        obj = new JSONObject(responseStr);
-                        Log.d("CreateGameActivity", "JSON object response: " + obj.toString());
-                        gameCode = obj.getString("gameCode");
-                    } catch (Throwable t) {
-                        Log.e("CreateGameActivity", "Could not parse malformed JSON: \"" + responseStr + "\"");
-                    }
-                    Log.d("CreateGameActivity", "Game code: " + gameCode);
-                    addTeamToGame(edit_team_name.getText().toString(),Integer.parseInt(gameCode));
-                } else {
-                    // Als er een fout is bij de request
-                    Log.d("GameCodeActivity", "saveGameToDatabase error response: " + response.message());
-                    final okhttp3.Response finalResponse = response;
-                    new Thread() {
-                        public void run() {
-                            CreateGameActivity.this.runOnUiThread(new Runnable() {
-                                public void run() {
-                                    Toast.makeText(CreateGameActivity.this, "ERROR: " + finalResponse.message(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    }.start();
-                }
-            }
-        });
+            Log.d("CreateGameActivity", "Game code: " + gameCode);
+            addTeamToGame(edit_team_name.getText().toString(), Integer.parseInt(gameCode));
+        }
     }
+
     private void addTeamToGame(final String name, final int gamecode) {
 
         OkHttpCall call = new OkHttpCall();
-        Call response = call.post(String.format("http://84.197.102.107/api/citycheck/teams/%d", gamecode), "{'teamNaam':'" + name+"'}", new Callback() {
+        Call response = call.post(String.format("http://84.197.102.107/api/citycheck/teams/%d", gamecode), "{'teamNaam':'" + name + "'}", new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 

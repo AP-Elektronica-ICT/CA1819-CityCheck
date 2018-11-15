@@ -46,6 +46,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -66,6 +67,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private List<Team> teams = new ArrayList<>();
     private String teamNaam;
     private int gamecode;
+    private ArrayList<LatLng> LocationList = new ArrayList<>();
+
 
 
     //Gamescore
@@ -85,6 +88,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         score = 0;
         setScore(30);
 
+
         final TextView timerTextView = findViewById(R.id.text_view_timer);
 
         teamNaam = getIntent().getExtras().getString("teamNaam");
@@ -97,6 +101,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 int minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
                 int hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
                 timerTextView.setText("Time remaining: " + hours + ":" + minutes + ":" + seconds);
+                // method hier geplaasts om opgeroepen te worden waar nodig
+                recordLocationCurrent(mLastLocation, millisUntilFinished);
             }
 
             public void onFinish() {
@@ -157,11 +163,10 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
         LatLng Currentlocation = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.clear();
-        mMap.addMarker(new MarkerOptions().position(Currentlocation).title("Marker in Sydney"));
+        mMap.addMarker(new MarkerOptions().position(Currentlocation).title("LocationMarker"));
         //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Currentlocation, ));
-        Toast.makeText(getApplicationContext(), "" + Currentlocation,
-                Toast.LENGTH_SHORT).show();
-
+        //Toast.makeText(getApplicationContext(), "" + Currentlocation,
+        //        Toast.LENGTH_SHORT).show();
         getTeamsOnMap(gamecode);
     }
 
@@ -200,6 +205,33 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+    public void recordLocationCurrent(Location location, Long time){
+        mLastLocation = location;
+
+        int TimeCounter =(int)(time /1000);
+        boolean IsDivisibleTimer = TimeCounter % 10 == 1;
+
+
+        LatLng PreviousLocation = new LatLng(1,1);
+        if(location != null){
+            LatLng Currentlocation = new LatLng(location.getLatitude(), location.getLongitude());
+
+            try{
+                if (IsDivisibleTimer == true && Currentlocation != PreviousLocation){
+                    LocationList.add(Currentlocation);
+                    int i = LocationList.size()-1;
+                    //show current value
+                    Toast.makeText(getApplicationContext(), "iets" + LocationList.get(i),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }catch (Throwable t) {
+                Log.e("LatLngRecording", "error: " + t);
+            }
+        }
+
+
 
     }
 

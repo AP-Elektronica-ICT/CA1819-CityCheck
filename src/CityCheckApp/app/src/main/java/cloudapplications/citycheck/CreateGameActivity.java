@@ -82,30 +82,16 @@ public class CreateGameActivity extends AppCompatActivity {
     }
 
     private void addTeamToGame(final String name, final int gamecode) {
-
         OkHttpCall call = new OkHttpCall();
-        Call response = call.post(String.format("http://84.197.102.107/api/citycheck/teams/%d", gamecode), "{'teamNaam':'" + name + "'}", new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, okhttp3.Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    // Als de request gelukt is
-                    String responseStr = response.body().string();
-                    Log.d("JoinGameActivity", "JSON object response: " + responseStr);
-                    Intent i = new Intent(CreateGameActivity.this, GameCodeActivity.class);
-                    i.putExtra("gameCode", Integer.toString(gamecode));
-                    i.putExtra("gameTime", Integer.toString(gameTime));
-                    i.putExtra("teamNaam", name);
-                    startActivity(i);
-                } else {
-                    // Als er een fout is bij de request
-                    Log.d("JoinGameActivity", "new team error response: " + response.message());
-                }
-            }
-        });
+        call.post("teams/" + Integer.toString(gamecode), "{'teamNaam':'" + name + "'}");
+        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
+        if (call.status == OkHttpCall.RequestStatus.Successful) {
+            Log.d("testest", "addTeamToGame: iets");
+            Intent i = new Intent(CreateGameActivity.this, GameCodeActivity.class);
+            i.putExtra("gameCode", Integer.toString(gamecode));
+            i.putExtra("gameTime", Integer.toString(gameTime));
+            i.putExtra("teamNaam", name);
+            startActivity(i);
+        }
     }
 }

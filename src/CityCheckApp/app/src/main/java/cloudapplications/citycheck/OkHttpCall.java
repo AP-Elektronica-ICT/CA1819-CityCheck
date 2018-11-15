@@ -46,9 +46,9 @@ class OkHttpCall {
         return call;
     }
 
-    void post(String route, String jsonBody) {
+    void post(String databaseIP, String route, String jsonBody) {
         OkHttpCall call = new OkHttpCall();
-        Call postCall = call.post("http://84.197.102.107/api/citycheck/" + route, jsonBody, new Callback() {
+        Call postCall = call.post("http://" + databaseIP + "/api/citycheck/" + route, jsonBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 status = RequestStatus.Unsuccessful;
@@ -70,9 +70,9 @@ class OkHttpCall {
         });
     }
 
-    void get(String route) {
+    void get(String databaseIP, String route) {
         OkHttpCall call = new OkHttpCall();
-        Call getCall = call.get("http://84.197.102.107/api/citycheck/" + route, new Callback() {
+        Call getCall = call.get("http://" + databaseIP + "/api/citycheck/" + route, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 status = RequestStatus.Unsuccessful;

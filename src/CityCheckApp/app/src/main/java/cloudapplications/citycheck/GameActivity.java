@@ -209,7 +209,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void getTeamsOnMap(int gameId) {
         OkHttpCall call = new OkHttpCall();
-        call.get("currentgame/" + gameId);
+        call.get(getString(R.string.database_ip), "currentgame/" + gameId);
         while (call.status == OkHttpCall.RequestStatus.Undefined) ;
         if (call.status == OkHttpCall.RequestStatus.Successful) {
             JSONObject obj;

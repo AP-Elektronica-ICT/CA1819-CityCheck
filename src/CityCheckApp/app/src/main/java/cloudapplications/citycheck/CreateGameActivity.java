@@ -54,7 +54,7 @@ public class CreateGameActivity extends AppCompatActivity {
 
     private void createNewGame() {
         OkHttpCall call = new OkHttpCall();
-        call.post("newgame", "{'TijdsDuur':" + Integer.toString(gameTime) + "}");
+        call.post(getString(R.string.database_ip), "newgame", "{'TijdsDuur':" + Integer.toString(gameTime) + "}");
         while (call.status == OkHttpCall.RequestStatus.Undefined) ;
         if (call.status == OkHttpCall.RequestStatus.Successful) {
             JSONObject obj;
@@ -75,7 +75,7 @@ public class CreateGameActivity extends AppCompatActivity {
 
     private void addTeamToGame(final String name, final int gamecode) {
         OkHttpCall call = new OkHttpCall();
-        call.post("teams/" + Integer.toString(gamecode), "{'teamNaam':'" + name + "'}");
+        call.post(getString(R.string.database_ip), "teams/" + Integer.toString(gamecode), "{'teamNaam':'" + name + "'}");
         while (call.status == OkHttpCall.RequestStatus.Undefined) ;
         if (call.status == OkHttpCall.RequestStatus.Successful) {
             Intent i = new Intent(CreateGameActivity.this, GameCodeActivity.class);

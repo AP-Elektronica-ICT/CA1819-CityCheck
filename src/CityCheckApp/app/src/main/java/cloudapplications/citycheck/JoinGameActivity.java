@@ -116,7 +116,7 @@ public class JoinGameActivity extends AppCompatActivity {
         newTeam.setName(name);
         newTeam.setColour(color);*/
         OkHttpCall call = new OkHttpCall();
-        call.post("teams/" + Integer.toString(gamecode), "{'teamNaam':'" + name + "', 'kleur':'" + color + "'}");
+        call.post(getString(R.string.database_ip), "teams/" + Integer.toString(gamecode), "{'teamNaam':'" + name + "', 'kleur':'" + color + "'}");
         while (call.status == OkHttpCall.RequestStatus.Undefined) ;
         if (call.status == OkHttpCall.RequestStatus.Successful) {
             startGame(gamecode);
@@ -127,7 +127,7 @@ public class JoinGameActivity extends AppCompatActivity {
 
     private void startGame(final int gamecode) {
         OkHttpCall call = new OkHttpCall();
-        call.get("currentgame/" + Integer.toString(gamecode));
+        call.get(getString(R.string.database_ip), "currentgame/" + Integer.toString(gamecode));
         while (call.status == OkHttpCall.RequestStatus.Undefined) ;
         if (call.status == OkHttpCall.RequestStatus.Successful) {
             JSONObject obj;

@@ -1,3 +1,30 @@
-<p>
-  doel works!
-</p>
+<header>
+  <h1 id="title">Doel Locaties Overview</h1>
+</header>
+
+
+
+<div id="doelContent">
+
+
+  <input type="text" id="locTerm" class="form-control mb-4" placeholder="Search">
+
+
+  <div id="listView" class="list-group">
+      <a href="#!" class="list-group-item list-group-item-action disabled yellow">Gekende locaties</a>
+
+
+      <a href="#!" class="list-group-item list-group-item-action">Mas</a>
+      <a href="#!" class="list-group-item list-group-item-action">Mas</a>
+      <a href="#!" class="list-group-item list-group-item-action">Mas</a>
+      <a href="#!" class="list-group-item list-group-item-action">Mas</a>
+    </div>
+
+
+    <div id="mapContainer"
+        leaflet 
+        [leafletOptions]="options">
+    </div>
+
+
+</div>

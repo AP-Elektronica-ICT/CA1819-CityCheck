@@ -23,6 +23,11 @@ import { LoginComponent } from './login/login.component';
 import { DoelComponent } from './doel/doel.component';
 import { FormsModule } from '@angular/forms';
 
+
+//map
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -39,7 +44,8 @@ import { FormsModule } from '@angular/forms';
     FormsModule,
     WavesModule,
     CardsFreeModule,
-    ButtonsModule
+    ButtonsModule,
+    LeafletModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

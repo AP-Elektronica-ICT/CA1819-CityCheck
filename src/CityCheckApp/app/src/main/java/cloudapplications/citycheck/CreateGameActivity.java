@@ -1,7 +1,6 @@
 package cloudapplications.citycheck;
 
 import android.content.Intent;
-import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,17 +10,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.Random;
-import java.util.Timer;
-
-import okhttp3.Call;
-import okhttp3.Callback;
 
 public class CreateGameActivity extends AppCompatActivity {
 
@@ -56,12 +47,12 @@ public class CreateGameActivity extends AppCompatActivity {
         createGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveGameToDatabase();
+                createNewGame();
             }
         });
     }
 
-    private void saveGameToDatabase() {
+    private void createNewGame() {
         OkHttpCall call = new OkHttpCall();
         call.post("newgame", "{'TijdsDuur':" + Integer.toString(gameTime) + "}");
         while (call.status == OkHttpCall.RequestStatus.Undefined) ;
@@ -76,8 +67,9 @@ public class CreateGameActivity extends AppCompatActivity {
             } catch (Throwable t) {
                 Log.e("CreateGameActivity", "Could not parse malformed JSON: \"" + call.responseStr + "\"");
             }
-            Log.d("CreateGameActivity", "Game code: " + gameCode);
             addTeamToGame(edit_team_name.getText().toString(), Integer.parseInt(gameCode));
+        } else {
+            Toast.makeText(this, "Error while trying to create a new game", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -86,12 +78,13 @@ public class CreateGameActivity extends AppCompatActivity {
         call.post("teams/" + Integer.toString(gamecode), "{'teamNaam':'" + name + "'}");
         while (call.status == OkHttpCall.RequestStatus.Undefined) ;
         if (call.status == OkHttpCall.RequestStatus.Successful) {
-            Log.d("testest", "addTeamToGame: iets");
             Intent i = new Intent(CreateGameActivity.this, GameCodeActivity.class);
             i.putExtra("gameCode", Integer.toString(gamecode));
             i.putExtra("gameTime", Integer.toString(gameTime));
             i.putExtra("teamNaam", name);
             startActivity(i);
+        } else {
+            Toast.makeText(this, "Error while trying to add the current team to the game", Toast.LENGTH_SHORT).show();
         }
     }
 }

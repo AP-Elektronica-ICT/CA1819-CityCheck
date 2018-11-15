@@ -22,7 +22,7 @@ public class GameCodeActivity extends AppCompatActivity {
         TextView codeTextView = findViewById(R.id.text_view_code);
         TextView timeTextView = findViewById(R.id.text_view_time);
 
-        Log.d("Teams", "gamecode from intent: "+ getIntent().getExtras().get("gameCode"));
+        Log.d("Teams", "gamecode from intent: " + getIntent().getExtras().get("gameCode"));
         currentGameCode = getIntent().getExtras().getString("gameCode");
         currentGameTime = getIntent().getExtras().getString("gameTime");
 
@@ -40,36 +40,4 @@ public class GameCodeActivity extends AppCompatActivity {
             }
         });
     }
-
-//    private void saveGameToDatabaseVolley() {
-//        RequestQueue queue = Volley.newRequestQueue(GameCodeActivity.this);
-//        String saveURL = "http://127.0.0.1:3000/api/citycheck/newgame";
-//        StringRequest postRequest = new StringRequest(Request.Method.POST, saveURL,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        // Response
-//                        Log.d("GameCodeActivity", "Database response: " + response);
-//                        Toast.makeText(GameCodeActivity.this, "Database updated successfully", Toast.LENGTH_SHORT).show();
-//                    }
-//                },
-//                new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        // Error
-//                        Log.d("GameCodeActivity", "Database error response: " + error);
-//                        Toast.makeText(GameCodeActivity.this, "Error! Couldn't update the database", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//        ) {
-//            @Override
-//            protected Map<String, String> getParams() {
-//                Map<String, String> params = new HashMap<>();
-//                params.put("GameCode", Integer.toString(randomCode));
-//                params.put("TijdsDuur", Integer.toString(gameTime));
-//                return params;
-//            }
-//        };
-//        queue.add(postRequest);
-//    }
 }

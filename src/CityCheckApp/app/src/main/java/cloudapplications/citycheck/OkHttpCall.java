@@ -56,7 +56,31 @@ public class OkHttpCall {
         Call response = call.post("http://84.197.102.107/api/citycheck/" + route, jsonBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                status = RequestStatus.Unsuccessful;
+            }
 
+            @Override
+            public void onResponse(Call call, okhttp3.Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    // Als de request gelukt is
+                    responseStr = response.body().string();
+                    Log.d("OkHttpCall", "Successful response: " + responseStr);
+                    status = RequestStatus.Successful;
+                } else {
+                    // Als er een fout is bij de request
+                    Log.d("OkHttpCall", "Error response: " + response.message());
+                    status = RequestStatus.Unsuccessful;
+                }
+            }
+        });
+    }
+
+    void get(String route) {
+        OkHttpCall call = new OkHttpCall();
+        Call response = call.get("http://84.197.102.107/api/citycheck/" + route, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                status = RequestStatus.Unsuccessful;
             }
 
             @Override

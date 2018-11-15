@@ -1,10 +1,6 @@
 package cloudapplications.citycheck;
 
-
 import android.util.Log;
-import android.widget.Toast;
-
-import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -14,9 +10,8 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 
-public class OkHttpCall {
+class OkHttpCall {
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     private OkHttpClient client = new OkHttpClient();
@@ -31,7 +26,7 @@ public class OkHttpCall {
 
     RequestStatus status = RequestStatus.Undefined;
 
-    Call post(String url, String json, Callback callback) {
+    private Call post(String url, String json, Callback callback) {
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
                 .url(url)
@@ -42,7 +37,7 @@ public class OkHttpCall {
         return call;
     }
 
-    Call get(String url, Callback callback) {
+    private Call get(String url, Callback callback) {
         Request request = new Request.Builder()
                 .url(url)
                 .build();
@@ -53,7 +48,7 @@ public class OkHttpCall {
 
     void post(String route, String jsonBody) {
         OkHttpCall call = new OkHttpCall();
-        Call response = call.post("http://84.197.102.107/api/citycheck/" + route, jsonBody, new Callback() {
+        Call postCall = call.post("http://84.197.102.107/api/citycheck/" + route, jsonBody, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 status = RequestStatus.Unsuccessful;
@@ -77,7 +72,7 @@ public class OkHttpCall {
 
     void get(String route) {
         OkHttpCall call = new OkHttpCall();
-        Call response = call.get("http://84.197.102.107/api/citycheck/" + route, new Callback() {
+        Call getCall = call.get("http://84.197.102.107/api/citycheck/" + route, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 status = RequestStatus.Unsuccessful;

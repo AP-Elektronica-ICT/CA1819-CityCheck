@@ -96,8 +96,6 @@ public class JoinGameActivity extends AppCompatActivity {
                         })
                         .build()
                         .show();
-
-
             }
         });
 

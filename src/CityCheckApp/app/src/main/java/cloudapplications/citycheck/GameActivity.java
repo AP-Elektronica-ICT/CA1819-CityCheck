@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,22 +14,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -38,22 +29,13 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 public class GameActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, LocationListener, com.google.android.gms.location.LocationListener {
 
@@ -62,16 +44,13 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     Location mLastLocation;
     LocationRequest mLocationRequest;
 
-    //variabelen om teams op te halen uit database
-    OkHttpCall call = new OkHttpCall();
+    // Variabelen om teams op te halen uit database
     private List<Team> teams = new ArrayList<>();
     private String teamNaam;
     private int gamecode;
     private ArrayList<LatLng> LocationList = new ArrayList<>();
 
-
-
-    //Gamescore
+    // Gamescore
     private TextView scoreview;
     private int score;
 
@@ -88,14 +67,12 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         score = 0;
         setScore(30);
 
-
         final TextView timerTextView = findViewById(R.id.text_view_timer);
 
         teamNaam = getIntent().getExtras().getString("teamNaam");
         String chosenGameTime = getIntent().getExtras().getString("gameTime");
         int gameTimeInMillis = Integer.parseInt(chosenGameTime) * 3600000;
         new CountDownTimer(gameTimeInMillis, 1000) {
-
             public void onTick(long millisUntilFinished) {
                 int seconds = (int) (millisUntilFinished / 1000) % 60;
                 int minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
@@ -144,8 +121,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         }
         buildGoogleApiClient();
         mMap.setMyLocationEnabled(true);
-
-
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -207,103 +182,82 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
-    public void recordLocationCurrent(Location location, Long time){
+
+    public void recordLocationCurrent(Location location, Long time) {
         mLastLocation = location;
 
-        int TimeCounter =(int)(time /1000);
+        int TimeCounter = (int) (time / 1000);
         boolean IsDivisibleTimer = TimeCounter % 10 == 1;
 
-
-        LatLng PreviousLocation = new LatLng(1,1);
-        if(location != null){
+        LatLng PreviousLocation = new LatLng(1, 1);
+        if (location != null) {
             LatLng Currentlocation = new LatLng(location.getLatitude(), location.getLongitude());
 
-            try{
-                if (IsDivisibleTimer == true && Currentlocation != PreviousLocation){
+            try {
+                if (IsDivisibleTimer == true && Currentlocation != PreviousLocation) {
                     LocationList.add(Currentlocation);
-                    int i = LocationList.size()-1;
+                    int i = LocationList.size() - 1;
                     //show current value
 //                    Toast.makeText(getApplicationContext(), "iets" + LocationList.get(i),
 //                            Toast.LENGTH_SHORT).show();
                 }
-            }catch (Throwable t) {
+            } catch (Throwable t) {
                 Log.e("LatLngRecording", "error: " + t);
             }
         }
-
-
-
     }
 
     public void getTeamsOnMap(int gameId) {
-
-        Call response = call.get(String.format("http://84.197.102.107/api/citycheck/currentgame/%d", gameId), new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.d("Teams", "getTeams: failed");
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    // Als de request gelukt is
-                    String responseStr = response.body().string();
-                    JSONObject obj;
-                    JSONArray teamsArray;
-                    try {
-                        // Converteer de response string naar een JSONObject, JSONArray eruit halen en de inhoud omzetten naar JSONObjecten en dan bewaren als Team object in list
-                        obj = new JSONObject(responseStr);
-                        Log.d("Teams", "JSON object response: " + obj.toString());
-                        teamsArray = obj.getJSONArray("teams");
-                        Log.d("Teams", "array of teams: " + teamsArray);
-                        for (int i = 0; i < teamsArray.length(); i++) {
-                            JSONObject team = teamsArray.getJSONObject(i);
-                            Log.d("Teams", "teamobject: " + team);
-                            Team newTeam = new Team();
-                            newTeam.id = team.getInt("id");
-                            newTeam.kleur = team.getInt("kleur");
-                            newTeam.teamNaam = team.getString("teamNaam");
-                            newTeam.huidigdeLat = team.getLong("huidigeLat");
-                            newTeam.huidigeLong = team.getLong("huidigeLong");
-                            teams.add(newTeam);
-
-                        }
-                        Log.d("Teams", "1 teams list: " + teams);
-                        //show teams on map
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        handler.post(new Runnable(){
-                            @Override
-                            public void run() {
-                                for(int i=0; i<teams.size(); i++){
-                                    Log.d("Teams", "teamnaam: "+teamNaam +", "+ teams.get(i).teamNaam);
-                                    if(!teams.get(i).teamNaam.equals(teamNaam)){
-                                        Random rand = new Random();
-                                        float lat = (float)(rand.nextFloat() * ( 51.30- 50.00) + 50.00);
-                                        float lon = (float)(rand.nextFloat() * ( 5.30- 2.30) + 2.30);
-                                        mMap.addMarker(new MarkerOptions()
-                                                .position(new LatLng(lat, lon))
-                                                .title(teams.get(i).teamNaam)
-                                                .icon(getMarkerIcon(teams.get(i).kleur)));
-                                        Log.d("Teams", "marker added: #" + Integer.toHexString(teams.get(i).kleur));
-                                    }
-
-                                }
-
-                            }
-
-                        });
-
-                    } catch (Throwable t) {
-                        Log.e("Teams", "error: " + t);
-                    }
-
-                } else {
-                    // Request not successful
-                    Log.d("Teams", "getTeams: bad request");
+        OkHttpCall call = new OkHttpCall();
+        call.get("currentgame/" + gameId);
+        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
+        if (call.status == OkHttpCall.RequestStatus.Successful) {
+            JSONObject obj;
+            JSONArray teamsArray;
+            try {
+                // Converteer de response string naar een JSONObject, JSONArray eruit halen en de inhoud omzetten naar JSONObjecten en dan bewaren als Team object in list
+                obj = new JSONObject(call.responseStr);
+                Log.d("Teams", "JSON object response: " + obj.toString());
+                teamsArray = obj.getJSONArray("teams");
+                Log.d("Teams", "Array of teams: " + teamsArray);
+                for (int i = 0; i < teamsArray.length(); i++) {
+                    JSONObject team = teamsArray.getJSONObject(i);
+                    Log.d("Teams", "teamobject: " + team);
+                    Team newTeam = new Team();
+                    newTeam.id = team.getInt("id");
+                    newTeam.kleur = team.getInt("kleur");
+                    newTeam.teamNaam = team.getString("teamNaam");
+                    newTeam.huidigdeLat = team.getLong("huidigeLat");
+                    newTeam.huidigeLong = team.getLong("huidigeLong");
+                    teams.add(newTeam);
                 }
+                Log.d("Teams", "1 teams list: " + teams);
+                // Show teams on map
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int i = 0; i < teams.size(); i++) {
+                            Log.d("Teams", "Team name: " + teamNaam + ", " + teams.get(i).teamNaam);
+                            if (!teams.get(i).teamNaam.equals(teamNaam)) {
+                                Random rand = new Random();
+                                float lat = (float) (rand.nextFloat() * (51.30 - 50.00) + 50.00);
+                                float lon = (float) (rand.nextFloat() * (5.30 - 2.30) + 2.30);
+                                mMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(lat, lon))
+                                        .title(teams.get(i).teamNaam)
+                                        .icon(getMarkerIcon(teams.get(i).kleur)));
+                                Log.d("Teams", "marker added: #" + Integer.toHexString(teams.get(i).kleur));
+                            }
+                        }
+                    }
+                });
+            } catch (Throwable t) {
+                Log.e("Teams", "error: " + t);
             }
-
-        });
+        } else {
+            Toast.makeText(this, "Error while trying to get the teams of the current game", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public BitmapDescriptor getMarkerIcon(int color) {
@@ -313,11 +267,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    public void setScore(int newScore){
+    public void setScore(int newScore) {
         score = newScore;
-        scoreview.setText(""+score);
+        scoreview.setText("" + score);
     }
-
-
-
 }

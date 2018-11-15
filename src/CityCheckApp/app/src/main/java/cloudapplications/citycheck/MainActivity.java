@@ -34,8 +34,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // ask permission for gps
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-
+        // Ask permission for gps
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
     }
 }

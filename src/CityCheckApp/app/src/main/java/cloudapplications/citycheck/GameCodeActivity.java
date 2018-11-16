@@ -18,6 +18,8 @@ public class GameCodeActivity extends AppCompatActivity {
     String currentGameCode;
     String currentGameTime;
     TextView teamsTextView;
+    String lastResponseStr = "";
+    Boolean gotTeams;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +39,8 @@ public class GameCodeActivity extends AppCompatActivity {
         timeTextView.setText(currentGameTime + " hours");
 
         // If the game creator came to this view then he has the right to start the game
-//        if (!getIntent().getExtras().getBoolean("gameCreator"))
-//            startGameButton.setVisibility(View.GONE);
+        if (!getIntent().getExtras().getBoolean("gameCreator"))
+            startGameButton.setVisibility(View.GONE);
 
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,18 +53,19 @@ public class GameCodeActivity extends AppCompatActivity {
             }
         });
 
+        gotTeams = false;
         getTeams();
-//        handler.postDelayed(runnable, 1000);
+        handler.postDelayed(runnable, 3000);
     }
 
-//    private Handler handler = new Handler();
-//    private Runnable runnable = new Runnable() {
-//        @Override
-//        public void run() {
-//            getTeams();
-//            handler.postDelayed(this, 1000);
-//        }
-//    };
+    private Handler handler = new Handler();
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            getTeams();
+            handler.postDelayed(this, 3000);
+        }
+    };
 
     private void getTeams() {
         OkHttpCall call = new OkHttpCall();
@@ -74,13 +77,22 @@ public class GameCodeActivity extends AppCompatActivity {
             JSONObject teams;
             try {
                 // Converteer de response string naar een JSONObject en de teams er uit halen
-                obj = new JSONObject(call.responseStr);
-                Log.d("GameCodeActivity", "JSON object response: " + obj.toString());
-                teamsArray = obj.getJSONArray("teams");
-                for (int i = 0; i < teamsArray.length(); i++) {
-                    teams = teamsArray.getJSONObject(i);
-                    teamsTextView.append("\n" + teams.getString("teamNaam"));
-                }
+                if (!lastResponseStr.equals(call.responseStr)) {
+                    lastResponseStr = call.responseStr;
+                    obj = new JSONObject(lastResponseStr);
+                    Log.d("GameCodeActivity", "JSON object response: " + obj.toString());
+                    teamsArray = obj.getJSONArray("teams");
+                    if (gotTeams) {
+                        teams = teamsArray.getJSONObject(teamsArray.length() - 1);
+                        teamsTextView.append("\n" + teams.getString("teamNaam"));
+                    } else {
+                        for (int i = 0; i < teamsArray.length(); i++) {
+                            teams = teamsArray.getJSONObject(i);
+                            teamsTextView.append("\n" + teams.getString("teamNaam"));
+                        }
+                    }
+                } else
+                    gotTeams = true;
             } catch (Throwable t) {
                 Log.e("GameCodeActivity", "Could not parse malformed JSON: \"" + call.responseStr + "\"");
             }

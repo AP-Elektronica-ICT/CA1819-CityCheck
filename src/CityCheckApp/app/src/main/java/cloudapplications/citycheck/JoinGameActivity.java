@@ -63,6 +63,13 @@ public class JoinGameActivity extends AppCompatActivity {
             }
         });
 
+        if (getIntent().getExtras().getString("gameCode") != null) {
+            gamecode = Integer.parseInt(getIntent().getExtras().getString("gameCode"));
+            edit_gamecode.setText(Integer.toString(gamecode));
+            edit_gamecode.setFocusable(false);
+            edit_gamecode.setEnabled(false);
+        }
+
         btnPickColor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

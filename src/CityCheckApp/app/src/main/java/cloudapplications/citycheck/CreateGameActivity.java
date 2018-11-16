@@ -67,7 +67,6 @@ public class CreateGameActivity extends AppCompatActivity {
             }
             Intent i = new Intent(CreateGameActivity.this, JoinGameActivity.class);
             i.putExtra("gameCode", gameCode);
-            i.putExtra("gameTime", Integer.toString(gameTime));
             startActivity(i);
         } else {
             Toast.makeText(this, "Error while trying to create a new game", Toast.LENGTH_SHORT).show();

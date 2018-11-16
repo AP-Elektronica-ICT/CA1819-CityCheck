@@ -47,8 +47,8 @@ public class GameCodeActivity extends AppCompatActivity {
         timeTextView.setText(currentGameTime + " hours");
 
         // If the game creator came to this view then he has the right to start the game
-        if (!getIntent().getExtras().getBoolean("gameCreator"))
-            startGameButton.setVisibility(View.GONE);
+//        if (!getIntent().getExtras().getBoolean("gameCreator"))
+//            startGameButton.setVisibility(View.GONE);
 
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override

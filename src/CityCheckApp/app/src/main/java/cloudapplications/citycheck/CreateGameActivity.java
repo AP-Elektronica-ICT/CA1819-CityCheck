@@ -17,7 +17,6 @@ import org.json.JSONObject;
 public class CreateGameActivity extends AppCompatActivity {
 
     private int gameTime;
-    private EditText edit_team_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +25,6 @@ public class CreateGameActivity extends AppCompatActivity {
 
         Button createGameButton = findViewById(R.id.button_create_game);
         Spinner gameTimeSpinner = findViewById(R.id.spinner_game_time);
-        edit_team_name = findViewById(R.id.edit_text_team_name);
 
         String[] items = new String[]{"1", "2", "3"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
@@ -67,7 +65,9 @@ public class CreateGameActivity extends AppCompatActivity {
             } catch (Throwable t) {
                 Log.e("CreateGameActivity", "Could not parse malformed JSON: \"" + call.responseStr + "\"");
             }
-            addTeamToGame(edit_team_name.getText().toString(), Integer.parseInt(gameCode));
+            Intent i = new Intent(CreateGameActivity.this, JoinGameActivity.class);
+            i.putExtra("gameCode", gameCode);
+            startActivity(i);
         } else {
             Toast.makeText(this, "Error while trying to create a new game", Toast.LENGTH_SHORT).show();
         }

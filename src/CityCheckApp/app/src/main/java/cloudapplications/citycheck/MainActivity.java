@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(view.getContext(), JoinGameActivity.class);
+                i.putExtra("gameCode", "-1");
                 startActivity(i);
             }
         });

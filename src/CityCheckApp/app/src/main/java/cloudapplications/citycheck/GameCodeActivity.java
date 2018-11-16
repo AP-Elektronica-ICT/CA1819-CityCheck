@@ -20,6 +20,14 @@ public class GameCodeActivity extends AppCompatActivity {
     TextView teamsTextView;
     String lastResponseStr = "";
     Boolean gotTeams;
+    private Handler handler = new Handler();
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            getTeams();
+            handler.postDelayed(this, 3000);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,14 +66,11 @@ public class GameCodeActivity extends AppCompatActivity {
         handler.postDelayed(runnable, 3000);
     }
 
-    private Handler handler = new Handler();
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            getTeams();
-            handler.postDelayed(this, 3000);
-        }
-    };
+    @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacksAndMessages(null);
+    }
 
     private void getTeams() {
         OkHttpCall call = new OkHttpCall();

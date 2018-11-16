@@ -151,11 +151,11 @@ public class JoinGameActivity extends AppCompatActivity {
                 Log.e("JoinGameActivity", "Could not parse malformed JSON: \"" + call.responseStr + "\"");
             }
 
-            Intent i;
+            Intent i = new Intent(JoinGameActivity.this, GameCodeActivity.class);
             if (gameCreator)
-                i = new Intent(JoinGameActivity.this, GameCodeActivity.class);
+                i.putExtra("gameCreator", true);
             else
-                i = new Intent(JoinGameActivity.this, GameActivity.class);
+                i.putExtra("gameCreator", false);
             i.putExtra("gameCode", Integer.toString(gamecode));
             i.putExtra("gameTime", gameTime);
             i.putExtra("teamNaam", name);

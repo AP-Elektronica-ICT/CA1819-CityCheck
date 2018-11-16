@@ -19,6 +19,8 @@ header{
 
 #doelContent{
     width: 100%;
+    height: 550px;
+    display: block;
 }
 
 
@@ -50,3 +52,69 @@ header{
     margin-top: 50px;
     margin-right: 50px;
 }
+
+
+footer{
+    height: 50px;
+    background-color: rgba(255,255,255,0.5);
+    border-top-style: solid;
+    border-top-color: gold;
+    border-top-width: 3px;
+    color: white;
+    text-align: center;
+}
+
+
+.whitetxt{
+    color: white;
+}
+
+
+
+#addTitle{
+    color: white;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 25px;
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+
+#addCont{
+    width: 60%;
+    height: 400px;
+    background-color: rgba(255,255,255,0.5);
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+
+#forminps{
+    width: 60%;
+    transform: translateY(40%);
+    margin-bottom: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+footer p{
+    transform: translateY(50%);
+}
+
+
+hr {
+    background-color: rgba(255,255,255,0.5);
+    -moz-border-bottom-colors: none;
+    -moz-border-image: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    margin: 18px 0;
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+  }

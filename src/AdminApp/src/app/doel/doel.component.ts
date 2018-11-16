@@ -21,8 +21,8 @@ export class DoelComponent implements OnInit {
     layers: [
       tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: 'City Check Locs' })
     ],
-    zoom: 10,
-    center: latLng(46.879966, -50.726909)
+    zoom: 17,
+    center: latLng(51.2289238, 4.4026316)
   };
 
 

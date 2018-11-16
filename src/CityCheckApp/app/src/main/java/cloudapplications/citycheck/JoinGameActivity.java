@@ -20,6 +20,8 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 public class JoinGameActivity extends AppCompatActivity {
 
     private Button btnPickColor;
@@ -34,6 +36,7 @@ public class JoinGameActivity extends AppCompatActivity {
     private int color;
     private int gamecode;
     private String gameTime;
+    private boolean gameCreator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +66,8 @@ public class JoinGameActivity extends AppCompatActivity {
             }
         });
 
-        if (getIntent().getExtras().getString("gameCode") != null) {
+        gameCreator = !Objects.equals(Objects.requireNonNull(getIntent().getExtras()).getString("gameCode"), "-1");
+        if (gameCreator) {
             gamecode = Integer.parseInt(getIntent().getExtras().getString("gameCode"));
             edit_gamecode.setText(Integer.toString(gamecode));
             edit_gamecode.setFocusable(false);
@@ -147,11 +151,16 @@ public class JoinGameActivity extends AppCompatActivity {
                 Log.e("JoinGameActivity", "Could not parse malformed JSON: \"" + call.responseStr + "\"");
             }
 
-            Intent i = new Intent(JoinGameActivity.this, GameActivity.class);
+            Intent i;
+            if (gameCreator)
+                i = new Intent(JoinGameActivity.this, GameCodeActivity.class);
+            else
+                i = new Intent(JoinGameActivity.this, GameActivity.class);
             i.putExtra("gameCode", Integer.toString(gamecode));
             i.putExtra("gameTime", gameTime);
             i.putExtra("teamNaam", name);
             startActivity(i);
+
         } else {
             Toast.makeText(this, "Error while trying to start the game", Toast.LENGTH_SHORT).show();
         }

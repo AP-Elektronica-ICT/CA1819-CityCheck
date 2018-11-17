@@ -27,6 +27,13 @@ import { FormsModule } from '@angular/forms';
 //map
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
+//firebase
+import { AngularFireModule } from 'angularfire2';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
+import { AngularFireAuthModule } from 'angularfire2/auth';
+import { environment } from '../environments/environment';
+import { AuthService } from 'src/services/auth/auth.service';
+
 
 @NgModule({
   declarations: [
@@ -45,9 +52,14 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
     WavesModule,
     CardsFreeModule,
     ButtonsModule,
-    LeafletModule.forRoot()
+    LeafletModule.forRoot(),
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFirestoreModule,
+    AngularFireAuthModule
   ],
-  providers: [],
+  providers: [
+    AuthService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

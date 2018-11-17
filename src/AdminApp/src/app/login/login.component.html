@@ -5,15 +5,15 @@
 <br>
 
 <section id="formsect">
-<input type="email" id="mail" class="form-control mb-4" placeholder="E-mail">
+<input type="email" id="mail" class="form-control mb-4" placeholder="E-mail" [(ngModel)]="mail">
 
-<input type="password" id="passwd" class="form-control mb-4" placeholder="Password">
+<input type="password" id="passwd" class="form-control mb-4" placeholder="Password" [(ngModel)]="pass">
 
 </section>
 
 
 <div id="btns">
-<button type="button" class="btn btn-yellow btn-lg">Login</button>
+<button (click)="login()" type="button" class="btn btn-yellow btn-lg">Login</button>
 </div>
 
 </div>

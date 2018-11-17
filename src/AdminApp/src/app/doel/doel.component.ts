@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { latLng, LatLng, tileLayer } from 'leaflet';
+import { AuthService } from 'src/services/auth/auth.service';
+import { Router } from '@angular/router';
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-doel',
@@ -9,10 +12,20 @@ import { latLng, LatLng, tileLayer } from 'leaflet';
 export class DoelComponent implements OnInit {
 
 
-  constructor() { }
+  constructor(private auth:AuthService, private router:Router) { }
 
   ngOnInit() {
 
+
+    if(this.auth.getUser()){
+      console.log("logged in");
+      //we zijn aangemeld, we mogen hier zijn.
+    }
+    else{
+      console.log("not logged in");
+      //niet ingelogd, eerst inloggen.
+      this.router.navigate([("/login")]);
+    }
 
   }
 

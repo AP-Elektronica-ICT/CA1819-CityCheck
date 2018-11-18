@@ -1,7 +1,6 @@
-﻿using CityCheckAPI.Controllers.Model;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Model
+namespace DataLayer
 {
     public class Game
     {

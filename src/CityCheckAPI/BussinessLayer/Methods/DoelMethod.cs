@@ -39,9 +39,9 @@ namespace BussinessLayer.Methods
         public bool addLoc(DoelLocatie newDoel)
         {
 
-            DoelLocatie doel = context.DoelLocaties.Where(r=> r==newDoel).Include(r=>r.locatie).Single<DoelLocatie>();
+            //DoelLocatie doel = context.DoelLocaties.Where(r=> r==newDoel).Include(r=>r.locatie).Single<DoelLocatie>();
 
-            if (doel != null)
+            if (newDoel != null)
             {
                 context.DoelLocaties.Add(newDoel);
                 context.SaveChanges();

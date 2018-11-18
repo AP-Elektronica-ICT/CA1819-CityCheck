@@ -47,7 +47,7 @@ namespace CityCheckAPI.Controllers
 
 
         //add new doelloc
-        [HttpGet]
+        [HttpPost]
         [Route("addDoelLocs")]
         public IActionResult addLoc([FromBody] DoelLocatie newDoel)
         {

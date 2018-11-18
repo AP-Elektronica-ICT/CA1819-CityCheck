@@ -14,7 +14,6 @@ namespace Model
 
             //Default wat doellocaties al in de db steken
             //zijn er al doellocaties?
-
             if (!context.DoelLocaties.Any())
             {
                 //er zijn nog geen doellocaties
@@ -94,7 +93,7 @@ namespace Model
                 context.DoelLocaties.Add(doel);
                 context.SaveChanges();
 
-
+            //if
             }
 
 

@@ -71,6 +71,17 @@ footer{
     border-top-width: 3px;
     color: white;
     text-align: center;
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+    clear: both;
+    z-index: 1;
+}
+
+#doellocPage{
+    position: relative;
+    z-index: 10;
+    padding-bottom: 50px;
 }
 
 

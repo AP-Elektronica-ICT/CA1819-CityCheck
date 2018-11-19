@@ -9,7 +9,17 @@ export class AuthService {
 
   private user: firebase.User;
 
-  constructor(public afAuth: AngularFireAuth) { 
+  constructor(public afAuth: AngularFireAuth) {
+
+
+    // firebase.auth().onAuthStateChanged(function(user:firebase.User) {
+    //   if (user) {
+    //     // User is signed in.
+    //     this.user = user;
+    //   } else {
+    //     // No user is signed in.
+    //   }
+    // });
 
 
     afAuth.authState.subscribe(user => {
@@ -18,7 +28,7 @@ export class AuthService {
     
   }
 
-  public getUser(){
+  public getUser():firebase.User{
     this.afAuth.authState.subscribe(user => {
 			this.user = user;
     });

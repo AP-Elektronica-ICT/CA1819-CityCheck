@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
 
   public login(){
     this.auth.logIn(this.mail,this.pass).then(() => this.router.navigate(["/doel"]),
-    error => console.log(error.message)
+    error => alert(error.message)
   );
   }
 

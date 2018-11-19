@@ -1,6 +1,7 @@
 package cloudapplications.citycheck;
 
 import android.content.Intent;
+import android.os.Debug;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ public class GameCodeActivity extends AppCompatActivity {
     TextView teamsTextView;
     String lastResponseStr = "";
     Boolean gotTeams;
+
     private Handler handler = new Handler();
     private Runnable runnable = new Runnable() {
         @Override
@@ -53,6 +55,7 @@ public class GameCodeActivity extends AppCompatActivity {
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("Teams", "start game");
                 Intent i = new Intent(view.getContext(), GameActivity.class);
                 i.putExtra("gameTime", currentGameTime);
                 i.putExtra("gameCode", currentGameCode);

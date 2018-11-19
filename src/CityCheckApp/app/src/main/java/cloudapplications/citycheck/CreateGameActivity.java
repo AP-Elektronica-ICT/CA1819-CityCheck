@@ -53,7 +53,7 @@ public class CreateGameActivity extends AppCompatActivity {
     private void createNewGame() {
         OkHttpCall call = new OkHttpCall();
         call.post(getString(R.string.database_ip), "newgame", "{'TijdsDuur':" + Integer.toString(gameTime) + "}");
-        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
+        while (call.status == OkHttpCall.RequestStatus.Undefined);
         if (call.status == OkHttpCall.RequestStatus.Successful) {
             JSONObject obj;
             String gameCode = "";
@@ -72,19 +72,5 @@ public class CreateGameActivity extends AppCompatActivity {
             Toast.makeText(this, "Error while trying to create a new game", Toast.LENGTH_SHORT).show();
         }
     }
-
-    private void addTeamToGame(final String name, final int gamecode) {
-        OkHttpCall call = new OkHttpCall();
-        call.post(getString(R.string.database_ip), "teams/" + Integer.toString(gamecode), "{'teamNaam':'" + name + "'}");
-        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
-        if (call.status == OkHttpCall.RequestStatus.Successful) {
-            Intent i = new Intent(CreateGameActivity.this, GameCodeActivity.class);
-            i.putExtra("gameCode", Integer.toString(gamecode));
-            i.putExtra("gameTime", Integer.toString(gameTime));
-            i.putExtra("teamNaam", name);
-            startActivity(i);
-        } else {
-            Toast.makeText(this, "Error while trying to add the current team to the game", Toast.LENGTH_SHORT).show();
-        }
-    }
+    
 }

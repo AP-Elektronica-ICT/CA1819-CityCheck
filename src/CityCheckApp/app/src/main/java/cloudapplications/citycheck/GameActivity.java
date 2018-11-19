@@ -123,15 +123,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setMyLocationEnabled(true);
     }
 
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        mGoogleApiClient.connect();
-    }
-
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
@@ -181,6 +172,15 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
     }
 
     public void recordLocationCurrent(Location location, Long time) {
@@ -233,25 +233,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 Log.d("Teams", "1 teams list: " + teams);
                 // Show teams on map
-                Handler handler = new Handler(Looper.getMainLooper());
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (int i = 0; i < teams.size(); i++) {
-                            Log.d("Teams", "Team name: " + teamNaam + ", " + teams.get(i).teamNaam);
-                            if (!teams.get(i).teamNaam.equals(teamNaam)) {
-                                Random rand = new Random();
-                                float lat = (float) (rand.nextFloat() * (51.30 - 50.00) + 50.00);
-                                float lon = (float) (rand.nextFloat() * (5.30 - 2.30) + 2.30);
-                                mMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(lat, lon))
-                                        .title(teams.get(i).teamNaam)
-                                        .icon(getMarkerIcon(teams.get(i).kleur)));
-                                Log.d("Teams", "marker added: #" + Integer.toHexString(teams.get(i).kleur));
-                            }
-                        }
-                    }
-                });
+                showTeamsOnMap();
             } catch (Throwable t) {
                 Log.e("Teams", "error: " + t);
             }
@@ -260,12 +242,33 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    public BitmapDescriptor getMarkerIcon(int color) {
+    private BitmapDescriptor getMarkerIcon(int color) {
         float[] hsv = new float[3];
         Color.colorToHSV(color, hsv);
         return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
 
+    private void showTeamsOnMap(){
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < teams.size(); i++) {
+                    Log.d("Teams", "Team name: " + teamNaam + ", " + teams.get(i).teamNaam);
+                    if (!teams.get(i).teamNaam.equals(teamNaam)) {
+                        Random rand = new Random();
+                        float lat = (float) (rand.nextFloat() * (51.30 - 50.00) + 50.00);
+                        float lon = (float) (rand.nextFloat() * (5.30 - 2.30) + 2.30);
+                        mMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(lat, lon))
+                                .title(teams.get(i).teamNaam)
+                                .icon(getMarkerIcon(teams.get(i).kleur)));
+                        Log.d("Teams", "marker added: #" + Integer.toHexString(teams.get(i).kleur));
+                    }
+                }
+            }
+        });
+    }
 
     public void setScore(int newScore) {
         score = newScore;

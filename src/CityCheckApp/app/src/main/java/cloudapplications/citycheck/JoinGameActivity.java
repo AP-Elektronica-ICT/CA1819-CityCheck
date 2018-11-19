@@ -79,7 +79,7 @@ public class JoinGameActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //Toast.makeText(getApplicationContext(), "kleur kiezen", Toast.LENGTH_LONG).show();
 
-                //Kleurkiezer weergeven
+                // Kleurkiezer weergeven
                 ColorPickerDialogBuilder
                         .with(JoinGameActivity.this)
                         .setTitle("Choose color")
@@ -123,12 +123,10 @@ public class JoinGameActivity extends AppCompatActivity {
     }
 
     private void addTeamToGame(String name, int color, final int gamecode) {
-        /*Team newTeam = new Team();
-        newTeam.setName(name);
-        newTeam.setColour(color);*/
+
         OkHttpCall call = new OkHttpCall();
         call.post(getString(R.string.database_ip), "teams/" + Integer.toString(gamecode), "{'teamNaam':'" + name + "', 'kleur':'" + color + "'}");
-        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
+        while (call.status == OkHttpCall.RequestStatus.Undefined);
         if (call.status == OkHttpCall.RequestStatus.Successful) {
             startGame(gamecode);
         } else {
@@ -156,10 +154,10 @@ public class JoinGameActivity extends AppCompatActivity {
                 i.putExtra("gameCreator", true);
             else
                 i.putExtra("gameCreator", false);
-            i.putExtra("gameCode", Integer.toString(gamecode));
-            i.putExtra("gameTime", gameTime);
-            i.putExtra("teamNaam", name);
-            startActivity(i);
+                i.putExtra("gameCode", Integer.toString(gamecode));
+                i.putExtra("gameTime", gameTime);
+                i.putExtra("teamNaam", name);
+                startActivity(i);
 
         } else {
             Toast.makeText(this, "Error while trying to start the game", Toast.LENGTH_SHORT).show();

@@ -7,11 +7,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class GameCodeActivity extends AppCompatActivity {
 
@@ -28,6 +31,8 @@ public class GameCodeActivity extends AppCompatActivity {
             handler.postDelayed(this, 3000);
         }
     };
+    ArrayList<String> teamsList = new ArrayList<String>();
+    ListView teamsListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +42,8 @@ public class GameCodeActivity extends AppCompatActivity {
         Button startGameButton = findViewById(R.id.button_start_game);
         TextView codeTextView = findViewById(R.id.text_view_code);
         TextView timeTextView = findViewById(R.id.text_view_time);
-        teamsTextView = findViewById(R.id.text_view_teams);
+//        teamsTextView = findViewById(R.id.text_view_teams);
+        teamsListView = findViewById(R.id.teams_list_view);
 
         Log.d("Teams", "gamecode from intent: " + getIntent().getExtras().get("gameCode"));
         currentGameCode = getIntent().getExtras().getString("gameCode");
@@ -86,16 +92,18 @@ public class GameCodeActivity extends AppCompatActivity {
                     lastResponseStr = call.responseStr;
                     obj = new JSONObject(lastResponseStr);
                     Log.d("GameCodeActivity", "JSON object response: " + obj.toString());
+                    // Selecteer de "teams" veld
                     teamsArray = obj.getJSONArray("teams");
                     if (gotTeams) {
                         teams = teamsArray.getJSONObject(teamsArray.length() - 1);
-                        teamsTextView.append("\n" + teams.getString("teamNaam"));
+                        teamsList.add(teams.getString("teamNaam"));
                     } else {
                         for (int i = 0; i < teamsArray.length(); i++) {
                             teams = teamsArray.getJSONObject(i);
-                            teamsTextView.append("\n" + teams.getString("teamNaam"));
+                            teamsList.add(teams.getString("teamNaam"));
                         }
                     }
+                    teamsListView.setAdapter(new TeamsAdapter(this, teamsList));
                 } else
                     gotTeams = true;
             } catch (Throwable t) {

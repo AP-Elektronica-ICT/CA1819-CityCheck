@@ -72,10 +72,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_marginStart="50dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:text="Teams:\n"
+        android:text="Teams:"
         android:textColor="@color/white"
         android:textSize="20sp" />
+
+    <ListView
+        android:id="@+id/teams_list_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

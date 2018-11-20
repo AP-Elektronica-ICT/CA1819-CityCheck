@@ -10,10 +10,11 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class TeamsAdapter extends ArrayAdapter<String> {
+public class TeamsAdapter extends ArrayAdapter<NewTeam> {
 
-    TeamsAdapter(Context context, ArrayList<String> arr) {
+    TeamsAdapter(Context context, ArrayList<NewTeam> arr) {
         super(context, -1, arr);
     }
 
@@ -32,7 +33,8 @@ public class TeamsAdapter extends ArrayAdapter<String> {
         }
 
         TextView textView = view.findViewById(R.id.teams_list_entry);
-        textView.setText(getItem(position));
+        textView.setText(Objects.requireNonNull(getItem(position)).getTeamNaam());
+        textView.setTextColor(Objects.requireNonNull(getItem(position)).getKleur());
 
         return view;
     }

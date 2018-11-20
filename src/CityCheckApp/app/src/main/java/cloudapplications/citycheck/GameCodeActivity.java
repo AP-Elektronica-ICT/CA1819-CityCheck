@@ -96,11 +96,11 @@ public class GameCodeActivity extends AppCompatActivity {
                     teamsArray = obj.getJSONArray("teams");
                     if (gotTeams) {
                         teams = teamsArray.getJSONObject(teamsArray.length() - 1);
-                        teamsList.add(new Team(teams.getString("teamNaam"), teams.getInt("kleur"), teams.getInt("punten")));
+                        teamsList.add(new Team(teams.getString("teamNaam"), teams.getInt("kleur"), -1));
                     } else {
                         for (int i = 0; i < teamsArray.length(); i++) {
                             teams = teamsArray.getJSONObject(i);
-                            teamsList.add(new Team(teams.getString("teamNaam"), teams.getInt("kleur"), teams.getInt("punten")));
+                            teamsList.add(new Team(teams.getString("teamNaam"), teams.getInt("kleur"), -1));
                         }
                     }
                     teamsListView.setAdapter(new TeamsAdapter(this, teamsList));

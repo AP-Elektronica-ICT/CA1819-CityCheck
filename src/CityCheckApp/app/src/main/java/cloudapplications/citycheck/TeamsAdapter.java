@@ -32,9 +32,14 @@ public class TeamsAdapter extends ArrayAdapter<Team> {
             view = inflater.inflate(R.layout.teams_list_item, null);
         }
 
-        TextView textView = view.findViewById(R.id.teams_list_entry);
-        textView.setText(Objects.requireNonNull(getItem(position)).getTeamNaam());
-        textView.setTextColor(Objects.requireNonNull(getItem(position)).getKleur());
+        TextView teamNamesTextView = view.findViewById(R.id.teams_list_entry);
+        TextView teamScoresTextView = view.findViewById(R.id.scores_list_entry);
+
+        teamNamesTextView.setText(Objects.requireNonNull(getItem(position)).getTeamNaam());
+        teamNamesTextView.setTextColor(Objects.requireNonNull(getItem(position)).getKleur());
+
+        if (Objects.requireNonNull(getItem(position)).getPunten() != -1)
+            teamScoresTextView.setText(Integer.toString(Objects.requireNonNull(getItem(position)).getPunten()));
 
         return view;
     }

@@ -19,9 +19,13 @@ public class Team {
         this.punten = punten;
     }
 
-    public int getId(){ return id;}
+    public int getId() {
+        return id;
+    }
 
-    public void setId(int id){this.id = id;}
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getTeamNaam() {
         return teamNaam;
@@ -47,15 +51,19 @@ public class Team {
         this.punten = punten;
     }
 
-    public long getLat() {
+    public long getHuidigeLat() {
         return huidigeLat;
     }
 
-    public void setLat(long lat) {
-        this.huidigeLat = lat;
+    public void setHuidigeLat(long huidigeLat) {
+        this.huidigeLat = huidigeLat;
     }
 
-    public long getLong(){return huidigeLong;}
+    public long getHuidigeLong() {
+        return huidigeLong;
+    }
 
-    public void setLong(long lon){this.huidigeLong= lon;}
+    public void setHuidigeLong(long huidigeLong) {
+        this.huidigeLong = huidigeLong;
+    }
 }

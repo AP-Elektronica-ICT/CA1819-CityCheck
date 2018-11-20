@@ -35,7 +35,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class GameActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, LocationListener, com.google.android.gms.location.LocationListener {
 
@@ -223,9 +222,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 for (int i = 0; i < teamsArray.length(); i++) {
                     JSONObject team = teamsArray.getJSONObject(i);
                     Log.d("Teams", "teamobject: " + team);
-                    Team newTeam = new Team(team.getString("teamNaam"),team.getInt("kleur"),team.getInt("id"));
-                    newTeam.setLat(team.getLong("huidigeLat"));
-                    newTeam.setLong(team.getLong("huidigeLong"));
+                    Team newTeam = new Team(team.getString("teamNaam"), team.getInt("kleur"), team.getInt("punten"));
+                    newTeam.setHuidigeLat(team.getLong("huidigeLat"));
+                    newTeam.setHuidigeLong(team.getLong("huidigeLong"));
                     teams.add(newTeam);
                 }
                 Log.d("Teams", "1 teams list: " + teams);
@@ -241,7 +240,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                                 //float lat = (float) (rand.nextFloat() * (51.30 - 50.00) + 50.00);
                                 //float lon = (float) (rand.nextFloat() * (5.30 - 2.30) + 2.30);
                                 mMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(teams.get(i).getLat(), teams.get(i).getLong()))
+                                        .position(new LatLng(teams.get(i).getHuidigeLat(), teams.get(i).getHuidigeLong()))
                                         .title(teams.get(i).getTeamNaam())
                                         .icon(getMarkerIcon(teams.get(i).getKleur())));
                                 Log.d("Teams", "marker added: #" + Integer.toHexString(teams.get(i).getKleur()));

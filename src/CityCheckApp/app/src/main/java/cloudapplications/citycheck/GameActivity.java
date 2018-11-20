@@ -223,12 +223,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 for (int i = 0; i < teamsArray.length(); i++) {
                     JSONObject team = teamsArray.getJSONObject(i);
                     Log.d("Teams", "teamobject: " + team);
-                    Team newTeam = new Team();
-                    newTeam.id = team.getInt("id");
-                    newTeam.kleur = team.getInt("kleur");
-                    newTeam.teamNaam = team.getString("teamNaam");
-                    newTeam.huidigdeLat = team.getLong("huidigeLat");
-                    newTeam.huidigeLong = team.getLong("huidigeLong");
+                    Team newTeam = new Team(team.getString("teamNaam"),team.getInt("kleur"),team.getInt("id"));
+                    newTeam.setLat(team.getLong("huidigeLat"));
+                    newTeam.setLong(team.getLong("huidigeLong"));
                     teams.add(newTeam);
                 }
                 Log.d("Teams", "1 teams list: " + teams);
@@ -238,16 +235,16 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     @Override
                     public void run() {
                         for (int i = 0; i < teams.size(); i++) {
-                            Log.d("Teams", "Team name: " + teamNaam + ", " + teams.get(i).teamNaam);
-                            if (!teams.get(i).teamNaam.equals(teamNaam)) {
-                                Random rand = new Random();
-                                float lat = (float) (rand.nextFloat() * (51.30 - 50.00) + 50.00);
-                                float lon = (float) (rand.nextFloat() * (5.30 - 2.30) + 2.30);
+                            Log.d("Teams", "Team name: " + teamNaam + ", " + teams.get(i).getTeamNaam());
+                            if (!teams.get(i).getTeamNaam().equals(teamNaam)) {
+                                //Random rand = new Random();
+                                //float lat = (float) (rand.nextFloat() * (51.30 - 50.00) + 50.00);
+                                //float lon = (float) (rand.nextFloat() * (5.30 - 2.30) + 2.30);
                                 mMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(lat, lon))
-                                        .title(teams.get(i).teamNaam)
-                                        .icon(getMarkerIcon(teams.get(i).kleur)));
-                                Log.d("Teams", "marker added: #" + Integer.toHexString(teams.get(i).kleur));
+                                        .position(new LatLng(teams.get(i).getLat(), teams.get(i).getLong()))
+                                        .title(teams.get(i).getTeamNaam())
+                                        .icon(getMarkerIcon(teams.get(i).getKleur())));
+                                Log.d("Teams", "marker added: #" + Integer.toHexString(teams.get(i).getKleur()));
                             }
                         }
                     }

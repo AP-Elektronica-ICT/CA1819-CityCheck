@@ -31,7 +31,7 @@ public class GameCodeActivity extends AppCompatActivity {
             handler.postDelayed(this, 3000);
         }
     };
-    ArrayList<NewTeam> teamsList = new ArrayList<NewTeam>();
+    ArrayList<Team> teamsList = new ArrayList<Team>();
     ListView teamsListView;
 
     @Override
@@ -96,11 +96,11 @@ public class GameCodeActivity extends AppCompatActivity {
                     teamsArray = obj.getJSONArray("teams");
                     if (gotTeams) {
                         teams = teamsArray.getJSONObject(teamsArray.length() - 1);
-                        teamsList.add(new NewTeam(teams.getString("teamNaam"), teams.getInt("kleur"), teams.getInt("punten")));
+                        teamsList.add(new Team(teams.getString("teamNaam"), teams.getInt("kleur"), teams.getInt("punten")));
                     } else {
                         for (int i = 0; i < teamsArray.length(); i++) {
                             teams = teamsArray.getJSONObject(i);
-                            teamsList.add(new NewTeam(teams.getString("teamNaam"), teams.getInt("kleur"), teams.getInt("punten")));
+                            teamsList.add(new Team(teams.getString("teamNaam"), teams.getInt("kleur"), teams.getInt("punten")));
                         }
                     }
                     teamsListView.setAdapter(new TeamsAdapter(this, teamsList));

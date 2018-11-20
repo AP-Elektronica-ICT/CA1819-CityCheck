@@ -12,9 +12,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class TeamsAdapter extends ArrayAdapter<NewTeam> {
+public class TeamsAdapter extends ArrayAdapter<Team> {
 
-    TeamsAdapter(Context context, ArrayList<NewTeam> arr) {
+    TeamsAdapter(Context context, ArrayList<Team> arr) {
         super(context, -1, arr);
     }
 

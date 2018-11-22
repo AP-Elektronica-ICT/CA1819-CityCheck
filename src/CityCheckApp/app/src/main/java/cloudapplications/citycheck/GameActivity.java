@@ -83,6 +83,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
             public void onFinish() {
                 Intent i = new Intent(GameActivity.this, EndGameActivity.class);
+                i.putExtra("gameCode", Integer.toString(gamecode));
                 startActivity(i);
             }
         }.start();

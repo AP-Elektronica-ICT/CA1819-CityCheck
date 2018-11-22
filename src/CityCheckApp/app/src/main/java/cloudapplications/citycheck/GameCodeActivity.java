@@ -20,7 +20,6 @@ public class GameCodeActivity extends AppCompatActivity {
 
     String currentGameCode;
     String currentGameTime;
-    TextView teamsTextView;
     String lastResponseStr = "";
     Boolean gotTeams;
     private Handler handler = new Handler();
@@ -31,7 +30,7 @@ public class GameCodeActivity extends AppCompatActivity {
             handler.postDelayed(this, 3000);
         }
     };
-    ArrayList<Team> teamsList = new ArrayList<Team>();
+    ArrayList<Team> teamsList = new ArrayList<>();
     ListView teamsListView;
 
     @Override
@@ -42,7 +41,6 @@ public class GameCodeActivity extends AppCompatActivity {
         Button startGameButton = findViewById(R.id.button_start_game);
         TextView codeTextView = findViewById(R.id.text_view_code);
         TextView timeTextView = findViewById(R.id.text_view_time);
-//        teamsTextView = findViewById(R.id.text_view_teams);
         teamsListView = findViewById(R.id.teams_list_view);
 
         Log.d("Teams", "gamecode from intent: " + getIntent().getExtras().get("gameCode"));

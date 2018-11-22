@@ -76,7 +76,7 @@ namespace BussinessLayer.Methods
             Game game = context.Games.Where(r => r.GameCode == gamecode).SingleOrDefault<Game>();
 
 
-            if (milli != null)
+            if (game != null)
             {
                 //game starten
                 game.hasStarted = true;

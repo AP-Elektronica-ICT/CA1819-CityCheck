@@ -20,7 +20,6 @@ public class GameCodeActivity extends AppCompatActivity {
 
     String currentGameCode;
     String currentGameTime;
-    TextView teamsTextView;
     String lastResponseStr = "";
     Boolean gotTeams;
     private Handler handler = new Handler();
@@ -31,7 +30,7 @@ public class GameCodeActivity extends AppCompatActivity {
             handler.postDelayed(this, 3000);
         }
     };
-    ArrayList<Team> teamsList = new ArrayList<Team>();
+    ArrayList<Team> teamsList = new ArrayList<>();
     ListView teamsListView;
 
     @Override
@@ -42,7 +41,6 @@ public class GameCodeActivity extends AppCompatActivity {
         Button startGameButton = findViewById(R.id.button_start_game);
         TextView codeTextView = findViewById(R.id.text_view_code);
         TextView timeTextView = findViewById(R.id.text_view_time);
-//        teamsTextView = findViewById(R.id.text_view_teams);
         teamsListView = findViewById(R.id.teams_list_view);
 
         Log.d("Teams", "gamecode from intent: " + getIntent().getExtras().get("gameCode"));
@@ -59,11 +57,7 @@ public class GameCodeActivity extends AppCompatActivity {
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(view.getContext(), GameActivity.class);
-                i.putExtra("gameTime", currentGameTime);
-                i.putExtra("gameCode", currentGameCode);
-                i.putExtra("teamNaam", getIntent().getExtras().getString("teamNaam"));
-                startActivity(i);
+                startGame();
             }
         });
 
@@ -106,11 +100,24 @@ public class GameCodeActivity extends AppCompatActivity {
                     teamsListView.setAdapter(new TeamsAdapter(this, teamsList));
                 } else
                     gotTeams = true;
+
+                // TODO
+//                obj = new JSONObject(call.responseStr);
+//                if(obj.getBoolean("hasStarted"))
+//                    startGame();
             } catch (Throwable t) {
                 Log.e("GameCodeActivity", "Could not parse malformed JSON: \"" + call.responseStr + "\"");
             }
         } else {
             Toast.makeText(this, "Error while trying to get the teams", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void startGame() {
+        Intent i = new Intent(GameCodeActivity.this, GameActivity.class);
+        i.putExtra("gameTime", currentGameTime);
+        i.putExtra("gameCode", currentGameCode);
+        i.putExtra("teamNaam", getIntent().getExtras().getString("teamNaam"));
+        startActivity(i);
     }
 }

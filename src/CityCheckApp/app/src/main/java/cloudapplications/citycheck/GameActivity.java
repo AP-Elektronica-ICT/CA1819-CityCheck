@@ -192,6 +192,15 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    public void PostLocationCurrent(Location location, int gameId,String teamNaam){
+        double Lat = location.getLatitude();
+        double lng = location.getLongitude();
+        OkHttpCall call = new OkHttpCall();
+        call.post(getString(R.string.database_ip),"teams/"+gameId+teamNaam+"huidigeLocatie","{'Latitude':'" + Lat + "', 'Longitude':'" + lng + "'}");
+
+
+    }
+
     public void recordLocationCurrent(Location location, Long time) {
         mLastLocation = location;
 
@@ -205,16 +214,12 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
             try {
                 if (IsDivisibleTimer == true) {
-
                     //get team locations
                     gamecode = Integer.parseInt(getIntent().getExtras().getString("gameCode"));
                     Log.d("Mapmarker", "gamecode to call: " + gamecode);
                     getTeamsOnMap(gamecode);
-
                     if(Currentlocation != PreviousLocation){
-                        LocationList.add(Currentlocation);
-                        int i = LocationList.size() - 1;
-                        //show current value
+                    PostLocationCurrent(location, gamecode,teamNaam);
 //                    Toast.makeText(getApplicationContext(), "iets" + LocationList.get(i),
 //                            Toast.LENGTH_SHORT).show();
                     }

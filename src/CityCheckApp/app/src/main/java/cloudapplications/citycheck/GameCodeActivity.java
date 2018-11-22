@@ -57,11 +57,7 @@ public class GameCodeActivity extends AppCompatActivity {
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(view.getContext(), GameActivity.class);
-                i.putExtra("gameTime", currentGameTime);
-                i.putExtra("gameCode", currentGameCode);
-                i.putExtra("teamNaam", getIntent().getExtras().getString("teamNaam"));
-                startActivity(i);
+                startGame();
             }
         });
 
@@ -104,11 +100,24 @@ public class GameCodeActivity extends AppCompatActivity {
                     teamsListView.setAdapter(new TeamsAdapter(this, teamsList));
                 } else
                     gotTeams = true;
+
+                // TODO
+//                obj = new JSONObject(call.responseStr);
+//                if(obj.getBoolean("hasStarted"))
+//                    startGame();
             } catch (Throwable t) {
                 Log.e("GameCodeActivity", "Could not parse malformed JSON: \"" + call.responseStr + "\"");
             }
         } else {
             Toast.makeText(this, "Error while trying to get the teams", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void startGame() {
+        Intent i = new Intent(GameCodeActivity.this, GameActivity.class);
+        i.putExtra("gameTime", currentGameTime);
+        i.putExtra("gameCode", currentGameCode);
+        i.putExtra("teamNaam", getIntent().getExtras().getString("teamNaam"));
+        startActivity(i);
     }
 }

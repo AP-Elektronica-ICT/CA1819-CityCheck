@@ -15,7 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,11 +38,20 @@
 
         <activity
             android:name=".GameActivity"
-            android:label="@string/title_activity_game" />
-        <activity android:name=".CreateGameActivity" />
-        <activity android:name=".GameCodeActivity" />
-        <activity android:name=".JoinGameActivity" />
-        <activity android:name=".EndGameActivity"></activity>
+            android:label="@string/title_activity_game"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".CreateGameActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".GameCodeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".JoinGameActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".EndGameActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

@@ -147,11 +147,10 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
         LatLng Currentlocation = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.clear();
-        mMap.addMarker(new MarkerOptions().position(Currentlocation).title("LocationMarker"));
+        mMap.addMarker(new MarkerOptions().position(Currentlocation).title("MyTeam"));
         //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Currentlocation, ));
         //Toast.makeText(getApplicationContext(), "" + Currentlocation,
         //        Toast.LENGTH_SHORT).show();
-        getTeamsOnMap(gamecode);
     }
 
     @Override
@@ -196,23 +195,23 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         double Lat = location.getLatitude();
         double Long = location.getLongitude();
         OkHttpCall call = new OkHttpCall();
-        call.post(getString(R.string.database_ip),"teams/"+gameId+teamNaam+"huidigeLocatie","{'Lat':'" + Lat + "', 'Longitude':'" + Long + "'}");
+        call.post(getString(R.string.database_ip),"teams/"+gameId+"/"+teamNaam+"huidigeLocatie","{'Lat':'" + Lat + "', 'Longitude':'" + Long + "'}");
 
     }
 
     public void recordLocationCurrent(Location location, Long time) {
         mLastLocation = location;
 
-        //locatie vernieuwen om de 10s
+        //locatie vernieuwen om de 5s
         int TimeCounter = (int) (time / 1000);
-        boolean IsDivisibleTimer = TimeCounter % 10 == 0;
+        boolean IsDivisibleTimer = TimeCounter % 5 == 0;
 
         LatLng PreviousLocation = new LatLng(1, 1);
         if (location != null) {
             LatLng Currentlocation = new LatLng(location.getLatitude(), location.getLongitude());
-
             try {
                 if (IsDivisibleTimer == true) {
+                    PostLocationCurrent(location, gamecode,teamNaam);
                     //get team locations
                     gamecode = Integer.parseInt(getIntent().getExtras().getString("gameCode"));
                     Log.d("Mapmarker", "gamecode to call: " + gamecode);
@@ -285,7 +284,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         Color.colorToHSV(color, hsv);
         return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
-
 
     public void setScore(int newScore) {
         score = newScore;

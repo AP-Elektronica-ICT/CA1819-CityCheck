@@ -184,9 +184,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void PostLocationCurrent(Location location, int gameId,String teamNaam){
         double Lat = location.getLatitude();
-        double lng = location.getLongitude();
+        double Long = location.getLongitude();
         OkHttpCall call = new OkHttpCall();
-        call.post(getString(R.string.database_ip),"teams/"+gameId+teamNaam+"huidigeLocatie","{'Latitude':'" + Lat + "', 'Longitude':'" + lng + "'}");
+        call.post(getString(R.string.database_ip),"teams/"+gameId+teamNaam+"huidigeLocatie","{'Lat':'" + Lat + "', 'Longitude':'" + Long + "'}");
 
 
     }

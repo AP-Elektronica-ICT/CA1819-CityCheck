@@ -106,6 +106,7 @@ namespace BussinessLayer.Methods
             {
                 team.HuidigeLat = currentLoc.Lat;
                 team.HuidigeLong = currentLoc.Long;
+                team.TeamTraces.Add(new TeamTrace(currentLoc));
 
                 context.SaveChanges();
                 return team;

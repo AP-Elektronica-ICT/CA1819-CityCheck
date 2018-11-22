@@ -10,7 +10,11 @@ namespace DataLayer
         public int Id { get; set; }
         /* [ForeignKey("TeamId")]
          public virtual Team Team { get; set; }*/
-        public long Long { get; set; }
-        public long Lat { get; set; }
+        public Locatie trace { get; set; }
+
+        public TeamTrace(Locatie locatie)
+        {
+            trace = locatie;
+        }
     }
 }

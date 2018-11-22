@@ -69,7 +69,28 @@ namespace BussinessLayer.Methods
     }
 
 
-}
+
+        public bool startGame(int milli, int gamecode)
+        {
+
+            Game game = context.Games.Where(r => r.GameCode == gamecode).SingleOrDefault<Game>();
+
+
+            if (milli != null)
+            {
+                //game starten
+                game.hasStarted = true;
+                //gestarte tijd opslaan
+                game.millisStarted = milli;
+                context.SaveChanges();
+                return true;
+            }
+            else
+                return false;
+
+        }
+
+    }
 
 
 }

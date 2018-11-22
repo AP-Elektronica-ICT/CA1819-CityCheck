@@ -82,17 +82,21 @@ public class GameController : Controller
 
     //start a game
     [HttpPost]
-    [Route("startgame/{gameid}")]
-    public IActionResult startGame([FromBody] int milli, int gameid)
+    [Route("startgame/{id}/{milli}")]
+    public IActionResult startGame(double milli, int id)
     {
 
         //gameid is de gamecode
 
-        var returnValue = gameMethods.startGame(milli, gameid);
+        var returnValue = gameMethods.startGame(milli, id);
         if (returnValue)
+        {
             return Created("Game Started:", milli);
+        }
         else
+        {
             return NotFound();
+        }
     }
 
 

@@ -70,10 +70,10 @@ namespace BussinessLayer.Methods
 
 
 
-        public bool startGame(int milli, int gamecode)
+        public bool startGame(double milli, int gamecode)
         {
 
-            Game game = context.Games.Where(r => r.GameCode == gamecode).SingleOrDefault<Game>();
+            Game game = context.Games.Where(r => r.GameCode == gamecode).Single<Game>();
 
 
             if (game != null)

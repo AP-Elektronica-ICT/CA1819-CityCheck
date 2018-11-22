@@ -96,7 +96,7 @@ namespace BussinessLayer.Methods
             //id is de gamecode
             //we gaan het team selecteren volgens de teamnaam
 
-            Game game = context.Games.Where(d => d.GameCode == id).Include(r => r.Teams).Single<Game>();
+            Game game = context.Games.Where(d => d.GameCode == id).Include(r => r.Teams.Select(y=>y.TeamTraces)).Single<Game>();
             Team team = game.Teams.Where(d => d.TeamNaam == teamname).Single<Team>();
 
 
@@ -104,9 +104,13 @@ namespace BussinessLayer.Methods
                 return null;
             else
             {
-                team.HuidigeLat = currentLoc.Lat;
-                team.HuidigeLong = currentLoc.Long;
-                team.TeamTraces.Add(new TeamTrace(currentLoc));
+                //huidige locatie opslaan
+                team.huidigeLocatie = currentLoc;
+
+                //nieuwe trace toevoegen
+                var trace = new TeamTrace();
+                trace.trace = currentLoc;
+                team.TeamTraces.Add(trace);
 
                 context.SaveChanges();
                 return team;
@@ -157,8 +161,8 @@ namespace BussinessLayer.Methods
 
 
 
-
-        public bool setTeamTrace(TeamTrace newTrace, int id, string teamNaam)
+        //Dit mag eigenlijk weg
+        public bool setTeamTrace(Locatie newTrace, int id, string teamNaam)
         {
             //id is de gamecode
 
@@ -174,7 +178,9 @@ namespace BussinessLayer.Methods
             else
             {
                 //trace punt toevoegen bij dit team
-                traces.Add(newTrace);
+                var newtrace = new TeamTrace();
+                newtrace.trace = newTrace;
+                traces.Add(newtrace);
                 context.SaveChanges();
                 return true;
             }

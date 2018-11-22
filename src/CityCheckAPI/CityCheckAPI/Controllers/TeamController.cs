@@ -138,14 +138,14 @@ public class TeamController : Controller
     }
 
 
-
+    //Dit mag eigenlijk weg
     //add new point to the teamtrace
     [HttpPost]
     [Route("teams/{id}/{teamNaam}/trace")]
-    public IActionResult setTeamTrace([FromBody] TeamTrace newTrace, int id, string teamNaam)
+    public IActionResult setTeamTrace([FromBody] Locatie newLoc, int id, string teamNaam)
     {
         //id is de gamecode
-        var traceadded = teamMethods.setTeamTrace(newTrace, id, teamNaam);
+        var traceadded = teamMethods.setTeamTrace(newLoc, id, teamNaam);
 
         if (!traceadded)
             //Geen team

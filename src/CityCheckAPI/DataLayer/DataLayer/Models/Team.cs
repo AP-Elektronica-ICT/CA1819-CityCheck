@@ -11,8 +11,7 @@ namespace DataLayer
         public int Punten { get; set; }
         public int Kleur { get; set; }
         public string TeamNaam { get; set; }
-        public double HuidigeLong { get; set; }
-        public double HuidigeLat { get; set; }
+        public Locatie huidigeLocatie { get; set; }
         public List<TeamTrace> TeamTraces { get; set; }
     }
 }

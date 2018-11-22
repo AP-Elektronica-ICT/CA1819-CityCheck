@@ -29,6 +29,8 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -120,6 +122,14 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         }
         buildGoogleApiClient();
         mMap.setMyLocationEnabled(true);
+        Polyline polyline1 = googleMap.addPolyline(new PolylineOptions()
+                .add(
+                        new LatLng(-35.016, 143.321),
+                        new LatLng(-34.747, 145.592),
+                        new LatLng(-34.364, 147.891),
+                        new LatLng(-33.501, 150.217),
+                        new LatLng(-32.306, 149.248),
+                        new LatLng(-32.491, 147.309)));
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -185,20 +195,30 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     public void recordLocationCurrent(Location location, Long time) {
         mLastLocation = location;
 
+        //locatie vernieuwen om de 10s
         int TimeCounter = (int) (time / 1000);
-        boolean IsDivisibleTimer = TimeCounter % 10 == 1;
+        boolean IsDivisibleTimer = TimeCounter % 10 == 0;
 
         LatLng PreviousLocation = new LatLng(1, 1);
         if (location != null) {
             LatLng Currentlocation = new LatLng(location.getLatitude(), location.getLongitude());
 
             try {
-                if (IsDivisibleTimer == true && Currentlocation != PreviousLocation) {
-                    LocationList.add(Currentlocation);
-                    int i = LocationList.size() - 1;
-                    //show current value
+                if (IsDivisibleTimer == true) {
+
+                    //get team locations
+                    gamecode = Integer.parseInt(getIntent().getExtras().getString("gameCode"));
+                    Log.d("Mapmarker", "gamecode to call: " + gamecode);
+                    getTeamsOnMap(gamecode);
+
+                    if(Currentlocation != PreviousLocation){
+                        LocationList.add(Currentlocation);
+                        int i = LocationList.size() - 1;
+                        //show current value
 //                    Toast.makeText(getApplicationContext(), "iets" + LocationList.get(i),
 //                            Toast.LENGTH_SHORT).show();
+                    }
+
                 }
             } catch (Throwable t) {
                 Log.e("LatLngRecording", "error: " + t);

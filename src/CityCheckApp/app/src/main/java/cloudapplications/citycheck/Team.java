@@ -1,5 +1,7 @@
 package cloudapplications.citycheck;
 
+import android.location.Location;
+
 import java.util.List;
 
 public class Team {
@@ -9,8 +11,7 @@ public class Team {
     private int punten;
     private int kleur;
     private String teamNaam;
-    private long huidigeLong;
-    private long huidigeLat;
+    private Location huidigeLocatie;
     private List<TeamTrace> teamTraces;
 
     Team(String teamNaam, int kleur, int punten) {
@@ -51,19 +52,12 @@ public class Team {
         this.punten = punten;
     }
 
-    public long getHuidigeLat() {
-        return huidigeLat;
+    public Location getHuidigeLocatie() {
+        return huidigeLocatie;
     }
 
-    public void setHuidigeLat(long huidigeLat) {
-        this.huidigeLat = huidigeLat;
+    public void setHuidigeLocatie(Location huidigeLocatie) {
+        this.huidigeLocatie = huidigeLocatie;
     }
 
-    public long getHuidigeLong() {
-        return huidigeLong;
-    }
-
-    public void setHuidigeLong(long huidigeLong) {
-        this.huidigeLong = huidigeLong;
-    }
 }

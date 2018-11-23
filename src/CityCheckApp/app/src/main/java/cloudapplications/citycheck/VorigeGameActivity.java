@@ -5,19 +5,23 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-import android.os.Bundle;
+import android.location.LocationListener;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -34,24 +38,26 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import android.os.Handler;
 
+public class VorigeGameActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, LocationListener, com.google.android.gms.location.LocationListener {
 
-public class GameActivity extends FragmentActivity implements OnMapReadyCallback {
-
-    private GoogleMap kaart;
-    private TeamLocation locationmanager;
+    private GoogleMap mMap;
+    GoogleApiClient mGoogleApiClient;
+    Location mLastLocation;
+    LocationRequest mLocationRequest;
 
     // Variabelen om teams op te halen uit database
     private List<Team> teams = new ArrayList<>();
     private String teamNaam;
     private int gamecode;
 
+    //lokaallocaties huidige team opslaan
+    private ArrayList<LatLng> LocationList = new ArrayList<>();
+
     // Gamescore
     private TextView scoreview;
     private int score;
 
-    //callbacks
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,56 +82,51 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 int minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
                 int hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
                 timerTextView.setText("Time remaining: " + hours + ":" + minutes + ":" + seconds);
-
+                // method hier geplaasts om opgeroepen te worden waar nodig
+                recordLocationCurrent(mLastLocation, millisUntilFinished);
             }
 
             public void onFinish() {
-                Intent i = new Intent(GameActivity.this, EndGameActivity.class);
+                Intent i = new Intent(VorigeGameActivity.this, EndGameActivity.class);
                 i.putExtra("gameCode", Integer.toString(gamecode));
                 startActivity(i);
             }
         }.start();
 
-
     }
 
-    @Override
-    protected void onResume(){
-        super.onResume();
-        if(locationmanager != null){
-            locationmanager.startConnection();
-        }
-    }
 
-    @Override
-    protected void onPause(){
-        super.onPause();
-        locationmanager.stopConnection();
-    }
-
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * we just add a marker near Sydney, Australia.
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
+    //map openzetten
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        kaart = googleMap;
+        mMap = googleMap;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
         }
-
-        // move the camera to Antwerp
-        LatLng Antwerpen = new LatLng(51.2194, 4.4025);
-        kaart.moveCamera(CameraUpdateFactory.newLatLngZoom(Antwerpen, 15));
-
-        //alles ivm locatie van het eigen team
-        locationmanager = new TeamLocation(this, kaart);
-        locationmanager.startConnection();
+        buildGoogleApiClient();
+        mMap.setMyLocationEnabled(true);
 
         //get team locations
         gamecode = Integer.parseInt(getIntent().getExtras().getString("gameCode"));
         Log.d("Mapmarker", "gamecode to call: " + gamecode);
         getTeamsOnMap(gamecode);
 
-        //testcode voor polyline te tekenen
         Polyline polyline1 = googleMap.addPolyline(new PolylineOptions()
                 .add(
                         new LatLng(-35.016, 143.321),
@@ -136,22 +137,103 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                         new LatLng(-32.491, 147.309)));
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,String[] permissions,int[] grantResults) {
-        if (requestCode == 1) {
-            if(grantResults.length == 1
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                return;
-            } else {
-                //toast is niet zichtbaar
-                Toast.makeText(this, "Zonder toegang tot locatie kan je niet spelen",Toast.LENGTH_LONG);
-            }
-        }
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        Log.d("schildpad", "current location: "+ location);
+        LatLng Currentlocation = new LatLng(location.getLatitude(), location.getLongitude());
+        LocationList.add(Currentlocation);
+        mMap.clear();
+        mMap.addMarker(new MarkerOptions().position(Currentlocation).title("MyTeam"));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Currentlocation, ));
+        //Toast.makeText(getApplicationContext(), "" + Currentlocation,
+        //        Toast.LENGTH_SHORT).show();
+    }
 
-    //private helper methoden
-    private void getTeamsOnMap(int gameId) {
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(5000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    public void PostLocationCurrent(LatLng location, int gameId,String teamNaam){
+        double Lat = location.latitude;
+        double Long = location.longitude;
+
+        OkHttpCall call = new OkHttpCall();
+        call.post(getString(R.string.database_ip),"teams/"+gameId+"/"+teamNaam+"/huidigeLocatie","{'Lat':'" + Lat + "', 'Long':'" + Long + "'}");
+
+    }
+
+    public void recordLocationCurrent(Location location, Long time) {
+        //mLastLocation = location;
+
+        //locatie doorsturen om de 5s
+        int TimeCounter = (int) (time / 1000);
+        boolean IsDivisibleTimer = TimeCounter % 5 == 0;
+
+        LatLng PreviousLocation = new LatLng(1, 1);
+        //if (location != null) {
+        Random rand = new Random();
+        LatLng Currentlocation = new LatLng((rand.nextFloat() * (51.30 - 50.00) + 50.00), (rand.nextFloat() * (5.30 - 2.30) + 2.30));
+        try {
+            if (IsDivisibleTimer == true) {
+
+                //if(Currentlocation != PreviousLocation){
+                //PostLocationCurrent(Currentlocation, gamecode,teamNaam);
+//                    Toast.makeText(getApplicationContext(), "iets" + LocationList.get(i),
+//                            Toast.LENGTH_SHORT).show();
+                //}
+
+            }
+        } catch (Throwable t) {
+            Log.e("LatLngRecording", "error: " + t);
+        }
+        //}
+    }
+
+    public void getTeamsOnMap(int gameId) {
         OkHttpCall call = new OkHttpCall();
         call.get(getString(R.string.database_ip), "currentgame/" + gameId);
         while (call.status == OkHttpCall.RequestStatus.Undefined) ;
@@ -168,7 +250,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     JSONObject team = teamsArray.getJSONObject(i);
                     Log.d("Teams", "teamobject: " + team);
                     Team newTeam = new Team(team.getString("teamNaam"), team.getInt("kleur"), team.getInt("punten"));
-                    //newTeam.setHuidigeLocatie((Location)team.getJSONObject("huidigeLocatie"));
+                    //newTeam.setHuidigeLat(team.getLong("huidigeLat"));
+                    //newTeam.setHuidigeLong(team.getLong("huidigeLong"));
                     teams.add(newTeam);
                 }
                 Log.d("Teams", "1 teams list: " + teams);
@@ -184,9 +267,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                                 float lat = (float) (rand.nextFloat() * (51.30 - 50.00) + 50.00);
                                 float lon = (float) (rand.nextFloat() * (5.30 - 2.30) + 2.30);
                                 //mMap.clear();
-                                kaart.addMarker(new MarkerOptions()
-                                        .position(new LatLng(lat, lon))
-                                        //.position(new LatLng(teams.get(i).getHuidigeLocatie().getLatitude(), teams.get(i).getHuidigeLocatie().getLongitude()))
+                                mMap.addMarker(new MarkerOptions()
+                                        //.position(new LatLng(teams.get(i).getHuidigeLat(), teams.get(i).getHuidigeLong()))
                                         .title(teams.get(i).getTeamNaam())
                                         .icon(getMarkerIcon(teams.get(i).getKleur())));
                                 Log.d("Teams", "marker added: #" + Integer.toHexString(teams.get(i).getKleur()));
@@ -202,13 +284,13 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private BitmapDescriptor getMarkerIcon(int color) {
+    public BitmapDescriptor getMarkerIcon(int color) {
         float[] hsv = new float[3];
         Color.colorToHSV(color, hsv);
         return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
 
-    private void setScore(int newScore) {
+    public void setScore(int newScore) {
         score = newScore;
         scoreview.setText("" + score);
     }

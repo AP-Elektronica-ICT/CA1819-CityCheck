@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { ThrowStmt } from '@angular/compiler';
 import { DataService, ILocRoot } from 'src/services/Data/data.service';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { DoelLocatie } from '../classes/DoelLocatie';
+import { Locatie } from '../classes/Locatie';
 
 @Component({
   selector: 'app-doel',
@@ -14,11 +16,32 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 export class DoelComponent implements OnInit {
   //TODO: duidelijk maken welke locatie geselecteerd is
 
-  private allLocs:ILocRoot;
+  private allLocs:ILocRoot[];
+  private totalLocs:number = 0;
 
   private locsToShow:ILocRoot;
   private amountToShow:number = 5;
   private page:number = 0;
+
+
+  //invulvelden nieuwe locatie
+  public titel:string = "";
+  public newlat:number;
+  public newlong:number;
+
+
+
+  //Map variables---------------------------------------------------
+  public options = {
+    layers: [
+      tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: 'City Check Locs' })
+    ],
+    zoom: 17,
+    center: latLng(51.2289238, 4.4026316)
+  };
+
+  public center = latLng(51.2289238, 4.4026316);
+  //Map variables---------------------------------------------------
 
 
   constructor(private auth:AuthService, private router:Router, private data:DataService) { }
@@ -36,22 +59,34 @@ export class DoelComponent implements OnInit {
       //this.router.navigate([("/login")]);
     }
 
-    this.data.getLocations().subscribe(r=> this.allLocs = r);
+    //eerste locaties ophalen
+    this.getLocations();
     
-
   }
 
 
-  public options = {
-    layers: [
-      tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: 'City Check Locs' })
-    ],
-    zoom: 17,
-    center: latLng(51.2289238, 4.4026316)
-  };
+  public getLocations(){
+    this.data.getLocations().subscribe( (r) => {
+      this.allLocs = r;
+      this.totalLocs = r.length;
+      console.log(this.totalLocs);
+     });
+  }
 
 
-  public center = latLng(51.2289238, 4.4026316);
+
+  public addLocation():void{
+
+    //locatie aanmaken
+    var loc = new Locatie(this.newlat,this.newlong);
+    //doellocatie aanmaken
+    var doelloc = new DoelLocatie(this.titel,loc,null);
+    //doellocatie posten
+    this.data.postLocation(doelloc).subscribe(res =>{
+      console.log(res);
+      this.getLocations();
+    });
+  }
 
 
 

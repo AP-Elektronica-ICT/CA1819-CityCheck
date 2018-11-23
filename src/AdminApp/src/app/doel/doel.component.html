@@ -18,7 +18,7 @@
 
       <br>
 
-      <p class="whitetxt">XX / XX Locaties</p>
+      <p class="whitetxt">{{page}} / {{totalLocs}} Locaties</p>
 
 
       <button type="button" class="btn btn-yellow">Back</button>
@@ -44,11 +44,11 @@
 <div id="addCont">
 
   <section id="forminps">
-    <input type="text" id="namelc" class="form-control mb-4" placeholder="Naam">
-    <input type="number" id="latlc" class="form-control mb-4" placeholder="Latitutde">
-    <input type="number" id="lnglc" class="form-control mb-4" placeholder="Longitude">
+    <input type="text" id="namelc" class="form-control mb-4" placeholder="Naam" [(ngModel)]="titel">
+    <input type="number" id="latlc" class="form-control mb-4" placeholder="Latitutde" [(ngModel)]="newlat">
+    <input type="number" id="lnglc" class="form-control mb-4" placeholder="Longitude" [(ngModel)]="newlong">
 
-    <button type="button" class="btn btn-yellow">Add Location</button>
+    <button (click)="addLocation()" type="button" class="btn btn-yellow">Add Location</button>
 
   </section>
 

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from "@angular/common/http";
+import { DoelLocatie } from 'src/app/classes/DoelLocatie';
 
 @Injectable()
 export class DataService {
@@ -13,9 +14,17 @@ export class DataService {
    }
    
 
-   getLocations(): Observable<ILocRoot> {
+   getLocations(): Observable<ILocRoot[]> {
 
-    return this._http.get<ILocRoot>(this.url+"allDoelLocs")
+    return this._http.get<ILocRoot[]>(this.url+"allDoelLocs")
+    
+  }
+
+
+  postLocation(loc:DoelLocatie): Observable<DoelLocatie> {
+    console.log(loc);
+
+    return this._http.post<DoelLocatie>(this.url+"addDoelLocs",loc)
     
   }
 
@@ -50,7 +59,7 @@ export interface ILocRoot {
     vragen?: any;
   }
   
-  interface Locatie {
+ export interface Locatie {
     id: number;
     lat: number;
     long: number;

@@ -37,6 +37,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class GameActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, LocationListener, com.google.android.gms.location.LocationListener {
 
@@ -192,42 +193,45 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    public void PostLocationCurrent(Location location, int gameId,String teamNaam){
-        double Lat = location.getLatitude();
-        double Long = location.getLongitude();
+    public void PostLocationCurrent(LatLng location, int gameId,String teamNaam){
+        double Lat = location.latitude;
+        double Long = location.longitude;
+
         OkHttpCall call = new OkHttpCall();
-        call.post(getString(R.string.database_ip),"teams/"+gameId+"/"+teamNaam+"huidigeLocatie","{'Lat':'" + Lat + "', 'Longitude':'" + Long + "'}");
+        call.post(getString(R.string.database_ip),"teams/"+gameId+"/"+teamNaam+"/huidigeLocatie","{'Lat':'" + Lat + "', 'Longitude':'" + Long + "'}");
 
     }
 
     public void recordLocationCurrent(Location location, Long time) {
-        mLastLocation = location;
+        //mLastLocation = location;
 
         //locatie vernieuwen om de 5s
         int TimeCounter = (int) (time / 1000);
         boolean IsDivisibleTimer = TimeCounter % 5 == 0;
 
         LatLng PreviousLocation = new LatLng(1, 1);
-        if (location != null) {
-            LatLng Currentlocation = new LatLng(location.getLatitude(), location.getLongitude());
+        //if (location != null) {
+        Random rand = new Random();
+            LatLng Currentlocation = new LatLng((rand.nextFloat() * (51.30 - 50.00) + 50.00), (rand.nextFloat() * (5.30 - 2.30) + 2.30));
             try {
                 if (IsDivisibleTimer == true) {
-                    PostLocationCurrent(location, gamecode,teamNaam);
+                    PostLocationCurrent(Currentlocation, gamecode,teamNaam);
                     //get team locations
                     gamecode = Integer.parseInt(getIntent().getExtras().getString("gameCode"));
                     Log.d("Mapmarker", "gamecode to call: " + gamecode);
                     getTeamsOnMap(gamecode);
-                    if(Currentlocation != PreviousLocation){
-                    PostLocationCurrent(location, gamecode,teamNaam);
+
+                    //if(Currentlocation != PreviousLocation){
+                    //PostLocationCurrent(Currentlocation, gamecode,teamNaam);
 //                    Toast.makeText(getApplicationContext(), "iets" + LocationList.get(i),
 //                            Toast.LENGTH_SHORT).show();
-                    }
+                    //}
 
                 }
             } catch (Throwable t) {
                 Log.e("LatLngRecording", "error: " + t);
             }
-        }
+        //}
     }
 
     public void getTeamsOnMap(int gameId) {
@@ -260,9 +264,10 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                         for (int i = 0; i < teams.size(); i++) {
                             Log.d("Teams", "Team name: " + teamNaam + ", " + teams.get(i).getTeamNaam());
                             if (!teams.get(i).getTeamNaam().equals(teamNaam)) {
-                                //Random rand = new Random();
-                                //float lat = (float) (rand.nextFloat() * (51.30 - 50.00) + 50.00);
-                                //float lon = (float) (rand.nextFloat() * (5.30 - 2.30) + 2.30);
+                                Random rand = new Random();
+                                float lat = (float) (rand.nextFloat() * (51.30 - 50.00) + 50.00);
+                                float lon = (float) (rand.nextFloat() * (5.30 - 2.30) + 2.30);
+                                mMap.clear();
                                 mMap.addMarker(new MarkerOptions()
                                         .position(new LatLng(teams.get(i).getHuidigeLat(), teams.get(i).getHuidigeLong()))
                                         .title(teams.get(i).getTeamNaam())

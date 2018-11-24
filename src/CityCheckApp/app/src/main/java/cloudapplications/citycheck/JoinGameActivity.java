@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,13 +20,9 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
 import org.json.JSONObject;
 
-import java.io.IOException;
+import java.util.Objects;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-
-public class JoinGameActivity extends AppCompatActivity {
+public class JoinGameActivity extends AppCompatActivity{
 
     private Button btnPickColor;
     private Button btnJoinGame;
@@ -40,19 +35,21 @@ public class JoinGameActivity extends AppCompatActivity {
     private String name;
     private int color;
     private int gamecode;
+    private long lat=0;
+    private long lon=0;
     private String gameTime;
+    private boolean gameCreator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_game);
 
-        btnPickColor = (Button) findViewById(R.id.button_pick_color);
-        txt_teamName = (TextView) findViewById(R.id.TV_TeamName);
-        edit_teamName = (EditText) findViewById(R.id.edit_text_team_name);
-        edit_gamecode = (EditText) findViewById(R.id.edit_text_game_code);
-        btnJoinGame = (Button) findViewById(R.id.button_join_game);
-
+        btnPickColor = findViewById(R.id.button_pick_color);
+        txt_teamName = findViewById(R.id.TV_TeamName);
+        edit_teamName = findViewById(R.id.edit_text_team_name);
+        edit_gamecode = findViewById(R.id.edit_text_game_code);
+        btnJoinGame = findViewById(R.id.button_join_game);
 
         edit_teamName.addTextChangedListener(new TextWatcher() {
             @Override
@@ -71,9 +68,13 @@ public class JoinGameActivity extends AppCompatActivity {
             }
         });
 
-
-
-
+        gameCreator = !Objects.equals(Objects.requireNonNull(getIntent().getExtras()).getString("gameCode"), "-1");
+        if (gameCreator) {
+            gamecode = Integer.parseInt(getIntent().getExtras().getString("gameCode"));
+            edit_gamecode.setText(Integer.toString(gamecode));
+            edit_gamecode.setFocusable(false);
+            edit_gamecode.setEnabled(false);
+        }
 
         btnPickColor.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,93 +109,63 @@ public class JoinGameActivity extends AppCompatActivity {
                         })
                         .build()
                         .show();
-
-
-
-
             }
         });
 
         btnJoinGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 name = edit_teamName.getText().toString();
-                 color = currentColor;
-                 gamecode = Integer.parseInt(edit_gamecode.getText().toString());
-                Log.d("JoinGameActivity","team: " +name + " color: " + color + " gamecode: " + gamecode);
+                name = edit_teamName.getText().toString();
+                color = currentColor;
+                gamecode = Integer.parseInt(edit_gamecode.getText().toString());
+                Log.d("JoinGameActivity", "team: " + name + " color: " + color + " gamecode: " + gamecode);
                 addTeamToGame(name, color, gamecode);
             }
         });
-
     }
+
+
     private void addTeamToGame(String name, int color, final int gamecode) {
         /*Team newTeam = new Team();
         newTeam.setName(name);
         newTeam.setColour(color);*/
         OkHttpCall call = new OkHttpCall();
-        Call response = call.post(String.format("http://84.197.102.107/api/citycheck/teams/%d", gamecode), "{'teamNaam':'" + name+"', 'kleur':'"+ color +"'}", new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, okhttp3.Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    // Als de request gelukt is
-                    String responseStr = response.body().string();
-                    Log.d("JoinGameActivity", "JSON object response: " + responseStr);
-
-
-                    //get game info
-                    startGame(gamecode);
-
-                } else {
-                    // Als er een fout is bij de request
-                    Log.d("JoinGameActivity", "new team error response: " + response.message());
-                }
-            }
-        });
+        call.post(getString(R.string.database_ip), "teams/" + Integer.toString(gamecode), "{'teamNaam':'" + name + "', 'kleur':'" + color + "','huidigeLong':'" +lon + "', 'huidigLat':'" + lat + "'}");
+        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
+        if (call.status == OkHttpCall.RequestStatus.Successful) {
+            startGame(gamecode);
+        } else {
+            Toast.makeText(this, "Error while trying to join the game", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private void startGame(final int gamecode){
-
-        OkHttpCall getGame = new OkHttpCall();
-        Call response = getGame.get(String.format("http://84.197.102.107/api/citycheck/currentgame/%d", gamecode), new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
+    private void startGame(final int gamecode) {
+        OkHttpCall call = new OkHttpCall();
+        call.get(getString(R.string.database_ip), "currentgame/" + Integer.toString(gamecode));
+        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
+        if (call.status == OkHttpCall.RequestStatus.Successful) {
+            JSONObject obj;
+            try {
+                // Converteer de response string naar een JSONObject en de tijd er uit halen
+                obj = new JSONObject(call.responseStr);
+                Log.d("JoinGameActivity", "JSON object response: " + obj.toString());
+                gameTime = obj.getString("tijdsDuur");
+            } catch (Throwable t) {
+                Log.e("JoinGameActivity", "Could not parse malformed JSON: \"" + call.responseStr + "\"");
             }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                Log.d("JoinGameActivity", "gamecode: "+ gamecode);
-                if (response.isSuccessful()) {
-                    // Als de request gelukt is
-                    String responseStr = response.body().string();
-                    JSONObject obj;
+            Intent i = new Intent(JoinGameActivity.this, GameCodeActivity.class);
+            if (gameCreator)
+                i.putExtra("gameCreator", true);
+            else
+                i.putExtra("gameCreator", false);
+            i.putExtra("gameCode", Integer.toString(gamecode));
+            i.putExtra("gameTime", gameTime);
+            i.putExtra("teamNaam", name);
+            startActivity(i);
 
-                    try {
-                        // Converteer de response string naar een JSONObject en de code er uit halen
-                        obj = new JSONObject(responseStr);
-                        Log.d("JoinGameActivity", "JSON object response: " + obj.toString());
-                        gameTime = obj.getString("tijdsDuur");
-                    } catch (Throwable t) {
-                        Log.e("JoinGameActivity", "Could not parse malformed JSON: \"" + responseStr + "\"");
-                    }
-
-                    Log.d("JoinGameActivity", "Gametime for intent is " + gameTime);
-                    Intent i = new Intent(JoinGameActivity.this, GameActivity.class);
-                    i.putExtra("gameCode", Integer.toString(gamecode));
-                    i.putExtra("gameTime", gameTime);
-                    i.putExtra("teamNaam", name);
-                    startActivity(i);
-                } else {
-                    // Als er een fout is bij de request
-                    Log.d("JoinGameActivity", "start game error response: " + response.message());
-                }
-            }
-        });
-
+        } else {
+            Toast.makeText(this, "Error while trying to start the game", Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -30,12 +30,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(view.getContext(), JoinGameActivity.class);
+                i.putExtra("gameCode", "-1");
                 startActivity(i);
             }
         });
 
-        // ask permission for gps
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-
+        // Ask permission for gps
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
     }
 }

@@ -3,11 +3,9 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="redAntwOpacity">#d9ff9999</color>
     <color name="redAntw">#990000</color>
     <color name="redAntwDark">#660000</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
-    <color name="opacity_white">#80ffffff</color>
     <color name="yellowAntw">#FFDB4E</color>
 </resources>

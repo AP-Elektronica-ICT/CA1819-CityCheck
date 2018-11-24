@@ -18,12 +18,24 @@
                                 <PersistentState>
                                   <option name="children">
                                     <map>
+                                      <entry key="backgroundImage">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="scalingPercent" value="0" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
                                       <entry key="foregroundImage">
                                         <value>
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="scalingPercent" value="71" />
+                                                <entry key="scalingPercent" value="108" />
+                                                <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -36,6 +48,7 @@
                                       <entry key="backgroundImage" value="M:\GitHub\CA1819-CityCheck\src\CityCheckApp\app\src\main\res\drawable\transparent_bg.png" />
                                       <entry key="foregroundImage" value="M:\GitHub\CA1819-CityCheck\src\CityCheckApp\app\src\main\res\drawable\citycheck_logo.png" />
                                       <entry key="legacyIconShape" value="CIRCLE" />
+                                      <entry key="showGrid" value="true" />
                                       <entry key="webIconShape" value="CIRCLE" />
                                     </map>
                                   </option>

@@ -50,7 +50,16 @@ namespace CityCheckAPI
 
 
 
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder
+                    .WithOrigins("*")
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+            });
 
             services.AddMvc();
 
@@ -76,13 +85,7 @@ namespace CityCheckAPI
 
             app.UseHttpsRedirection();
             app.UseMvc();
-
-
-            app.UseCors(builder =>
-                builder.WithOrigins("*").AllowAnyMethod()
-                    .AllowAnyHeader());
-
-            app.UseMvc();
+            app.UseCors("CorsPolicy");
 
 
 

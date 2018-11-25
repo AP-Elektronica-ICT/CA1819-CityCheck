@@ -101,7 +101,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         //teamnaam tonen op het game scherm
         teamNameTXT.setText(teamNaam);
 
-
+        //ophalen doellocaties
+        getTargetLocations();
         //TO-DELETE
         //Even hardcoded 3 doellocaties adden
         currentDoelLocaties.add(new LatLng(51.2289238, 4.4026316));
@@ -177,7 +178,32 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    private void getTargetLocations(){
+        OkHttpCall call = new OkHttpCall();
+        call.get(getString(R.string.database_ip), "allDoelLocs");
+        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
+        if (call.status == OkHttpCall.RequestStatus.Successful) {
+            JSONObject obj;
+            JSONArray TargetLocationsArray;
+            try {
+                obj = new JSONObject(call.responseStr);
+                //Waarom telt deze niet verder naar de volgende functie achter bovenstaande? waardes komen goed binnen.
+                //om een of andere redenen is onderstaande lijn "non executable code"?
+                Log.d("Locations", "JSON object response: " + obj.toString());
+                TargetLocationsArray = obj.getJSONArray("doellocaties");
+                Log.d("Locations", "Array of targetlocations: " + TargetLocationsArray);
+                for(int i = 0; i<TargetLocationsArray.length();i++){
+                    JSONObject target= TargetLocationsArray.getJSONObject(i);
+                    //maken van targetlocation class?
+                    Double lat = target.getDouble("Lat");
+                    Toast.makeText(this, ""+lat, Toast.LENGTH_SHORT).show();
 
+                }
+            }catch (Throwable t) {
+                Log.e("doelen", "error: " + t);
+            }
+        }
+    }
     //private helper methoden
     private void getTeamsOnMap(int gameId) {
         OkHttpCall call = new OkHttpCall();

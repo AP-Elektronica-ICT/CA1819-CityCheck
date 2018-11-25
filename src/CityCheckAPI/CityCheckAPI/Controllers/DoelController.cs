@@ -34,10 +34,10 @@ namespace CityCheckAPI.Controllers
         //get all doellocs
         [HttpGet]
         [Route("allDoelLocs")]
-        public IActionResult getAllLocs()
+        public IActionResult getAllLocs(string Naam, int? page, int? pageLength = 5, string direction = "asc")
         {
 
-            List<DoelLocatie> doelen = doelMethods.getAllLocs();
+            List<DoelLocatie> doelen = doelMethods.getAllLocs(Naam, page,pageLength,direction);
             if (doelen != null)
                 return Ok(doelen);
             else

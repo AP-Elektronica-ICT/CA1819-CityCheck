@@ -85,7 +85,7 @@ public class TeamController : Controller
     //save teamloc
     [HttpPost]
     [Route("teams/{id}/{teamname}/huidigeLocatie")]
-    public IActionResult SaveCurrentTeamLoc(int id, string teamname, [FromBody] Locatie currentLoc)
+    public IActionResult SaveCurrentTeamLoc([FromBody] Locatie currentLoc, int id, string teamname)
     {
         //id is de gamecode
         //we gaan het team selecteren volgens de teamnaam

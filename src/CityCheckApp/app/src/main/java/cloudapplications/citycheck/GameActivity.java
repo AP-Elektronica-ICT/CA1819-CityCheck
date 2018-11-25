@@ -50,6 +50,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     // Gamescore
     private TextView scoreview;
     private int score;
+    private TextView teamNameTXT;
 
     //doellocaties
     private List<LatLng> currentDoelLocaties;
@@ -68,6 +69,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         scoreview = (TextView) findViewById(R.id.txt_Points);
         score = 0;
         setScore(30);
+
+        //teamnaam txt view
+        teamNameTXT = (TextView) findViewById(R.id.txt_TeamName);
 
 
         //locationsarray
@@ -93,6 +97,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 startActivity(i);
             }
         }.start();
+
+        //teamnaam tonen op het game scherm
+        teamNameTXT.setText(teamNaam);
 
 
         //TO-DELETE

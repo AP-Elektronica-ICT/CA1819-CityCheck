@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { latLng, tileLayer } from 'leaflet';
+import { latLng, tileLayer, marker } from 'leaflet';
 import { AuthService } from 'src/services/auth/auth.service';
 import { Router } from '@angular/router';
 import { ThrowStmt } from '@angular/compiler';
@@ -16,12 +16,11 @@ import { Locatie } from '../classes/Locatie';
 export class DoelComponent implements OnInit {
   //TODO: duidelijk maken welke locatie geselecteerd is
 
-  private allLocs:ILocRoot[];
+  public allLocs:ILocRoot[];
   private totalLocs:number = 0;
 
-  private locsToShow:ILocRoot;
-  private amountToShow:number = 5;
-  private page:number = 0;
+  public page:number = 0;
+  public searchStr:string = "";
 
 
   //invulvelden nieuwe locatie
@@ -41,6 +40,10 @@ export class DoelComponent implements OnInit {
   };
 
   public center = latLng(51.2289238, 4.4026316);
+
+  layers = [
+    marker(this.center)
+  ];
   //Map variables---------------------------------------------------
 
 
@@ -56,21 +59,66 @@ export class DoelComponent implements OnInit {
     else{
       console.log("not logged in");
       //niet ingelogd, eerst inloggen.
-      //this.router.navigate([("/login")]);
+      this.router.navigate([("/login")]);
     }
 
     //eerste locaties ophalen
-    this.getLocations();
+    this.getLocations(this.page);
     
   }
 
 
-  public getLocations(){
-    this.data.getLocations().subscribe( (r) => {
+  public getLocations(page?:number,naam?:string){
+    this.data.getLocations(page, naam).subscribe( (r) => {
       this.allLocs = r;
-      this.totalLocs = r.length;
-      console.log(this.totalLocs);
+      //this.totalLocs = r.length;
+
+
+      //paging niet te hoog laten gaan als er gaan data meer is
+      if(this.allLocs.length <=0 && this.searchStr == ""){
+        this.page-=1;
+        this.getLocations(this.page);
+      }
+      //-------------------------
+
      });
+  }
+
+
+
+  public search(){
+    //zoeken volgens search string
+    this.getLocations(null, this.searchStr);
+    //page op 0 zetten aan het begin
+    this.page = 0;
+  }
+
+
+  public paging(goUp:boolean){
+    
+    //nieuwe pagina nummer instellen
+    if(goUp){
+      //go next
+      this.page +=1;
+    } else {
+      //go back
+      this.page -=1;
+    }
+
+    //niet onder 0 gaan
+    if(this.page <=0){
+      this.page = 0;
+    }
+
+    //nieuwe get call uitvoeren op de huidige page status
+    this.getLocations(this.page);
+
+  }
+
+
+  public backToStart(){
+    this.page = 0;
+    this.getLocations(this.page);
   }
 
 
@@ -84,7 +132,7 @@ export class DoelComponent implements OnInit {
     //doellocatie posten
     this.data.postLocation(doelloc).subscribe(res =>{
       console.log(res);
-      this.getLocations();
+      //this.getLocations();
     });
   }
 
@@ -96,7 +144,9 @@ export class DoelComponent implements OnInit {
     //change center
     this.center = latLng(loc.locatie.lat,loc.locatie.long);
     //place marker
-
+    this.layers = [
+      marker(this.center)
+    ];
 
   }
 

@@ -14,9 +14,9 @@ const appRoutes: Routes = [
     component: LoginComponent
   },
   { path: '',
-    component: DoelComponent
+    component: LoginComponent
   },
-  { path: '**', component: DoelComponent }
+  { path: '**', component: LoginComponent }
 ];
 
 import { AppComponent } from './app.component';

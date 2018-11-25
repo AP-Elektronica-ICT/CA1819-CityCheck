@@ -14,9 +14,14 @@ export class DataService {
    }
    
 
-   getLocations(): Observable<ILocRoot[]> {
+   getLocations(page:number, naam?:string): Observable<ILocRoot[]> {
 
-    return this._http.get<ILocRoot[]>(this.url+"allDoelLocs")
+    if(naam != null){
+      //we zoeken op naam
+      return this._http.get<ILocRoot[]>(this.url+"allDoelLocs?naam="+naam)
+    }
+
+    return this._http.get<ILocRoot[]>(this.url+"allDoelLocs?page="+page)
     
   }
 

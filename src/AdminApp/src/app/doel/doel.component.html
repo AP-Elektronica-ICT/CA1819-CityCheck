@@ -7,7 +7,10 @@
 <div id="doelContent">
 
 
-  <input type="text" id="locTerm" class="form-control mb-4" placeholder="Search">
+  <p id="searchLine"><input type="text" id="locTerm" class="form-control mb-4" placeholder="Search" [(ngModel)]="searchStr">
+  <button (click)="search()" type="button" class="btn btn-yellow">Search</button></p>
+
+  <hr>
 
 
   <div id="listView" class="list-group">
@@ -18,11 +21,13 @@
 
       <br>
 
-      <p class="whitetxt">{{page}} / {{totalLocs}} Locaties</p>
+      <p class="whitetxt">Pagina: {{page}}</p>
 
 
-      <button type="button" class="btn btn-yellow">Back</button>
-      <button type="button" class="btn btn-yellow">Next</button>
+      <button (click)="backToStart()" type="button" class="btn btn-yellow">Begin</button>
+
+      <button (click)="paging(false)" type="button" class="btn btn-yellow">Back</button>
+      <button (click)="paging(true)" type="button" class="btn btn-yellow">Next</button>
 
     </div>
 
@@ -30,7 +35,8 @@
     <div id="mapContainer"
         leaflet 
         [leafletOptions]="options"
-        [(leafletCenter)]="center">
+        [(leafletCenter)]="center"
+        [leafletLayers]="layers">
     </div>
 
 

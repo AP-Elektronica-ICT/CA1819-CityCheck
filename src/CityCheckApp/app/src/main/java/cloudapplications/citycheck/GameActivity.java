@@ -51,6 +51,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView scoreview;
     private int score;
 
+    //doellocaties
+    private List<LatLng> currentDoelLocaties;
+
     //callbacks
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +64,14 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        //score
         scoreview = (TextView) findViewById(R.id.txt_Points);
         score = 0;
         setScore(30);
+
+
+        //locationsarray
+        currentDoelLocaties = new ArrayList<>();
 
         final TextView timerTextView = findViewById(R.id.text_view_timer);
 
@@ -85,6 +93,14 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 startActivity(i);
             }
         }.start();
+
+
+        //TO-DELETE
+        //Even hardcoded 3 doellocaties adden
+        currentDoelLocaties.add(new LatLng(51.2289238, 4.4026316));
+        currentDoelLocaties.add(new LatLng(51.2183305, 4.4204524));
+        currentDoelLocaties.add(new LatLng(51.2202678, 4.399327));
+        //na het ready zijn van de map onderaan plaatsen we neuwe markers
 
 
     }
@@ -134,6 +150,11 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                         new LatLng(-33.501, 150.217),
                         new LatLng(-32.306, 149.248),
                         new LatLng(-32.491, 147.309)));
+
+
+
+        //eerste doellocatie markers tonen
+        showDoelLocaties(currentDoelLocaties);
     }
 
     @Override
@@ -206,6 +227,15 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         float[] hsv = new float[3];
         Color.colorToHSV(color, hsv);
         return BitmapDescriptorFactory.defaultMarker(hsv[0]);
+    }
+
+    private void  showDoelLocaties(List<LatLng> newDoelLocaties){
+
+        // place a marker on the locations
+        for (int i=0;i<newDoelLocaties.size();i++) {
+            LatLng locCoordinaat = newDoelLocaties.get(i);
+            kaart.addMarker(new MarkerOptions().position(locCoordinaat));
+        }
     }
 
     private void setScore(int newScore) {

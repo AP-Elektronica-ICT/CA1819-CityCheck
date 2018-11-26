@@ -50,15 +50,15 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
         Traces = new ArrayList<LatLng>();
         r= new Random();
         myGoogleApiClient = new GoogleApiClient.Builder(activity.getBaseContext())
+                .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
                 .build();
 
         myLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(10 * 1000)        // 10 seconds, in milliseconds
-                .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+                .setInterval(3 * 1000)        // 3 seconds, in milliseconds
+                .setFastestInterval(3 * 1000); // 3 second, in milliseconds
     }
     public void startConnection() {
         if(!myGoogleApiClient.isConnected()){
@@ -69,6 +69,7 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
         if (myGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(myGoogleApiClient, this);
             myGoogleApiClient.disconnect();
+            Log.d(TAG, "connection & updates stopped");
         }
     }
 
@@ -76,7 +77,7 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
     private void placeMarker(LatLng location){
         if(Me == null){
             Me = map.addMarker(new MarkerOptions()
-                    .position(new LatLng(51.2194, 4.4025))
+                    .position(location)
                     .title("Me")
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.carrot)));
         }
@@ -85,7 +86,7 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
         }
     }
     private void drawPath(){
-        //testcode voor polyline te tekenen
+        //elke keer het traject tussen de laatste locatie en de huidige locatie als polyline tekenen
         if(Traces.size()>4){ //4 intervals wachten voor het tekenen van een lijn om zo collision aan de start te vermijden
             Polyline polyline1 = map.addPolyline(new PolylineOptions()
                     .add(
@@ -102,6 +103,7 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
         call.post(getString(R.string.database_ip),"teams/"+gameId+"/"+teamNaam+"/huidigeLocatie","{'Lat':'" + Lat + "', 'Long':'" + Long + "'}");
 
     }
+
     private void getStartLocation(){
         //permissies worden gecheckt, warning negeren!
         Location startLocation = LocationServices.FusedLocationApi.getLastLocation(myGoogleApiClient);
@@ -110,13 +112,14 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
 
         }
         else {
-            handleNewLocation();
+            handleNewLocation(new LatLng(startLocation.getLatitude(), startLocation.getLongitude()));
         }
     }
-    public void handleNewLocation() {
+
+    public void handleNewLocation(LatLng location) {
 
         //testdata
-        location= new LatLng((r.nextDouble()*(51.2500 - 50.1800) + 50.1800),(r.nextDouble()* (4.8025 - 4.0000) + 4.0000));
+        //location= new LatLng((r.nextDouble()*(51.2500 - 50.1800) + 50.1800),(r.nextDouble()* (4.8025 - 4.0000) + 4.0000));
 
         Log.d(TAG, location.toString());
         Traces.add(new LatLng(location.latitude, location.longitude));
@@ -138,7 +141,8 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
 
         }else {
-                getStartLocation();
+            LocationServices.FusedLocationApi.requestLocationUpdates(myGoogleApiClient, myLocationRequest, this);
+            Log.d(TAG, "updates started");
         }
 
     }
@@ -155,6 +159,7 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.d(TAG, "onlocationchanged" + location.toString());
         newLocation = location;
     }
 
@@ -163,8 +168,9 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
         if (requestCode == 1) {
             if(grantResults.length == 1
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //marker wordt niet meteen getoond, waarom?
-                getStartLocation();
+                return;
+            } else {
+                Toast.makeText(activity.getBaseContext(), "Zonder toegang tot locatie kan je niet spelen",Toast.LENGTH_LONG).show();
             }
         }
     }

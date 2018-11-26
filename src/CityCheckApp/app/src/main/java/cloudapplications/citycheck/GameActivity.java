@@ -125,6 +125,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onPause(){
         super.onPause();
+        //stop werkt pas onDestroy en niet onPause, opzich wel goed want als ze de app dan even naar de achtergrond brengen dan blijven de lijnen wel tekenen
         myTeam.stopConnection();
     }
 
@@ -134,7 +135,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-
+            Toast.makeText(this, "You need to enable permissions to display location !", Toast.LENGTH_SHORT).show();
         }
 
         // move the camera to Antwerp
@@ -161,8 +162,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 return;
             } else {
-                //toast is niet zichtbaar
-                Toast.makeText(this, "Zonder toegang tot locatie kan je niet spelen",Toast.LENGTH_LONG);
+                Toast.makeText(this, "Zonder toegang tot locatie kan je niet spelen",Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -271,7 +271,10 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         //locatie doorsturen om de 3s
         int TimeCounter = (int) (time / 1000);
         if(TimeCounter % 3 == 0){
-            myTeam.handleNewLocation();
+            if(myTeam.newLocation != null){
+                myTeam.handleNewLocation(new LatLng(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude()));
+            }
+
         }
 
 

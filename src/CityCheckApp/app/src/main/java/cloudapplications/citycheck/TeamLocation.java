@@ -22,22 +22,33 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class TeamLocation extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener
 {
 
     private GoogleApiClient myGoogleApiClient;
     private LocationRequest myLocationRequest;
-    private Location lastLocation;
+    public Location newLocation;
     private GoogleMap map;
     private Marker Me;
     private static final String TAG = TeamLocation.class.getSimpleName();
     private Activity activity;
+    public List<LatLng> Traces;
+    Random r;
+    LatLng location;
 
     //public methoden
     public TeamLocation(Activity activityIn, GoogleMap kaart) {
         activity = activityIn;
         map= kaart;
+        Traces = new ArrayList<LatLng>();
+        r= new Random();
         myGoogleApiClient = new GoogleApiClient.Builder(activity.getBaseContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -62,16 +73,26 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
     }
 
     //private helpermethoden
-    private void placeMarker(Location location){
+    private void placeMarker(LatLng location){
         if(Me == null){
             Me = map.addMarker(new MarkerOptions()
-                    .position(new LatLng(location.getLatitude(), location.getLongitude()))
-                    .title("Marker")
+                    .position(new LatLng(51.2194, 4.4025))
+                    .title("Me")
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.carrot)));
         }
         else{
-            Me.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+            Me.setPosition(new LatLng(location.latitude, location.longitude));
         }
+    }
+    private void drawPath(){
+        //testcode voor polyline te tekenen
+        if(Traces.size()>4){ //4 intervals wachten voor het tekenen van een lijn om zo collision aan de start te vermijden
+            Polyline polyline1 = map.addPolyline(new PolylineOptions()
+                    .add(
+                            new LatLng(Traces.get(Traces.size()-2).latitude, Traces.get(Traces.size()-2).longitude),
+                            new LatLng(Traces.get(Traces.size()-1).latitude, Traces.get(Traces.size()-1).longitude)));
+        }
+
     }
     private void sendLocationToDatabase(LatLng location, int gameId,String teamNaam){
         double Lat = location.latitude;
@@ -83,17 +104,27 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
     }
     private void getStartLocation(){
         //permissies worden gecheckt, warning negeren!
-        Location location = LocationServices.FusedLocationApi.getLastLocation(myGoogleApiClient);
-        if (location == null) {
+        Location startLocation = LocationServices.FusedLocationApi.getLastLocation(myGoogleApiClient);
+        if (startLocation == null) {
             LocationServices.FusedLocationApi.requestLocationUpdates(myGoogleApiClient, myLocationRequest, this);
+
         }
         else {
-            handleNewLocation(location);
+            handleNewLocation();
         }
     }
-    private void handleNewLocation(Location location) {
+    public void handleNewLocation() {
+
+        //testdata
+        location= new LatLng((r.nextDouble()*(51.2500 - 50.1800) + 50.1800),(r.nextDouble()* (4.8025 - 4.0000) + 4.0000));
+
         Log.d(TAG, location.toString());
+        Traces.add(new LatLng(location.latitude, location.longitude));
+        Log.d(TAG, Integer.toString(Traces.size()));
         placeMarker(location);
+        drawPath();
+
+
         //sendLocationToDatabase(location);
     }
 
@@ -124,11 +155,7 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
 
     @Override
     public void onLocationChanged(Location location) {
-        if(location != lastLocation){
-            handleNewLocation(location);
-            lastLocation=location;
-        }
-
+        newLocation = location;
     }
 
     @Override

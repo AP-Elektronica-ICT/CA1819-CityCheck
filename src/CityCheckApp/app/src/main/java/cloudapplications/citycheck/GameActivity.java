@@ -47,13 +47,15 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private String teamNaam;
     private int gamecode;
 
+
     // Gamescore
     private TextView scoreview;
     private int score;
     private TextView teamNameTXT;
 
     //doellocaties
-    private List<LatLng> currentDoelLocaties;
+    //private List<LatLng> currentDoelLocaties;
+    private List<DoelLocatie> TargetLocations = new ArrayList<>();
 
     //callbacks
     @Override
@@ -75,7 +77,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         //locationsarray
-        currentDoelLocaties = new ArrayList<>();
+        //currentDoelLocaties = new ArrayList<>();
 
         final TextView timerTextView = findViewById(R.id.text_view_timer);
 
@@ -106,9 +108,10 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         getTargetLocations();
         //TO-DELETE
         //Even hardcoded 3 doellocaties adden
-        currentDoelLocaties.add(new LatLng(51.2289238, 4.4026316));
+        //mogen weg
+        /*currentDoelLocaties.add(new LatLng(51.2289238, 4.4026316));
         currentDoelLocaties.add(new LatLng(51.2183305, 4.4204524));
-        currentDoelLocaties.add(new LatLng(51.2202678, 4.399327));
+        currentDoelLocaties.add(new LatLng(51.2202678, 4.399327));*/
         //na het ready zijn van de map onderaan plaatsen we nieuwe markers
 
 
@@ -152,7 +155,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         getTeamsOnMap(gamecode);
 
         //eerste doellocatie markers tonen
-        showDoelLocaties(currentDoelLocaties);
+        //inconsistentie ivm latlng en locatie gebruik...
+        //showDoelLocaties(damnit);
     }
 
     @Override
@@ -175,22 +179,33 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         while (call.status == OkHttpCall.RequestStatus.Undefined) ;
         if (call.status == OkHttpCall.RequestStatus.Successful) {
             JSONArray obj;
-            JSONArray TargetLocationsArray;
+
             try {
                 obj = new JSONArray(call.responseStr);
-                //Waarom telt deze niet verder naar de volgende functie achter bovenstaande? waardes komen goed binnen.
+
                 Log.d("Locations", "JSON object response: " + obj.toString());
                 Log.d("Locations", "Array of targetlocations: " + obj);
                 for(int i = 0; i<obj.length();i++){
                     JSONObject target= obj.getJSONObject(i);
                     //maken van targetlocation class?
+                    int id = target.getInt("id");
                     String name = target.getString("titel");
                     Double lat = target.getJSONObject("locatie").getDouble("lat");
                     Double lng = target.getJSONObject("locatie").getDouble("long");
+                    String vragen = target.getString("vragen");
+                    //Location loc = new Location(id,lat,lng);
                     //tonen alle opgehaalde waardes
-                    Toast.makeText(this, ""+lat+" "+lng+" "+name, Toast.LENGTH_SHORT).show();
+                    //werkt
+                    //Toast.makeText(this, ""+lat+" "+lng+" "+name, Toast.LENGTH_SHORT).show();
+                    //geen zekerheid ivm formaat locatie
+                    DoelLocatie newtargetlocation = new DoelLocatie(name,lat,lng,null,vragen);
+                    //heir ben ik iets aan het foutdoen,...
+                    TargetLocations.add(newtargetlocation);
+                    //Toast.makeText(this, ""+newtargetlocation, Toast.LENGTH_LONG).show();
 
                 }
+                Log.d("Doel", "1 teams list: " + currentDoelLocaties);
+                Toast.makeText(this, TargetLocations.size(), Toast.LENGTH_SHORT).show();
             }catch (Throwable t) {
                 Log.e("doelen", "error: " + t);
             }

@@ -183,20 +183,21 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         call.get(getString(R.string.database_ip), "allDoelLocs");
         while (call.status == OkHttpCall.RequestStatus.Undefined) ;
         if (call.status == OkHttpCall.RequestStatus.Successful) {
-            JSONObject obj;
+            JSONArray obj;
             JSONArray TargetLocationsArray;
             try {
-                obj = new JSONObject(call.responseStr);
+                obj = new JSONArray(call.responseStr);
                 //Waarom telt deze niet verder naar de volgende functie achter bovenstaande? waardes komen goed binnen.
-                //om een of andere redenen is onderstaande lijn "non executable code"?
                 Log.d("Locations", "JSON object response: " + obj.toString());
-                TargetLocationsArray = obj.getJSONArray("doellocaties");
-                Log.d("Locations", "Array of targetlocations: " + TargetLocationsArray);
-                for(int i = 0; i<TargetLocationsArray.length();i++){
-                    JSONObject target= TargetLocationsArray.getJSONObject(i);
+                Log.d("Locations", "Array of targetlocations: " + obj);
+                for(int i = 0; i<obj.length();i++){
+                    JSONObject target= obj.getJSONObject(i);
                     //maken van targetlocation class?
-                    Double lat = target.getDouble("Lat");
-                    Toast.makeText(this, ""+lat, Toast.LENGTH_SHORT).show();
+                    String name = target.getString("titel");
+                    Double lat = target.getJSONObject("locatie").getDouble("lat");
+                    Double lng = target.getJSONObject("locatie").getDouble("long");
+                    //tonen alle opgehaalde waardes
+                    Toast.makeText(this, ""+lat+" "+lng+" "+name, Toast.LENGTH_SHORT).show();
 
                 }
             }catch (Throwable t) {

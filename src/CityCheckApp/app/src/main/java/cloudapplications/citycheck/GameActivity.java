@@ -40,7 +40,7 @@ import android.os.Handler;
 public class GameActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap kaart;
-    private TeamLocation locationmanager;
+    private TeamLocation myTeam;
 
     // Variabelen om teams op te halen uit database
     private List<Team> teams = new ArrayList<>();
@@ -88,6 +88,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 int minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
                 int hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
                 timerTextView.setText("Time remaining: " + hours + ":" + minutes + ":" + seconds);
+                everythingThatNeedsToHappenEvery3s(millisUntilFinished);
 
             }
 
@@ -108,7 +109,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         currentDoelLocaties.add(new LatLng(51.2289238, 4.4026316));
         currentDoelLocaties.add(new LatLng(51.2183305, 4.4204524));
         currentDoelLocaties.add(new LatLng(51.2202678, 4.399327));
-        //na het ready zijn van de map onderaan plaatsen we neuwe markers
+        //na het ready zijn van de map onderaan plaatsen we nieuwe markers
 
 
     }
@@ -116,15 +117,16 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onResume(){
         super.onResume();
-        if(locationmanager != null){
-            locationmanager.startConnection();
+        if(myTeam != null){
+            myTeam.startConnection();
         }
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        locationmanager.stopConnection();
+        //stop werkt pas onDestroy en niet onPause, opzich wel goed want als ze de app dan even naar de achtergrond brengen dan blijven de lijnen wel tekenen
+        myTeam.stopConnection();
     }
 
     @Override
@@ -133,7 +135,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-
+            Toast.makeText(this, "You need to enable permissions to display location !", Toast.LENGTH_SHORT).show();
         }
 
         // move the camera to Antwerp
@@ -141,25 +143,13 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         kaart.moveCamera(CameraUpdateFactory.newLatLngZoom(Antwerpen, 15));
 
         //alles ivm locatie van het eigen team
-        locationmanager = new TeamLocation(this, kaart);
-        locationmanager.startConnection();
+        myTeam = new TeamLocation(this, kaart);
+        myTeam.startConnection();
 
-        //get team locations
+        //get other team's locations
         gamecode = Integer.parseInt(getIntent().getExtras().getString("gameCode"));
         Log.d("Mapmarker", "gamecode to call: " + gamecode);
         getTeamsOnMap(gamecode);
-
-        //testcode voor polyline te tekenen
-        Polyline polyline1 = googleMap.addPolyline(new PolylineOptions()
-                .add(
-                        new LatLng(-35.016, 143.321),
-                        new LatLng(-34.747, 145.592),
-                        new LatLng(-34.364, 147.891),
-                        new LatLng(-33.501, 150.217),
-                        new LatLng(-32.306, 149.248),
-                        new LatLng(-32.491, 147.309)));
-
-
 
         //eerste doellocatie markers tonen
         showDoelLocaties(currentDoelLocaties);
@@ -172,12 +162,13 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 return;
             } else {
-                //toast is niet zichtbaar
-                Toast.makeText(this, "Zonder toegang tot locatie kan je niet spelen",Toast.LENGTH_LONG);
+                Toast.makeText(this, "Zonder toegang tot locatie kan je niet spelen",Toast.LENGTH_LONG).show();
             }
         }
     }
 
+
+    //private helper methoden
     private void getTargetLocations(){
         OkHttpCall call = new OkHttpCall();
         call.get(getString(R.string.database_ip), "allDoelLocs");
@@ -205,7 +196,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
-    //private helper methoden
+
     private void getTeamsOnMap(int gameId) {
         OkHttpCall call = new OkHttpCall();
         call.get(getString(R.string.database_ip), "currentgame/" + gameId);
@@ -275,5 +266,18 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private void setScore(int newScore) {
         score = newScore;
         scoreview.setText("" + score);
+    }
+
+    private void everythingThatNeedsToHappenEvery3s(Long time){
+        //locatie doorsturen om de 3s
+        int TimeCounter = (int) (time / 1000);
+        if(TimeCounter % 3 == 0){
+            if(myTeam.newLocation != null){
+                myTeam.handleNewLocation(new LatLng(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude()));
+            }
+
+        }
+
+
     }
 }

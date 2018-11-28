@@ -156,7 +156,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
         //eerste doellocatie markers tonen
         //inconsistentie ivm latlng en locatie gebruik...
-        //showDoelLocaties(damnit);
+        showDoelLocaties(TargetLocations);
     }
 
     @Override
@@ -204,7 +204,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     //Toast.makeText(this, ""+newtargetlocation, Toast.LENGTH_LONG).show();
 
                 }
-                Log.d("Doel", "1 teams list: " + currentDoelLocaties);
+                //Log.d("Doel", "1 teams list: " + currentDoelLocaties);
                 Toast.makeText(this, TargetLocations.size(), Toast.LENGTH_SHORT).show();
             }catch (Throwable t) {
                 Log.e("doelen", "error: " + t);
@@ -269,12 +269,13 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
 
-    private void  showDoelLocaties(List<LatLng> newDoelLocaties){
+    private void  showDoelLocaties(List<DoelLocatie> newDoelLocaties){
 
         // place a marker on the locations
         for (int i=0;i<newDoelLocaties.size();i++) {
-            LatLng locCoordinaat = newDoelLocaties.get(i);
-            kaart.addMarker(new MarkerOptions().position(locCoordinaat));
+            DoelLocatie doellocatie = newDoelLocaties.get(i);
+            LatLng Locatie = new LatLng(doellocatie.getLat(),doellocatie.getLong());
+            kaart.addMarker(new MarkerOptions().position(Locatie));
         }
     }
 

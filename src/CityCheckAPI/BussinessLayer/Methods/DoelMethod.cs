@@ -141,8 +141,7 @@ namespace BussinessLayer.Methods
             List<Vraag> vragenQuery = doelenQuery.Vragen.ToList<Vraag>();
 
 
-            if (vra
-genQuery != null)
+            if (vragenQuery != null)
                 return vragenQuery;
             else
                 return null;

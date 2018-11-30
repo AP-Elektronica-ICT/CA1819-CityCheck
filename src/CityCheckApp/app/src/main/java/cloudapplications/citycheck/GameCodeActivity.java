@@ -51,13 +51,13 @@ public class GameCodeActivity extends AppCompatActivity {
         timeTextView.setText(currentGameTime + " hours");
 
         // If the game creator came to this view then he has the right to start the game
-//        if (!getIntent().getExtras().getBoolean("gameCreator"))
-//            startGameButton.setVisibility(View.GONE);
+        if (!getIntent().getExtras().getBoolean("gameCreator"))
+            startGameButton.setVisibility(View.GONE);
 
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startGame();
+                creatorStartGame();
             }
         });
 
@@ -101,10 +101,10 @@ public class GameCodeActivity extends AppCompatActivity {
                 } else
                     gotTeams = true;
 
-                // TODO
-//                obj = new JSONObject(call.responseStr);
-//                if(obj.getBoolean("hasStarted"))
-//                    startGame();
+                // Als de admin de game heeft gestart dan wordt dat ook voor de andere gebruikers gestart
+                obj = new JSONObject(call.responseStr);
+                if (obj.getBoolean("hasStarted"))
+                    startGame();
             } catch (Throwable t) {
                 Log.e("GameCodeActivity", "Could not parse malformed JSON: \"" + call.responseStr + "\"");
             }
@@ -119,5 +119,16 @@ public class GameCodeActivity extends AppCompatActivity {
         i.putExtra("gameCode", currentGameCode);
         i.putExtra("teamNaam", getIntent().getExtras().getString("teamNaam"));
         startActivity(i);
+    }
+
+    private void creatorStartGame() {
+        OkHttpCall call = new OkHttpCall();
+        call.post(getString(R.string.database_ip), "startgame/" + currentGameCode + "/" + System.currentTimeMillis(), "");
+        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
+        if (call.status == OkHttpCall.RequestStatus.Successful) {
+            startGame();
+        } else {
+            Toast.makeText(this, "Error while trying to start the game", Toast.LENGTH_SHORT).show();
+        }
     }
 }

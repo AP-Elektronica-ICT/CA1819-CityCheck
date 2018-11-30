@@ -22,7 +22,7 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
-public class JoinGameActivity extends AppCompatActivity{
+public class JoinGameActivity extends AppCompatActivity {
 
     private Button btnPickColor;
     private Button btnJoinGame;
@@ -35,8 +35,8 @@ public class JoinGameActivity extends AppCompatActivity{
     private String name;
     private int color;
     private int gamecode;
-    private long lat=0;
-    private long lon=0;
+    private long lat = 0;
+    private long lon = 0;
     private String gameTime;
     private boolean gameCreator;
 
@@ -124,11 +124,10 @@ public class JoinGameActivity extends AppCompatActivity{
         });
     }
 
-
     private void addTeamToGame(String name, int color, final int gamecode) {
 
         OkHttpCall call = new OkHttpCall();
-        call.post(getString(R.string.database_ip), "teams/" + Integer.toString(gamecode), "{'teamNaam':'" + name + "', 'kleur':'" + color + "','huidigeLong':'" +lon + "', 'huidigLat':'" + lat + "'}");
+        call.post(getString(R.string.database_ip), "teams/" + Integer.toString(gamecode), "{'teamNaam':'" + name + "', 'kleur':'" + color + "','huidigeLong':'" + lon + "', 'huidigLat':'" + lat + "'}");
         while (call.status == OkHttpCall.RequestStatus.Undefined) ;
         if (call.status == OkHttpCall.RequestStatus.Successful) {
             startGame(gamecode);

@@ -4,19 +4,15 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -25,8 +21,6 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,6 +29,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import android.os.Handler;
+
+import cloudapplications.citycheck.Models.DoelLocatie;
+import cloudapplications.citycheck.Models.DoelLocation;
+import cloudapplications.citycheck.Models.Team;
 
 
 public class GameActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -274,6 +272,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         // place a marker on the locations
         for (int i=0;i<newDoelLocaties.size();i++) {
             DoelLocatie doellocatie = newDoelLocaties.get(i);
+            //DoelLocatie doellocatie = newDoelLocaties.get(i);
             LatLng Locatie = new LatLng(doellocatie.getLat(),doellocatie.getLong());
             kaart.addMarker(new MarkerOptions().position(Locatie));
         }

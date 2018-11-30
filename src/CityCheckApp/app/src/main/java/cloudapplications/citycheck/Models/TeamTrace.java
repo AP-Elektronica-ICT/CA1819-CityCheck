@@ -1,4 +1,4 @@
-package cloudapplications.citycheck;
+package cloudapplications.citycheck.Models;
 
 class TeamTrace {
     private int Id;

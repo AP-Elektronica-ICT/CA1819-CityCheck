@@ -17,6 +17,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import cloudapplications.citycheck.Models.Team;
+
 public class GameCodeActivity extends AppCompatActivity {
 
     String currentGameCode;

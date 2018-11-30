@@ -1,4 +1,4 @@
-package cloudapplications.citycheck;
+package cloudapplications.citycheck.Models;
 import android.location.Location;
 import java.util.List;
 
@@ -15,7 +15,7 @@ public class DoelLocatie {
     private Double Lat;
     private Double Long;
 
-    DoelLocatie(String name, double Lat, double Long, Location loc, String vragen){
+    public DoelLocatie(String name, double Lat, double Long, Location loc, String vragen){
         this.name = name;
         this.Lat = Lat;
         this.Long = Long;

@@ -8,17 +8,19 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class GameCodeActivity extends AppCompatActivity {
 
     String currentGameCode;
     String currentGameTime;
-    TextView teamsTextView;
     String lastResponseStr = "";
     Boolean gotTeams;
 
@@ -30,6 +32,8 @@ public class GameCodeActivity extends AppCompatActivity {
             handler.postDelayed(this, 3000);
         }
     };
+    ArrayList<Team> teamsList = new ArrayList<>();
+    ListView teamsListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +43,7 @@ public class GameCodeActivity extends AppCompatActivity {
         Button startGameButton = findViewById(R.id.button_start_game);
         TextView codeTextView = findViewById(R.id.text_view_code);
         TextView timeTextView = findViewById(R.id.text_view_time);
-        teamsTextView = findViewById(R.id.text_view_teams);
+        teamsListView = findViewById(R.id.teams_list_view);
 
         Log.d("Teams", "gamecode from intent: " + getIntent().getExtras().get("gameCode"));
         currentGameCode = getIntent().getExtras().getString("gameCode");
@@ -55,12 +59,7 @@ public class GameCodeActivity extends AppCompatActivity {
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("Teams", "start game");
-                Intent i = new Intent(view.getContext(), GameActivity.class);
-                i.putExtra("gameTime", currentGameTime);
-                i.putExtra("gameCode", currentGameCode);
-                i.putExtra("teamNaam", getIntent().getExtras().getString("teamNaam"));
-                startActivity(i);
+                startGame();
             }
         });
 
@@ -89,23 +88,38 @@ public class GameCodeActivity extends AppCompatActivity {
                     lastResponseStr = call.responseStr;
                     obj = new JSONObject(lastResponseStr);
                     Log.d("GameCodeActivity", "JSON object response: " + obj.toString());
+                    // Selecteer de "teams" veld
                     teamsArray = obj.getJSONArray("teams");
                     if (gotTeams) {
                         teams = teamsArray.getJSONObject(teamsArray.length() - 1);
-                        teamsTextView.append("\n" + teams.getString("teamNaam"));
+                        teamsList.add(new Team(teams.getString("teamNaam"), teams.getInt("kleur"), -1));
                     } else {
                         for (int i = 0; i < teamsArray.length(); i++) {
                             teams = teamsArray.getJSONObject(i);
-                            teamsTextView.append("\n" + teams.getString("teamNaam"));
+                            teamsList.add(new Team(teams.getString("teamNaam"), teams.getInt("kleur"), -1));
                         }
                     }
+                    teamsListView.setAdapter(new TeamsAdapter(this, teamsList));
                 } else
                     gotTeams = true;
+
+                // TODO
+//                obj = new JSONObject(call.responseStr);
+//                if(obj.getBoolean("hasStarted"))
+//                    startGame();
             } catch (Throwable t) {
                 Log.e("GameCodeActivity", "Could not parse malformed JSON: \"" + call.responseStr + "\"");
             }
         } else {
             Toast.makeText(this, "Error while trying to get the teams", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void startGame() {
+        Intent i = new Intent(GameCodeActivity.this, GameActivity.class);
+        i.putExtra("gameTime", currentGameTime);
+        i.putExtra("gameCode", currentGameCode);
+        i.putExtra("teamNaam", getIntent().getExtras().getString("teamNaam"));
+        startActivity(i);
     }
 }

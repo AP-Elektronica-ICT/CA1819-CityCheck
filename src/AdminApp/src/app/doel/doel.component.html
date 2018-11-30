@@ -1,0 +1,69 @@
+<header>
+  <h1 id="title">DOEL LOCATIES OVERVIEW</h1>
+</header>
+
+<section id="doellocPage">
+
+<div id="doelContent">
+
+
+  <p id="searchLine"><input type="text" id="locTerm" class="form-control mb-4" placeholder="Search" [(ngModel)]="searchStr">
+  <button (click)="search()" type="button" class="btn btn-yellow">Search</button></p>
+
+  <hr>
+
+
+  <div id="listView" class="list-group">
+      <a href="#!" class="list-group-item list-group-item-action disabled yellow">Gekende locaties</a>
+
+
+      <a (click)="pickLoc(loc)"  class="list-group-item list-group-item-action" *ngFor="let loc of allLocs">{{loc.titel}}</a>
+
+      <br>
+
+      <p class="whitetxt">Pagina: {{page}}</p>
+
+
+      <button (click)="backToStart()" type="button" class="btn btn-yellow">Begin</button>
+
+      <button (click)="paging(false)" type="button" class="btn btn-yellow">Back</button>
+      <button (click)="paging(true)" type="button" class="btn btn-yellow">Next</button>
+
+    </div>
+
+
+    <div id="mapContainer"
+        leaflet 
+        [leafletOptions]="options"
+        [(leafletCenter)]="center"
+        [leafletLayers]="layers">
+    </div>
+
+
+</div>
+
+<hr>
+
+<h1 id="addTitle">ADD ONE</h1>
+
+
+<div id="addCont">
+
+  <section id="forminps">
+    <input type="text" id="namelc" class="form-control mb-4" placeholder="Naam" [(ngModel)]="titel">
+    <input type="number" id="latlc" class="form-control mb-4" placeholder="Latitutde" [(ngModel)]="newlat">
+    <input type="number" id="lnglc" class="form-control mb-4" placeholder="Longitude" [(ngModel)]="newlong">
+
+    <button (click)="addLocation()" type="button" class="btn btn-yellow">Add Location</button>
+
+  </section>
+
+</div>
+
+</section>
+
+
+
+<footer>
+  <p>CityCheck &copy; 2018 @AP.</p>
+</footer>

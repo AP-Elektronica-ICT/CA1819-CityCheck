@@ -1,4 +1,4 @@
-package cloudapplications.citycheck;
+package androidx.test;
 
 
 import android.view.View;
@@ -13,10 +13,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
+import cloudapplications.citycheck.MainActivity;
+import cloudapplications.citycheck.R;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -33,7 +36,7 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class JoinGame {
+public class JoinGameTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
@@ -46,7 +49,7 @@ public class JoinGame {
     @Test
     public void joinGame() {
         ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.button_join_game_window), withText("Join game"),
+                allOf(ViewMatchers.withId(cloudapplications.citycheck.R.id.button_join_game_window), withText("Join game"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -56,7 +59,7 @@ public class JoinGame {
         appCompatButton.perform(click());
 
         ViewInteraction appCompatEditText = onView(
-                allOf(withId(R.id.edit_text_team_name),
+                allOf(ViewMatchers.withId(cloudapplications.citycheck.R.id.edit_text_team_name),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.LinearLayout")),
@@ -66,7 +69,7 @@ public class JoinGame {
         appCompatEditText.perform(click());
 
         ViewInteraction appCompatEditText2 = onView(
-                allOf(withId(R.id.edit_text_team_name),
+                allOf(ViewMatchers.withId(cloudapplications.citycheck.R.id.edit_text_team_name),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.LinearLayout")),
@@ -76,7 +79,7 @@ public class JoinGame {
         appCompatEditText2.perform(replaceText("Team"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText3 = onView(
-                allOf(withId(R.id.edit_text_team_name), withText("Team"),
+                allOf(ViewMatchers.withId(cloudapplications.citycheck.R.id.edit_text_team_name), withText("Team"),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.LinearLayout")),
@@ -86,7 +89,7 @@ public class JoinGame {
         appCompatEditText3.perform(pressImeActionButton());
 
         ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.button_pick_color), withText("Pick Color"),
+                allOf(ViewMatchers.withId(cloudapplications.citycheck.R.id.button_pick_color), withText("Pick Color"),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.LinearLayout")),
@@ -99,13 +102,13 @@ public class JoinGame {
                 allOf(withId(android.R.id.button1), withText("ok"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.buttonPanel),
+                                        ViewMatchers.withId(cloudapplications.citycheck.R.id.buttonPanel),
                                         0),
                                 3)));
         appCompatButton3.perform(scrollTo(), click());
 
         ViewInteraction appCompatEditText4 = onView(
-                allOf(withId(R.id.edit_text_game_code),
+                allOf(ViewMatchers.withId(cloudapplications.citycheck.R.id.edit_text_game_code),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.LinearLayout")),
@@ -115,7 +118,7 @@ public class JoinGame {
         appCompatEditText4.perform(replaceText("2373"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText5 = onView(
-                allOf(withId(R.id.edit_text_game_code), withText("2373"),
+                allOf(ViewMatchers.withId(cloudapplications.citycheck.R.id.edit_text_game_code), withText("2373"),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.LinearLayout")),
@@ -125,9 +128,9 @@ public class JoinGame {
         appCompatEditText5.perform(pressImeActionButton());
 
         ViewInteraction appCompatButton4 = onView(
-                allOf(withId(R.id.button_join_game), withText("Join"),
+                allOf(ViewMatchers.withId(cloudapplications.citycheck.R.id.button_join_game), withText("Join"),
                         childAtPosition(
-                                allOf(withId(R.id.LYT_JoingGameLayout),
+                                allOf(ViewMatchers.withId(R.id.LYT_JoingGameLayout),
                                         childAtPosition(
                                                 withId(android.R.id.content),
                                                 0)),

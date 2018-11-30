@@ -1,4 +1,4 @@
-package cloudapplications.citycheck;
+package androidx.test;
 
 
 import android.view.View;
@@ -14,10 +14,13 @@ import org.junit.runner.RunWith;
 
 import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
+import cloudapplications.citycheck.MainActivity;
+import cloudapplications.citycheck.R;
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
@@ -36,7 +39,7 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class CreateGame {
+public class CreateGameTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
@@ -49,7 +52,7 @@ public class CreateGame {
     @Test
     public void joinGame() {
         ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.button_create_game_window), withText("Create game"),
+                allOf(ViewMatchers.withId(cloudapplications.citycheck.R.id.button_create_game_window), withText("Create game"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -59,7 +62,7 @@ public class CreateGame {
         appCompatButton.perform(click());
 
         ViewInteraction appCompatSpinner = onView(
-                allOf(withId(R.id.spinner_game_time),
+                allOf(ViewMatchers.withId(cloudapplications.citycheck.R.id.spinner_game_time),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.LinearLayout")),
@@ -76,7 +79,7 @@ public class CreateGame {
         appCompatCheckedTextView.perform(click());
 
         ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.button_create_game), withText("Create"),
+                allOf(ViewMatchers.withId(cloudapplications.citycheck.R.id.button_create_game), withText("Create"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -86,7 +89,7 @@ public class CreateGame {
         appCompatButton2.perform(click());
 
         ViewInteraction appCompatEditText = onView(
-                allOf(withId(R.id.edit_text_team_name),
+                allOf(ViewMatchers.withId(cloudapplications.citycheck.R.id.edit_text_team_name),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.LinearLayout")),
@@ -96,7 +99,7 @@ public class CreateGame {
         appCompatEditText.perform(click());
 
         ViewInteraction appCompatEditText2 = onView(
-                allOf(withId(R.id.edit_text_team_name),
+                allOf(ViewMatchers.withId(cloudapplications.citycheck.R.id.edit_text_team_name),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.LinearLayout")),
@@ -106,7 +109,7 @@ public class CreateGame {
         appCompatEditText2.perform(replaceText("Test teate"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText3 = onView(
-                allOf(withId(R.id.edit_text_team_name), withText("Test teate"),
+                allOf(ViewMatchers.withId(cloudapplications.citycheck.R.id.edit_text_team_name), withText("Test teate"),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.LinearLayout")),
@@ -116,7 +119,7 @@ public class CreateGame {
         appCompatEditText3.perform(pressImeActionButton());
 
         ViewInteraction appCompatButton3 = onView(
-                allOf(withId(R.id.button_pick_color), withText("Pick Color"),
+                allOf(ViewMatchers.withId(cloudapplications.citycheck.R.id.button_pick_color), withText("Pick Color"),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.LinearLayout")),
@@ -129,15 +132,15 @@ public class CreateGame {
                 allOf(withId(android.R.id.button1), withText("ok"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.buttonPanel),
+                                        ViewMatchers.withId(cloudapplications.citycheck.R.id.buttonPanel),
                                         0),
                                 3)));
         appCompatButton4.perform(scrollTo(), click());
 
         ViewInteraction appCompatButton5 = onView(
-                allOf(withId(R.id.button_join_game), withText("Join"),
+                allOf(ViewMatchers.withId(cloudapplications.citycheck.R.id.button_join_game), withText("Join"),
                         childAtPosition(
-                                allOf(withId(R.id.LYT_JoingGameLayout),
+                                allOf(ViewMatchers.withId(R.id.LYT_JoingGameLayout),
                                         childAtPosition(
                                                 withId(android.R.id.content),
                                                 0)),

@@ -123,7 +123,7 @@ public class GameCodeActivity extends AppCompatActivity {
 
     private void creatorStartGame() {
         OkHttpCall call = new OkHttpCall();
-        call.post(getString(R.string.database_ip), "startgame/" + currentGameCode + "/5000", "");
+        call.post(getString(R.string.database_ip), "startgame/" + currentGameCode + "/" + System.currentTimeMillis(), "");
         while (call.status == OkHttpCall.RequestStatus.Undefined) ;
         if (call.status == OkHttpCall.RequestStatus.Successful) {
             startGame();

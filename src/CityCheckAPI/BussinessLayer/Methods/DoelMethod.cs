@@ -150,7 +150,26 @@ genQuery != null)
 
 
 
+        public Vraag getALocQuest(int id)
+        {
+            //id is de doellocatie id
 
+            //vragen ophalen
+            DoelLocatie doel = context.DoelLocaties.Include(r => r.Vragen.Select(y => y.Antwoorden)).Where(r => r.Id == id).Single<DoelLocatie>();
+            List<Vraag> vragen = doel.Vragen;
+            //aantal vragen
+            int vragenAmount = vragen.Count;
+
+
+            //random vraag positie bepalen
+            Random rand = new Random();
+            int randomVraagPos = rand.Next(0, vragenAmount);
+            Vraag vraag = vragen[randomVraagPos];
+            if (vraag != null)
+                return vraag;
+            else
+                return null;
+        }
 
 
     }

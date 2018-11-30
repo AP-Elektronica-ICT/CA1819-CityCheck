@@ -120,6 +120,21 @@ namespace CityCheckAPI.Controllers
         }
 
 
+        //get 1 random questions at 1 loc
+        [HttpGet]
+        [Route("LocQuest/{id}")]
+        public IActionResult getALocQuest(int id)
+        {
+            //id is de doellocatie id
+
+            Vraag vraag = doelMethods.getALocQuest(id);
+            if (vraag != null)
+                return Ok(vraag);
+            else
+                return NotFound();
+        }
+
+
 
 
 

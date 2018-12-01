@@ -1,9 +1,20 @@
 package cloudapplications.citycheck.Models;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Antwoord {
 
+    @SerializedName("id")
+    @Expose
     private int Id;
+
+    @SerializedName("antwoordZin")
+    @Expose
     private String Antwoordzin;
+
+    @SerializedName("correctBool")
+    @Expose
     private boolean CorrectBool;
 
     public int getId() {

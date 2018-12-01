@@ -12,8 +12,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import cloudapplications.citycheck.Models.Team;
-
 public class TeamsAdapter extends ArrayAdapter<Team> {
 
     TeamsAdapter(Context context, ArrayList<Team> arr) {

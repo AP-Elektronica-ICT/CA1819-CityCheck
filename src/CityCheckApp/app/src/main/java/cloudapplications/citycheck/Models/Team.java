@@ -1,13 +1,33 @@
 package cloudapplications.citycheck.Models;
 
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Team {
 
+    @SerializedName("id")
+    @Expose
     private int Id;
+
+    @SerializedName("punten")
+    @Expose
     private int Punten;
+
+    @SerializedName("kleur")
+    @Expose
     private String Kleur;
+
+    @SerializedName("teamNaam")
+    @Expose
     private String TeamNaam;
-    private long HuidigeLong;
-    private long HuidigeLat;
+
+    @SerializedName("huidigeLocatie")
+    @Expose
+    private Locatie Locatie;
+
+    @SerializedName("teamTraces")
+    @Expose
     private TeamTrace TeamTrace;
 
     public Team(String teamNaam, int kleur, int punten) {
@@ -48,28 +68,20 @@ public class Team {
         TeamNaam = teamNaam;
     }
 
-    public long getHuidigeLong() {
-        return HuidigeLong;
-    }
-
-    public void setHuidigeLong(long huidigeLong) {
-        HuidigeLong = huidigeLong;
-    }
-
-    public long getHuidigeLat() {
-        return HuidigeLat;
-    }
-
-    public void setHuidigeLat(long huidigeLat) {
-        HuidigeLat = huidigeLat;
-    }
-
     public TeamTrace getTeamTrace() {
         return TeamTrace;
     }
 
     public void setTeamTrace(TeamTrace teamTrace) {
         TeamTrace = teamTrace;
+    }
+
+    public Locatie getLocatie() {
+        return Locatie;
+    }
+
+    public void setLocatie(Locatie locatie) {
+        this.Locatie = locatie;
     }
 
 }

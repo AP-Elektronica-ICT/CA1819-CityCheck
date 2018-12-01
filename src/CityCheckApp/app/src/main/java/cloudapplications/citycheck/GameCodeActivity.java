@@ -1,7 +1,6 @@
 package cloudapplications.citycheck;
 
 import android.content.Intent;
-import android.os.Debug;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,8 +15,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import cloudapplications.citycheck.Models.Team;
 
 public class GameCodeActivity extends AppCompatActivity {
 

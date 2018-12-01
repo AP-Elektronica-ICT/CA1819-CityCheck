@@ -30,7 +30,10 @@ import java.util.List;
 import java.util.Random;
 import android.os.Handler;
 
+import cloudapplications.citycheck.APIService.NetworkManager;
+import cloudapplications.citycheck.APIService.NetworkResponseListener;
 import cloudapplications.citycheck.Models.DoelLocatie;
+import cloudapplications.citycheck.Models.Game;
 import cloudapplications.citycheck.Models.Team;
 
 
@@ -38,6 +41,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap kaart;
     private TeamLocation myTeam;
+    private NetworkManager service;
 
     // Variabelen om teams op te halen uit database
     private List<Team> teams = new ArrayList<>();
@@ -63,6 +67,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        service=NetworkManager.getInstance();
 
         //score
         scoreview = (TextView) findViewById(R.id.txt_Points);
@@ -210,34 +216,17 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void getTeamsOnMap(int gameId) {
-        OkHttpCall call = new OkHttpCall();
-        call.get(getString(R.string.database_ip), "currentgame/" + gameId);
-        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
-        if (call.status == OkHttpCall.RequestStatus.Successful) {
-            JSONObject obj;
-            JSONArray teamsArray;
-            try {
-                // Converteer de response string naar een JSONObject, JSONArray eruit halen en de inhoud omzetten naar JSONObjecten en dan bewaren als Team object in list
-                obj = new JSONObject(call.responseStr);
-                Log.d("Teams", "JSON object response: " + obj.toString());
-                teamsArray = obj.getJSONArray("teams");
-                Log.d("Teams", "Array of teams: " + teamsArray);
-                for (int i = 0; i < teamsArray.length(); i++) {
-                    JSONObject team = teamsArray.getJSONObject(i);
-                    Log.d("Teams", "teamobject: " + team);
-                    Team newTeam = new Team(team.getString("teamNaam"), team.getInt("kleur"), team.getInt("punten"));
-                    //newTeam.setHuidigeLocatie((Location)team.getJSONObject("huidigeLocatie"));
-                    teams.add(newTeam);
-                }
-                Log.d("Teams", "1 teams list: " + teams);
+        service.getAllTeamsFromGame(gameId, new NetworkResponseListener<List<Team>>() {
+            @Override
+            public void onResponseReceived(final List<Team> teams) {
                 // Show teams on map
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        for (int i = 0; i < teams.size(); i++) {
-                            Log.d("Teams", "Team name: " + teamNaam + ", " + teams.get(i).getTeamNaam());
-                            if (!teams.get(i).getTeamNaam().equals(teamNaam)) {
+                        for (Team team: teams) {
+                            Log.d("Teams", "Team name: " + team.getTeamNaam());
+                            if (!team.getTeamNaam().equals(teamNaam)) {
                                 Random rand = new Random();
                                 float lat = (float) (rand.nextFloat() * (51.30 - 50.00) + 50.00);
                                 float lon = (float) (rand.nextFloat() * (5.30 - 2.30) + 2.30);
@@ -245,19 +234,21 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                                 kaart.addMarker(new MarkerOptions()
                                         .position(new LatLng(lat, lon))
                                         //.position(new LatLng(teams.get(i).getHuidigeLocatie().getLatitude(), teams.get(i).getHuidigeLocatie().getLongitude()))
-                                        .title(teams.get(i).getTeamNaam())
-                                        .icon(getMarkerIcon(teams.get(i).getKleur())));
-                                Log.d("Teams", "marker added: #" + Integer.toHexString(teams.get(i).getKleur()));
+                                        .title(team.getTeamNaam())
+                                        .icon(getMarkerIcon(team.getKleur())));
+                                Log.d("Teams", "marker added: #" + Integer.toHexString(team.getKleur()));
                             }
                         }
                     }
                 });
-            } catch (Throwable t) {
-                Log.e("Teams", "error: " + t);
             }
-        } else {
-            Toast.makeText(this, "Error while trying to get the teams of the current game", Toast.LENGTH_SHORT).show();
-        }
+
+            @Override
+            public void onError() {
+                Toast.makeText(GameActivity.this.getBaseContext(), "Error while trying to get the teams of the current game", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     private BitmapDescriptor getMarkerIcon(int color) {

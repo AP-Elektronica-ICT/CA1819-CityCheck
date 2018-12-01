@@ -16,6 +16,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import cloudapplications.citycheck.APIService.NetworkManager;
+import cloudapplications.citycheck.APIService.NetworkResponseListener;
 import cloudapplications.citycheck.Models.Team;
 
 public class GameCodeActivity extends AppCompatActivity {
@@ -24,6 +26,7 @@ public class GameCodeActivity extends AppCompatActivity {
     String currentGameTime;
     String lastResponseStr = "";
     Boolean gotTeams;
+    NetworkManager service;
 
     private Handler handler = new Handler();
     private Runnable runnable = new Runnable() {
@@ -40,6 +43,8 @@ public class GameCodeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_code);
+
+        service=NetworkManager.getInstance();
 
         Button startGameButton = findViewById(R.id.button_start_game);
         TextView codeTextView = findViewById(R.id.text_view_code);
@@ -132,13 +137,17 @@ public class GameCodeActivity extends AppCompatActivity {
     }
 
     private void creatorStartGame() {
-        OkHttpCall call = new OkHttpCall();
-        call.post(getString(R.string.database_ip), "startgame/" + currentGameCode + "/" + System.currentTimeMillis(), "");
-        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
-        if (call.status == OkHttpCall.RequestStatus.Successful) {
-            startGame();
-        } else {
-            Toast.makeText(this, "Error while trying to start the game", Toast.LENGTH_SHORT).show();
-        }
+        service.startGame(Integer.parseInt(currentGameCode), System.currentTimeMillis(), new NetworkResponseListener<Double>() {
+            @Override
+            public void onResponseReceived(Double aDouble) {
+                startGame();
+            }
+
+            @Override
+            public void onError() {
+                Toast.makeText(GameCodeActivity.this.getBaseContext(), "Error while trying to start the game", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 }

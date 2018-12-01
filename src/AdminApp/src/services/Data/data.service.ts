@@ -6,14 +6,27 @@ import { DoelLocatie } from 'src/app/classes/DoelLocatie';
 @Injectable()
 export class DataService {
 
-    private url:string = "http://84.197.96.121/api/citycheck/";
+  private url:string = "http://84.197.96.121/api/citycheck/";
+
+  private chosenLoc:ILocRoot;
 
 
   constructor(private _http:HttpClient) {
 
    }
+
+   //Ophallen en setten van een gekozen locatie om te gaan bewerken
+   public setChosenLoc(loc:ILocRoot){
+      this.chosenLoc = loc;
+   }
+
+
+   public getChosenLoc(){
+      return this.chosenLoc;
+   }
    
 
+   //locaties ophalen
    getLocations(page:number, naam?:string): Observable<ILocRoot[]> {
 
     if(naam != null){
@@ -26,12 +39,25 @@ export class DataService {
   }
 
 
+  //nieuwe locatie posten
   postLocation(loc:DoelLocatie): Observable<DoelLocatie> {
     console.log(loc);
 
     return this._http.post<DoelLocatie>(this.url+"addDoelLocs",loc)
     
   }
+
+
+  //locatie verwijderen
+
+
+
+  //Vragen bij een locatie ophalen
+
+
+
+
+  //Vraag bij een locatie toevoegen
 
 
 

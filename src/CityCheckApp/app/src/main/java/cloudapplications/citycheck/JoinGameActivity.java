@@ -22,6 +22,11 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
+import cloudapplications.citycheck.APIService.NetworkManager;
+import cloudapplications.citycheck.APIService.NetworkResponseListener;
+import cloudapplications.citycheck.Models.Game;
+import cloudapplications.citycheck.Models.Team;
+
 public class JoinGameActivity extends AppCompatActivity {
 
     private Button btnPickColor;
@@ -39,11 +44,14 @@ public class JoinGameActivity extends AppCompatActivity {
     private long lon = 0;
     private String gameTime;
     private boolean gameCreator;
+    private NetworkManager service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_game);
+
+        service = NetworkManager.getInstance();
 
         btnPickColor = findViewById(R.id.button_pick_color);
         txt_teamName = findViewById(R.id.TV_TeamName);
@@ -126,43 +134,42 @@ public class JoinGameActivity extends AppCompatActivity {
 
     private void addTeamToGame(String name, int color, final int gamecode) {
 
-        OkHttpCall call = new OkHttpCall();
-        call.post(getString(R.string.database_ip), "teams/" + Integer.toString(gamecode), "{'teamNaam':'" + name + "', 'kleur':'" + color + "','huidigeLong':'" + lon + "', 'huidigLat':'" + lat + "'}");
-        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
-        if (call.status == OkHttpCall.RequestStatus.Successful) {
-            startGame(gamecode);
-        } else {
-            Toast.makeText(this, "Error while trying to join the game", Toast.LENGTH_SHORT).show();
-        }
+        service.createTeam(gamecode, new Team(name, color, 0), new NetworkResponseListener<Team>() {
+            @Override
+            public void onResponseReceived(Team team) {
+                startGame(gamecode);
+            }
+
+            @Override
+            public void onError() {
+                Toast.makeText(JoinGameActivity.this.getBaseContext(), "Error while trying to join the game", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     private void startGame(final int gamecode) {
-        OkHttpCall call = new OkHttpCall();
-        call.get(getString(R.string.database_ip), "currentgame/" + Integer.toString(gamecode));
-        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
-        if (call.status == OkHttpCall.RequestStatus.Successful) {
-            JSONObject obj;
-            try {
-                // Converteer de response string naar een JSONObject en de tijd er uit halen
-                obj = new JSONObject(call.responseStr);
-                Log.d("JoinGameActivity", "JSON object response: " + obj.toString());
-                gameTime = obj.getString("tijdsDuur");
-            } catch (Throwable t) {
-                Log.e("JoinGameActivity", "Could not parse malformed JSON: \"" + call.responseStr + "\"");
-            }
+        service.getCurrentGame(gamecode, new NetworkResponseListener<Game>() {
+            @Override
+            public void onResponseReceived(Game game) {
+                gameTime = Integer.toString(game.getTijdsDuur());
 
-            Intent i = new Intent(JoinGameActivity.this, GameCodeActivity.class);
-            if (gameCreator)
-                i.putExtra("gameCreator", true);
-            else
-                i.putExtra("gameCreator", false);
+                Intent i = new Intent(JoinGameActivity.this, GameCodeActivity.class);
+                if (gameCreator)
+                    i.putExtra("gameCreator", true);
+                else
+                    i.putExtra("gameCreator", false);
                 i.putExtra("gameCode", Integer.toString(gamecode));
                 i.putExtra("gameTime", gameTime);
                 i.putExtra("teamNaam", name);
                 startActivity(i);
+            }
 
-        } else {
-            Toast.makeText(this, "Error while trying to start the game", Toast.LENGTH_SHORT).show();
-        }
+            @Override
+            public void onError() {
+                Toast.makeText(JoinGameActivity.this.getBaseContext(), "Error while trying to start the game", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 }

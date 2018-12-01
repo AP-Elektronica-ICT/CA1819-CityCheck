@@ -62,7 +62,7 @@ public class CreateGameActivity extends AppCompatActivity {
         public void onResponseReceived(Game game) {
             Log.d("retrofit", "resonse new game in listener: " + game.getGameCode());
             String gameCode = Integer.toString(game.getGameCode());
-            
+
             Intent i = new Intent(CreateGameActivity.this, JoinGameActivity.class);
             i.putExtra("gameCode", gameCode);
             startActivity(i);

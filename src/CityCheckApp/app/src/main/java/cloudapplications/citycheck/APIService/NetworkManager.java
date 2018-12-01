@@ -36,6 +36,8 @@ public class NetworkManager {
         return single_instance;
     }
 
+
+    //alle game calls
     public void getGames(NetworkResponseListener<List<Game>> listener){
         api.getAllGames().enqueue(new NetworkResponse<List<Game>>(listener));
 
@@ -53,6 +55,8 @@ public class NetworkManager {
         api.startGame(id, millis).enqueue(new NetworkResponse<Double>(listener));
     }
 
+
+    //alle team calls
     public void createTeam(int gameId, Team team, NetworkResponseListener<Team> listener){
         api.createNewTeam(gameId, team).enqueue(new NetworkResponse<Team>(listener));
     }
@@ -76,23 +80,6 @@ public class NetworkManager {
     public void getScoreTeam(int gameId, String teamNaam, NetworkResponseListener<Integer> listener){
         api.getScoreTeam(gameId, teamNaam).enqueue(new NetworkResponse<Integer>(listener));
     }
+
+    //alle doellocatie calls
 }
-
-/*
-    Call<List<Game>> call = ApiService.getAllGames();
-        call.enqueue(new Callback<List<Game>>()
-
-        {
-@Override
-public void onResponse (Call < List <Game>> call, Response< List <Game>> response){
-        List<Game> games = response.body();
-        for (Game element : games) {
-        Log.d("test", "games received: " + element.getGameCode());
-        }
-
-        }
-@Override
-public void onFailure (Call < List <Game>> call, Throwable throwable){
-        Log.e("test", throwable.toString());
-        }
-        });*/

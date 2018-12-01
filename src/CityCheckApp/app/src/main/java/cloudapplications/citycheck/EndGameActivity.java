@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import cloudapplications.citycheck.Models.Team;
+
 public class EndGameActivity extends AppCompatActivity {
 
     ListView endListView;

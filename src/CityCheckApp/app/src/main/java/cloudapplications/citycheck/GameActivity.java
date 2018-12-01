@@ -31,6 +31,7 @@ import java.util.Random;
 import android.os.Handler;
 
 import cloudapplications.citycheck.Models.DoelLocatie;
+import cloudapplications.citycheck.Models.Team;
 
 
 public class GameActivity extends FragmentActivity implements OnMapReadyCallback {

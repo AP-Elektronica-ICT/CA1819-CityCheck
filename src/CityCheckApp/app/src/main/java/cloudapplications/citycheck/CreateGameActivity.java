@@ -14,14 +14,20 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
+import cloudapplications.citycheck.APIService.NetworkManager;
+import cloudapplications.citycheck.APIService.NetworkResponseListener;
+import cloudapplications.citycheck.Models.Game;
+
 public class CreateGameActivity extends AppCompatActivity {
 
     private int gameTime;
+    private NetworkManager service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_game);
+        service = NetworkManager.getInstance();
 
         Button createGameButton = findViewById(R.id.button_create_game);
         Spinner gameTimeSpinner = findViewById(R.id.spinner_game_time);
@@ -51,26 +57,23 @@ public class CreateGameActivity extends AppCompatActivity {
     }
 
     private void createNewGame() {
-        OkHttpCall call = new OkHttpCall();
-        call.post(getString(R.string.database_ip), "newgame", "{'TijdsDuur':" + Integer.toString(gameTime) + "}");
-        while (call.status == OkHttpCall.RequestStatus.Undefined);
-        if (call.status == OkHttpCall.RequestStatus.Successful) {
-            JSONObject obj;
-            String gameCode = "";
-            try {
-                // Converteer de response string naar een JSONObject en de code er uit halen
-                obj = new JSONObject(call.responseStr);
-                Log.d("CreateGameActivity", "JSON object response: " + obj.toString());
-                gameCode = obj.getString("gameCode");
-            } catch (Throwable t) {
-                Log.e("CreateGameActivity", "Could not parse malformed JSON: \"" + call.responseStr + "\"");
-            }
+    service.createNewGame(new Game(gameTime), new NetworkResponseListener<Game>() {
+        @Override
+        public void onResponseReceived(Game game) {
+            Log.d("retrofit", "resonse new game in listener: " + game.getGameCode());
+            String gameCode = Integer.toString(game.getGameCode());
+            
             Intent i = new Intent(CreateGameActivity.this, JoinGameActivity.class);
             i.putExtra("gameCode", gameCode);
             startActivity(i);
-        } else {
-            Toast.makeText(this, "Error while trying to create a new game", Toast.LENGTH_SHORT).show();
         }
+
+        @Override
+        public void onError() {
+            Toast.makeText(CreateGameActivity.this.getBaseContext(), "Error while trying to create a new game", Toast.LENGTH_SHORT).show();
+        }
+    });
+
     }
     
 }

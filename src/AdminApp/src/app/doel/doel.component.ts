@@ -133,6 +133,13 @@ export class DoelComponent implements OnInit {
     this.data.postLocation(doelloc).subscribe(res =>{
       console.log(res);
       //this.getLocations();
+
+      //data fields weer clearen
+      this.titel = "";
+      this.newlat = null;
+      this.newlong = null;
+      //aantonen dat deze is toegevoegd
+      alert("De locatie is toegevoegd");
     });
   }
 

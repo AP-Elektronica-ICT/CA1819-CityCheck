@@ -1,4 +1,4 @@
-package cloudapplications.citycheck;
+package cloudapplications.citycheck.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +14,9 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import cloudapplications.citycheck.Models.Team;
+import cloudapplications.citycheck.OkHttpCall;
+import cloudapplications.citycheck.R;
+import cloudapplications.citycheck.TeamsAdapter;
 
 public class EndGameActivity extends AppCompatActivity {
 

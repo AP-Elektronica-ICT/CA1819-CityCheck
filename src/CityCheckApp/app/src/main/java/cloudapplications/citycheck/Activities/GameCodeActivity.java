@@ -1,4 +1,4 @@
-package cloudapplications.citycheck;
+package cloudapplications.citycheck.Activities;
 
 import android.content.Intent;
 import android.os.Handler;
@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import cloudapplications.citycheck.APIService.NetworkManager;
 import cloudapplications.citycheck.APIService.NetworkResponseListener;
 import cloudapplications.citycheck.Models.Team;
+import cloudapplications.citycheck.OkHttpCall;
+import cloudapplications.citycheck.R;
+import cloudapplications.citycheck.TeamsAdapter;
 
 public class GameCodeActivity extends AppCompatActivity {
 

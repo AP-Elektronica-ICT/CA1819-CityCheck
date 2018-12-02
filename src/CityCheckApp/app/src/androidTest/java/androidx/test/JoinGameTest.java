@@ -18,7 +18,7 @@ import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
-import cloudapplications.citycheck.MainActivity;
+import cloudapplications.citycheck.Activities.MainActivity;
 import cloudapplications.citycheck.R;
 
 import static androidx.test.espresso.Espresso.onView;

@@ -6,7 +6,7 @@
     android:background="@drawable/achtergrond"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".GameCodeActivity">
+    tools:context=".Activities.GameCodeActivity">
 
     <TextView
         android:layout_width="wrap_content"

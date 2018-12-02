@@ -1,4 +1,4 @@
-package cloudapplications.citycheck;
+package cloudapplications.citycheck.Activities;
 
 import android.Manifest;
 import android.content.Intent;
@@ -33,8 +33,10 @@ import android.os.Handler;
 import cloudapplications.citycheck.APIService.NetworkManager;
 import cloudapplications.citycheck.APIService.NetworkResponseListener;
 import cloudapplications.citycheck.Models.DoelLocatie;
-import cloudapplications.citycheck.Models.Game;
 import cloudapplications.citycheck.Models.Team;
+import cloudapplications.citycheck.OkHttpCall;
+import cloudapplications.citycheck.R;
+import cloudapplications.citycheck.TeamLocation;
 
 
 public class GameActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -264,7 +266,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             DoelLocatie doellocatie = newDoelLocaties.get(i);
             //DoelLocatie doellocatie = newDoelLocaties.get(i);
             LatLng Locatie = new LatLng(doellocatie.getLat(),doellocatie.getLong());
-            kaart.addMarker(new MarkerOptions().position(Locatie));
+            kaart.addMarker(new MarkerOptions().position(Locatie).title("Naam locatie").snippet("500").icon(BitmapDescriptorFactory.fromResource(R.drawable.coin_small)));
         }
     }
 

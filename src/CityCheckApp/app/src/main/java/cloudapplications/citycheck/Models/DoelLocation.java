@@ -15,9 +15,19 @@ public class DoelLocation {
     @Expose
     private String Titel;
 
+    @SerializedName("locatie")
+    @Expose
+    private Locatie Locatie;
+
     @SerializedName("vragen")
     @Expose
     private List<Vraag> Vragen;
+
+    public DoelLocation(String titel, Locatie locatie, List<Vraag> vragen) {
+        Titel = titel;
+        Locatie = locatie;
+        Vragen = vragen;
+    }
 
     public int getId() {
         return Id;
@@ -33,6 +43,14 @@ public class DoelLocation {
 
     public void setTitel(String titel) {
         Titel = titel;
+    }
+
+    public Locatie getLocatie() {
+        return Locatie;
+    }
+
+    public void setLocatie(Locatie locatie) {
+        Locatie = locatie;
     }
 
     public List<Vraag> getVragen() {

@@ -1,4 +1,4 @@
-package cloudapplications.citycheck;
+package cloudapplications.citycheck.Activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,14 +18,13 @@ import com.flask.colorpicker.OnColorSelectedListener;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
-import org.json.JSONObject;
-
 import java.util.Objects;
 
 import cloudapplications.citycheck.APIService.NetworkManager;
 import cloudapplications.citycheck.APIService.NetworkResponseListener;
 import cloudapplications.citycheck.Models.Game;
 import cloudapplications.citycheck.Models.Team;
+import cloudapplications.citycheck.R;
 
 public class JoinGameActivity extends AppCompatActivity {
 

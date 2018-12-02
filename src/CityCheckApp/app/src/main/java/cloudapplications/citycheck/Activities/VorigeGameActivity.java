@@ -1,4 +1,4 @@
-package cloudapplications.citycheck;
+package cloudapplications.citycheck.Activities;
 
 import android.Manifest;
 import android.content.Intent;
@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Random;
 
 import cloudapplications.citycheck.Models.Team;
+import cloudapplications.citycheck.OkHttpCall;
+import cloudapplications.citycheck.R;
 
 public class VorigeGameActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, LocationListener, com.google.android.gms.location.LocationListener {
 

@@ -16,7 +16,7 @@ import cloudapplications.citycheck.Models.Team;
 
 public class TeamsAdapter extends ArrayAdapter<Team> {
 
-    TeamsAdapter(Context context, ArrayList<Team> arr) {
+   public TeamsAdapter(Context context, ArrayList<Team> arr) {
         super(context, -1, arr);
     }
 

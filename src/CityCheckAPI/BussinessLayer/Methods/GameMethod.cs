@@ -90,6 +90,16 @@ namespace BussinessLayer.Methods
 
         }
 
+        public Game deleteGame(int id, CityCheckContext context)
+        {
+            Game game = context.Games.Single(d => d.GameCode == id);
+            if (game == null)
+                return null;
+            context.Games.Remove(game);
+            context.SaveChanges();
+            return game;
+        }
+
     }
 
 

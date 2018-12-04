@@ -99,6 +99,14 @@ public class GameController : Controller
         }
     }
 
-
+    [HttpDelete]
+    [Route("currentgame/{id}")]
+    public IActionResult deleteGame(int id)
+    {
+        Game game = gameMethods.deleteGame(id, context);
+        if (game == null)
+            return NotFound();
+        return Ok(game);
+    }
 
 }

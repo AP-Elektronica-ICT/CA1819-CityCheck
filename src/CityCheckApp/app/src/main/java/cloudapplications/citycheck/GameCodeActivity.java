@@ -51,7 +51,7 @@ public class GameCodeActivity extends AppCompatActivity {
 
         codeTextView.setText(currentGameCode);
         // 10 seconden om de EndGameActivity te testen
-        if (currentGameCode.equals("4"))
+        if (currentGameTime.equals("4"))
             timeTextView.setText("10 seconds");
         else
             timeTextView.setText(currentGameTime + " hours");

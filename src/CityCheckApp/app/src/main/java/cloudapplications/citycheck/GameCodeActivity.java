@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class GameCodeActivity extends AppCompatActivity {
 
     String currentGameCode;
     String currentGameTime;
+    String millisStarted;
     String lastResponseStr = "";
     Boolean gotTeams;
     private Handler handler = new Handler();
@@ -94,6 +96,7 @@ public class GameCodeActivity extends AppCompatActivity {
                 // Als de admin de game heeft gestart dan wordt dat ook voor de andere gebruikers gestart
                 obj = new JSONObject(call.responseStr);
                 boolean isGameStarted = obj.getBoolean("hasStarted");
+                millisStarted = String.valueOf(obj.getLong("millisStarted"));
                 if (isGameStarted) {
                     startGame();
                 } else {
@@ -130,11 +133,13 @@ public class GameCodeActivity extends AppCompatActivity {
         i.putExtra("gameTime", currentGameTime);
         i.putExtra("gameCode", currentGameCode);
         i.putExtra("teamNaam", getIntent().getExtras().getString("teamNaam"));
+        i.putExtra("millisStarted", millisStarted);
         startActivity(i);
     }
 
     private void creatorStartGame() {
         OkHttpCall call = new OkHttpCall();
+        millisStarted = String.valueOf(System.currentTimeMillis());
         call.post(getString(R.string.database_ip), "startgame/" + currentGameCode + "/" + System.currentTimeMillis(), "");
         while (call.status == OkHttpCall.RequestStatus.Undefined) ;
         if (call.status == OkHttpCall.RequestStatus.Successful) {

@@ -108,27 +108,31 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
         teamNaam = getIntent().getExtras().getString("teamNaam");
         String chosenGameTime = getIntent().getExtras().getString("gameTime");
+        long millisStarted = Long.parseLong(getIntent().getExtras().getString("millisStarted"));
         int gameTimeInMillis = Integer.parseInt(chosenGameTime) * 3600000;
         // Game die 10 seconden duurt om de EndGameActivity te testen
         assert chosenGameTime != null;
         if (chosenGameTime.equals("4")) {
             gameTimeInMillis = 10000;
         }
-        new CountDownTimer(gameTimeInMillis, 1000) {
-            public void onTick(long millisUntilFinished) {
-                int seconds = (int) (millisUntilFinished / 1000) % 60;
-                int minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
-                int hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
-                timerTextView.setText("Time remaining: " + hours + ":" + minutes + ":" + seconds);
-                everythingThatNeedsToHappenEvery3s(millisUntilFinished);
-            }
+        long timerMillis = gameTimeInMillis - (System.currentTimeMillis() - millisStarted);
+        if (timerMillis > 0) {
+            new CountDownTimer(timerMillis, 1000) {
+                public void onTick(long millisUntilFinished) {
+                    int seconds = (int) (millisUntilFinished / 1000) % 60;
+                    int minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
+                    int hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
+                    timerTextView.setText("Time remaining: " + hours + ":" + minutes + ":" + seconds);
+                    everythingThatNeedsToHappenEvery3s(millisUntilFinished);
+                }
 
-            public void onFinish() {
-                Intent i = new Intent(GameActivity.this, EndGameActivity.class);
-                i.putExtra("gameCode", Integer.toString(gamecode));
-                startActivity(i);
-            }
-        }.start();
+                public void onFinish() {
+                    endGame();
+                }
+            }.start();
+        } else {
+            endGame();
+        }
 
         //teamnaam tonen op het game scherm
         teamNameTXT.setText(teamNaam);
@@ -543,4 +547,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
+    void endGame() {
+        Intent i = new Intent(GameActivity.this, EndGameActivity.class);
+        i.putExtra("gameCode", Integer.toString(gamecode));
+        startActivity(i);
+    }
 }

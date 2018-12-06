@@ -7,6 +7,7 @@ import cloudapplications.citycheck.Models.Locatie;
 import cloudapplications.citycheck.Models.Team;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -26,6 +27,9 @@ public interface CityCheckApiInterface {
     @POST("startgame/{id}/{milli}")
     Call<Double>startGame(@Path("id") int id,
                           @Path("milli") double milli);
+
+    @DELETE("currentgame/{id}")
+    Call<String>deleteGame(@Path("id") int id);
 
     //team calls
     @POST("teams/{gameId}")

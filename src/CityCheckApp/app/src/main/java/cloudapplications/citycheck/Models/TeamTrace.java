@@ -9,24 +9,20 @@ class TeamTrace {
     @Expose
     private int Id;
 
-    @SerializedName("lat")
+    @SerializedName("locatie")
     @Expose
-    private long Lat;
-
-    @SerializedName("long")
-    @Expose
-    private long Long;
+    private Locatie locatie;
 
 
     public int getId() {
         return Id;
     }
 
-    public long getLat() {
-        return Lat;
+    public Locatie getLocatie() {
+        return locatie;
     }
 
-    public long getLong() {
-        return Long;
+    public void setLocatie(Locatie locatie) {
+        this.locatie = locatie;
     }
 }

@@ -28,7 +28,6 @@ public class GameCodeActivity extends AppCompatActivity {
 
     String currentGameCode;
     String currentGameTime;
-    String lastResponseStr = "";
     Boolean gotTeams;
     NetworkManager service;
     ArrayList<Team> prevTeams= new ArrayList<>();

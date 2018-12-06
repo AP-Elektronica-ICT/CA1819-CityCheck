@@ -55,6 +55,10 @@ public class NetworkManager {
         api.startGame(id, millis).enqueue(new NetworkResponse<Double>(listener));
     }
 
+    public void deleteGame(int id, NetworkResponseListener<String> listener){
+        api.deleteGame(id).enqueue(new NetworkResponse<String>(listener));
+    }
+
 
     //alle team calls
     public void createTeam(int gameId, Team team, NetworkResponseListener<Team> listener){

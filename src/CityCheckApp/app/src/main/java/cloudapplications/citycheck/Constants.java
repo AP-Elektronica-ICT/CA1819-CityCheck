@@ -22,9 +22,9 @@ public class Constants {
     public static final HashMap<String, LatLng> LANDMARKS = new HashMap<String, LatLng>();
     private List<DoelLocatie> TargetLocations = new ArrayList<>();
     static {
-        for (int i = 0; GameActivity.targetLocations.size() < ; i++) {
-
-        }
+//        for (int i = 0; GameActivity.targetLocations.size() < ; i++) {
+//
+//        }
         // San Francisco International Airport.
         LANDMARKS.put("Moscone South", new LatLng(37.783888,-122.4009012));
 

@@ -49,6 +49,7 @@ class OkHttpCall {
     private Call delete(String url, Callback callback) {
         Request request = new Request.Builder()
                 .url(url)
+                .delete()
                 .build();
         Call call = client.newCall(request);
         call.enqueue(callback);

@@ -102,7 +102,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         // Game die 10 seconden duurt om de EndGameActivity te testen
         assert chosenGameTime != null;
         if (chosenGameTime.equals("4")) {
-            gameTimeInMillis = 5000;
+            gameTimeInMillis = 10000;
         }
         new CountDownTimer(gameTimeInMillis, 1000) {
             public void onTick(long millisUntilFinished) {
@@ -111,7 +111,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 int hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
                 timerTextView.setText("Time remaining: " + hours + ":" + minutes + ":" + seconds);
                 everythingThatNeedsToHappenEvery3s(millisUntilFinished);
-
             }
 
             public void onFinish() {

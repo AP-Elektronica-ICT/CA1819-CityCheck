@@ -46,6 +46,15 @@ class OkHttpCall {
         return call;
     }
 
+    private Call delete(String url, Callback callback) {
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+        return call;
+    }
+
     void post(String databaseIP, String route, String jsonBody) {
         OkHttpCall call = new OkHttpCall();
         Call postCall = call.post("http://" + databaseIP + "/api/citycheck/" + route, jsonBody, new Callback() {
@@ -73,6 +82,30 @@ class OkHttpCall {
     void get(String databaseIP, String route) {
         OkHttpCall call = new OkHttpCall();
         Call getCall = call.get("http://" + databaseIP + "/api/citycheck/" + route, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                status = RequestStatus.Unsuccessful;
+            }
+
+            @Override
+            public void onResponse(Call call, okhttp3.Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    // Als de request gelukt is
+                    responseStr = response.body().string();
+                    Log.d("OkHttpCall", "Successful response: " + responseStr);
+                    status = RequestStatus.Successful;
+                } else {
+                    // Als er een fout is bij de request
+                    Log.d("OkHttpCall", "Error response: " + response.message());
+                    status = RequestStatus.Unsuccessful;
+                }
+            }
+        });
+    }
+
+    void delete(String databaseIP, String route) {
+        OkHttpCall call = new OkHttpCall();
+        Call deleteCall = call.delete("http://" + databaseIP + "/api/citycheck/" + route, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 status = RequestStatus.Unsuccessful;

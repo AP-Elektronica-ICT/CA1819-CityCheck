@@ -161,23 +161,21 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         buildGoogleApiClient();
 
 
-
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (myTeam != null) {
+        if (myTeam != null)
             myTeam.startConnection();
-        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         //stop werkt pas onDestroy en niet onPause, opzich wel goed want als ze de app dan even naar de achtergrond brengen dan blijven de lijnen wel tekenen
-        myTeam.stopConnection();
+        if (myTeam != null)
+            myTeam.stopConnection();
     }
 
     @Override
@@ -336,7 +334,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    private void everythingThatNeedsToHappenEvery3s(Long time){
+    private void everythingThatNeedsToHappenEvery3s(Long time) {
         //locatie doorsturen om de 3s
         int TimeCounter = (int) (time / 1000);
         if (TimeCounter % 3 == 0) {
@@ -348,7 +346,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    private void setMultiChoice(final String[] antwoorden, int CorrectIndex, String vraag){
+    private void setMultiChoice(final String[] antwoorden, int CorrectIndex, String vraag) {
         //Alertdialog aanmaken
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
 
@@ -392,23 +390,22 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         */
 
         builder.setSingleChoiceItems(antwoorden, -1, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
 
 
+                // Notify the current action
+                Toast.makeText(GameActivity.this, "Antwoord: " + antwoorden[i], Toast.LENGTH_LONG).show();
 
-                        // Notify the current action
-                        Toast.makeText(GameActivity.this, "Antwoord: "+antwoorden[i], Toast.LENGTH_LONG).show();
-
-                        gekozenAntwoordIndex = i;
-
-
-                    }
-                });
+                gekozenAntwoordIndex = i;
 
 
-                // Specify the dialog is not cancelable
-                builder.setCancelable(true);
+            }
+        });
+
+
+        // Specify the dialog is not cancelable
+        builder.setCancelable(true);
 
         // Set a title for alert dialog
         builder.setTitle(vraag);
@@ -421,16 +418,16 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 //Toast.makeText(GameActivity.this, "data: "+gekozenAntwoordIndex, Toast.LENGTH_LONG).show();
 
                 //Antwoord controleren
-                checkAnswer(gekozenAntwoordIndex,correctAntwoordIndex);
+                checkAnswer(gekozenAntwoordIndex, correctAntwoordIndex);
             }
         });
 
         // Set the neutral/cancel button click listener
         //builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-            //@Override
-            //public void onClick(DialogInterface dialog, int which) {
-                // Do something when click the neutral button
-            //}
+        //@Override
+        //public void onClick(DialogInterface dialog, int which) {
+        // Do something when click the neutral button
+        //}
         //});
 
         AlertDialog dialog = builder.create();
@@ -439,12 +436,11 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-
-    private void checkAnswer(int gekozenInd, int correctInd){
+    private void checkAnswer(int gekozenInd, int correctInd) {
 
 
         //Klopt de gekozen index met het correcte antwoord index
-        if(gekozenInd == correctInd){
+        if (gekozenInd == correctInd) {
             Toast.makeText(GameActivity.this, "Correct!", Toast.LENGTH_LONG).show();
 
             //X aantal punten toevoegen bij de gebruiker
@@ -528,8 +524,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-
-    private void askQuestion(){
+    private void askQuestion() {
         //Instellen van een vraag en deze stellen + controleren
         //-------------------------------------------------------------------------------------
         //Antwoorden instellen

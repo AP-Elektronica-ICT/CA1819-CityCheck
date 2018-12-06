@@ -525,6 +525,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onResult(@NonNull Status status) {
 
+    }
+
 
 
     private void askQuestion(){

@@ -4,6 +4,8 @@ package cloudapplications.citycheck.Models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 public class Team {
 
     @SerializedName("id")
@@ -28,7 +30,7 @@ public class Team {
 
     @SerializedName("teamTraces")
     @Expose
-    private TeamTrace TeamTrace;
+    private ArrayList<TeamTrace> TeamTrace;
 
     public Team(String teamNaam, int kleur, int punten) {
         this.TeamNaam = teamNaam;
@@ -68,11 +70,11 @@ public class Team {
         TeamNaam = teamNaam;
     }
 
-    public TeamTrace getTeamTrace() {
+    public ArrayList<TeamTrace> getTeamTrace() {
         return TeamTrace;
     }
 
-    public void setTeamTrace(TeamTrace teamTrace) {
+    public void setTeamTrace(ArrayList<TeamTrace> teamTrace) {
         TeamTrace = teamTrace;
     }
 

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import cloudapplications.citycheck.APIService.NetworkManager;
 import cloudapplications.citycheck.APIService.NetworkResponseListener;
+import cloudapplications.citycheck.Models.Game;
 import cloudapplications.citycheck.Models.Team;
 import cloudapplications.citycheck.OkHttpCall;
 import cloudapplications.citycheck.R;
@@ -30,6 +31,7 @@ public class GameCodeActivity extends AppCompatActivity {
     String lastResponseStr = "";
     Boolean gotTeams;
     NetworkManager service;
+    ArrayList<Team> prevTeams= new ArrayList<>();
 
     private Handler handler = new Handler();
     private Runnable runnable = new Runnable() {
@@ -89,46 +91,42 @@ public class GameCodeActivity extends AppCompatActivity {
     }
 
     private void getTeams() {
-        OkHttpCall call = new OkHttpCall();
-        call.get(getString(R.string.database_ip), "currentgame/" + currentGameCode);
-        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
-        if (call.status == OkHttpCall.RequestStatus.Successful) {
-            JSONObject obj;
-            JSONArray teamsArray;
-            JSONObject teams;
-            try {
-                // Als de admin de game heeft gestart dan wordt dat ook voor de andere gebruikers gestart
-                obj = new JSONObject(call.responseStr);
-                boolean isGameStarted = obj.getBoolean("hasStarted");
-                if (isGameStarted) {
+        NetworkManager.getInstance().getCurrentGame(Integer.parseInt(currentGameCode), new NetworkResponseListener<Game>() {
+            @Override
+            public void onResponseReceived(Game game) {
+                for(Team team: game.getTeams()){
+                    Log.d("tag", "getTeams response" + team.getTeamNaam());
+                }
+                if(game.getHasStarted()){
                     startGame();
-                } else {
-                    // Converteer de response string naar een JSONObject en de teams er uit halen
-                    if (!lastResponseStr.equals(call.responseStr)) {
-                        lastResponseStr = call.responseStr;
-                        obj = new JSONObject(lastResponseStr);
-                        Log.d("GameCodeActivity", "JSON object response: " + obj.toString());
-                        // Selecteer de "teams" veld
-                        teamsArray = obj.getJSONArray("teams");
-                        if (gotTeams) {
-                            teams = teamsArray.getJSONObject(teamsArray.length() - 1);
-                            teamsList.add(new Team(teams.getString("teamNaam"), teams.getInt("kleur"), -1));
-                        } else {
-                            for (int i = 0; i < teamsArray.length(); i++) {
-                                teams = teamsArray.getJSONObject(i);
-                                teamsList.add(new Team(teams.getString("teamNaam"), teams.getInt("kleur"), -1));
+                }else{
+
+                    if(game.getTeams().size() != prevTeams.size()){
+                        prevTeams=game.getTeams();
+                        if(gotTeams){
+                            Team team= game.getTeams().get(game.getTeams().size() -1);
+                            teamsList.add(team);
+                        }else{
+                            //Log.d("tag", "size array: " + game.getTeams().size());
+                            for(int i=0; i<game.getTeams().size(); i++){
+                                //Log.d("tag", "size array: " + game.getTeams().get(i));
+                                teamsList.add(game.getTeams().get(i));
                             }
                         }
-                        teamsListView.setAdapter(new TeamsAdapter(this, teamsList));
-                    } else
+                        teamsListView.setAdapter(new TeamsAdapter(GameCodeActivity.this.getBaseContext(), teamsList));
+                    }else{
                         gotTeams = true;
+                    }
+
                 }
-            } catch (Throwable t) {
-                Log.e("GameCodeActivity", "Could not parse malformed JSON: \"" + call.responseStr + "\"");
             }
-        } else {
-            Toast.makeText(this, "Error while trying to get the teams", Toast.LENGTH_SHORT).show();
-        }
+
+            @Override
+            public void onError() {
+                Toast.makeText(GameCodeActivity.this.getBaseContext(), "Error while trying to get the teams", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     private void startGame() {

@@ -3,6 +3,8 @@ package cloudapplications.citycheck.Models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 public class Game {
 
     @SerializedName("id")
@@ -23,7 +25,7 @@ public class Game {
 
     @SerializedName("teams")
     @Expose
-    private Object teams;
+    private ArrayList<Team> teams;
 
     public Game(Integer tijdsDuur) {
         this.tijdsDuur = tijdsDuur;
@@ -61,11 +63,11 @@ public class Game {
         this.hasStarted = hasStarted;
     }
 
-    public Object getTeams() {
+    public ArrayList<Team> getTeams() {
         return teams;
     }
 
-    public void setTeams(Object teams) {
+    public void setTeams(ArrayList<Team> teams) {
         this.teams = teams;
     }
 

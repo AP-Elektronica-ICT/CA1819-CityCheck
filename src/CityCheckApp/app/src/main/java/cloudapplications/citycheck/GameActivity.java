@@ -8,6 +8,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -15,7 +17,11 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.internal.Constants;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,17 +33,21 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import android.os.Handler;
 
 
-public class GameActivity extends FragmentActivity implements OnMapReadyCallback {
+public class GameActivity extends FragmentActivity implements OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener,ResultCallback<Status>{
 
     private GoogleMap kaart;
     private TeamLocation myTeam;
@@ -55,7 +65,11 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     //doellocaties
     //private List<LatLng> currentDoelLocaties;
-    private List<DoelLocatie> TargetLocations = new ArrayList<>();
+    private List<DoelLocatie> targetLocations = new ArrayList<>();
+    //opzetten geofencing voor doellocaties te kunnen activeren.
+    protected ArrayList<Geofence> mGeofenceList;
+    protected GoogleApiClient mGoogleApiClient;
+
 
     //callbacks
     @Override
@@ -76,7 +90,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         teamNameTXT = (TextView) findViewById(R.id.txt_TeamName);
 
 
-        //locationsarray
+        //locationsarray (testwaardes voor doellocaties)
         //currentDoelLocaties = new ArrayList<>();
 
         final TextView timerTextView = findViewById(R.id.text_view_timer);
@@ -113,6 +127,11 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         currentDoelLocaties.add(new LatLng(51.2183305, 4.4204524));
         currentDoelLocaties.add(new LatLng(51.2202678, 4.399327));*/
         //na het ready zijn van de map onderaan plaatsen we nieuwe markers
+
+        //geofencing
+        mGeofenceList = new ArrayList<Geofence>();
+        populateGeoFenceList();
+        buildGoogleApiClient();
 
 
     }
@@ -156,7 +175,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
         //eerste doellocatie markers tonen
         //inconsistentie ivm latlng en locatie gebruik...
-        showDoelLocaties(TargetLocations);
+        showDoelLocaties(targetLocations);
     }
 
     @Override
@@ -173,6 +192,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     //private helper methoden
+
+    //testen voor implementatie in geofencing
     private void getTargetLocations(){
         OkHttpCall call = new OkHttpCall();
         call.get(getString(R.string.database_ip), "allDoelLocs");
@@ -198,19 +219,25 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     //werkt
                     //Toast.makeText(this, ""+lat+" "+lng+" "+name, Toast.LENGTH_SHORT).show();
                     //geen zekerheid ivm formaat locatie
-                    DoelLocatie newtargetlocation = new DoelLocatie(name,lat,lng,null,vragen);
+                    DoelLocatie newtargetlocation = new DoelLocatie(id, name,lat,lng,null,vragen);
                     //heir ben ik iets aan het foutdoen,...
-                    TargetLocations.add(newtargetlocation);
+                    targetLocations.add(newtargetlocation);
+
                     //Toast.makeText(this, ""+newtargetlocation, Toast.LENGTH_LONG).show();
 
                 }
                 //Log.d("Doel", "1 teams list: " + currentDoelLocaties);
-                Toast.makeText(this, TargetLocations.size(), Toast.LENGTH_SHORT).show();
+                public cloudapplications.citycheck.Constants setTargetLocations(targetLocations);
+                Toast.makeText(this, targetLocations.size(), Toast.LENGTH_SHORT).show();
             }catch (Throwable t) {
                 Log.e("doelen", "error: " + t);
             }
         }
     }
+    //doorgeven van TargetLocations waardes voor geofencing
+    cloudapplications.citycheck.Constants constants= new cloudapplications.citycheck.Constants();
+
+
 
     private void getTeamsOnMap(int gameId) {
         OkHttpCall call = new OkHttpCall();
@@ -294,6 +321,63 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
         }
 
+    }
+    //opzetten van geofences, nu gebruik van voorbeeldcode voor test
+    public void populateGeoFenceList(){
+        for (Map.Entry<String, LatLng>entry: cloudapplications.citycheck.Constants.LANDMARKS.entrySet()){
+            mGeofenceList.add(new Geofence.Builder()
+            .setRequestId(entry.getKey())
+            .setCircularRegion(
+                    entry.getValue().latitude,
+                    entry.getValue().longitude,
+                    cloudapplications.citycheck.Constants.GEOFENCE_RADIUS_IN_METERS
+            )
+                    .setExpirationDuration(cloudapplications.citycheck.Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                    .build());
+
+        }
+    }
+    protected synchronized void buildGoogleApiClient(){
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+    @Override
+    protected void onStart(){
+        super.onStart();
+        if(!mGoogleApiClient.isConnected() || !mGoogleApiClient.isConnected()){
+            mGoogleApiClient.connect();
+        }
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnecting() || mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+
+    @Override
+    public void onConnected( Bundle connectonHint) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int cause) {
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onResult(@NonNull Status status) {
 
     }
 }

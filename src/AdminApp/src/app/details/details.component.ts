@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ILocRoot, DataService } from 'src/services/Data/data.service';
 import { Router } from '@angular/router';
+import { Antwoord, Vraag } from '../classes/Vragen';
 
 @Component({
   selector: 'app-details',
@@ -16,32 +17,70 @@ export class DetailsComponent implements OnInit {
   public newlat:number;
   public newlong:number;
 
+
+  //invulvelden vraag
+  public newVraag:string = "";
+  public newAntw1:string = "";
+  public newAntw2:string = "";
+  public newAntw3:string = "";
+  public correct:number = 1;
+
   constructor(private route:Router, private data:DataService) { }
 
   ngOnInit() {
 
-    var loc = this.data.getChosenLoc();
+    this.location = this.data.getChosenLoc();
 
     //kijken if locatie
-    console.log("checking");
-    if(loc == undefined || loc.id <1){
-      console.log("true");
+    //console.log(this.location);
+    if(this.location == undefined || this.location.id <1){
       this.route.navigate(["/doel"]);
     }
 
-    //gekozen locatie ophalen
-    this.location = loc;
-    this.location.id = loc.id;
-    this.location.locatie = loc.locatie;
-    this.location.titel = loc.titel;
-    this.location.vragen = loc.vragen;
-
-    //datafields invullen
-    this.titel = this.location.titel;
-    this.newlat = this.location.locatie.lat;
-    this.newlong = this.location.locatie.long;
 
 
+
+
+
+  }
+
+
+
+  public delete(){
+    //Delete loc
+  }
+
+
+  public edit(){
+    //Edit loc
+  }
+
+
+  public getQ(){
+    //Ophalen van alle vragen binnen deze loc
+  }
+
+
+  public addQ(){
+    //Een nieuwe vraag toevoegen aan deze loc
+    var correctNumb:number = this.correct -1;
+
+    //De 3 Antwoorden aanmaken
+    var loc1:Antwoord = new Antwoord(this.newAntw1,false);
+    var loc2:Antwoord = new Antwoord(this.newAntw2,false);
+    var loc3:Antwoord = new Antwoord(this.newAntw3,false);
+
+    //Aanmaken van een antwoord object
+    var newAntw:Antwoord[] = [loc1,loc2,loc3];
+
+    newAntw[correctNumb].CorrectBool = true;
+
+    //Aanmaken van een vraag object
+    var newVrg = new Vraag(this.newVraag,newAntw);
+    //Doorpushen van de vraag binnen deze locatie
+
+
+    //Toevoegen van de vraag aan de local locatie => loc.vraag = ;
 
 
 

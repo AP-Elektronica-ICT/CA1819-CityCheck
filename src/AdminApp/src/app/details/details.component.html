@@ -13,9 +13,9 @@
     <div id="addCont">
 
         <section class="forminps">
-          <input type="text" id="namelc" class="form-control mb-4" placeholder="Naam" [(ngModel)]="titel">
-          <input type="number" id="latlc" class="form-control mb-4" placeholder="Latitutde" [(ngModel)]="newlat">
-          <input type="number" id="lnglc" class="form-control mb-4" placeholder="Longitude" [(ngModel)]="newlong">
+          <input type="text" id="namelc" class="form-control mb-4" placeholder="Naam" [(ngModel)]="location.titel">
+          <input type="number" id="latlc" class="form-control mb-4" placeholder="Latitutde" [(ngModel)]="location.locatie.lat">
+          <input type="number" id="lnglc" class="form-control mb-4" placeholder="Longitude" [(ngModel)]="location.locatie.long">
       
           <button id="editBtn" (click)="edit()" type="button" class="btn btn-yellow">Edit Location</button>
           <br>
@@ -75,14 +75,14 @@
 
               <section id="addQ">
                 <input type="text" id="namelc" class="form-control mb-4" placeholder="Vraag" [(ngModel)]="newVraag"><br>
-                <input type="number" class="form-control mb-4" placeholder="Antwoord" [(ngModel)]="newAntw1">
-                <input type="number" class="form-control mb-4" placeholder="Antwoord" [(ngModel)]="newAntw2">
-                <input type="number" class="form-control mb-4" placeholder="Antwoord" [(ngModel)]="newAntw3">
+                <input type="text" class="form-control mb-4" placeholder="Antwoord1" [(ngModel)]="newAntw1">
+                <input type="text" class="form-control mb-4" placeholder="Antwoord2" [(ngModel)]="newAntw2">
+                <input type="text" class="form-control mb-4" placeholder="Antwoord3" [(ngModel)]="newAntw3">
                 <br>
                 <p>Correct Answer</p>
                 <input id="correctInp" type="number" min="1" max="3" class="form-control mb-4" placeholder="1" [(ngModel)]="correct">
             
-                <button (click)="addQuest()" type="button" class="btn btn-yellow">Add question</button>
+                <button (click)="addQ()" type="button" class="btn btn-yellow">Add question</button>
             
               </section>
             

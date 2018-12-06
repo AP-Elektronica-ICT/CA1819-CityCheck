@@ -90,16 +90,18 @@ namespace BussinessLayer.Methods
 
         }
 
-        public Game deleteGame(int id)
+        public bool deleteGame(int id)
         {
-            Game game = context.Games.Where(d => d.GameCode == id).Single<Game>();
+            Game game = context.Games.Where(d => d.GameCode == id).Include(gm => gm.Teams).ThenInclude(tm => tm.TeamTraces).SingleOrDefault<Game>();
             if (game == null)
-            { return null; }
+            {
+                return false;
+            }
             else
             {
                 context.Games.Remove(game);
                 context.SaveChanges();
-                return game;
+                return true;
             }
         }
 

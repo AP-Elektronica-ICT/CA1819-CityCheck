@@ -105,10 +105,10 @@ public class GameController : Controller
     {
         //id is de gamecode
 
-        Game game = gameMethods.deleteGame(id);
-        if (game == null)
+        bool game = gameMethods.deleteGame(id);
+        if (game == false)
             return NotFound();
-        return Ok(game);
+        return Ok("Deleted");
     }
 
 }

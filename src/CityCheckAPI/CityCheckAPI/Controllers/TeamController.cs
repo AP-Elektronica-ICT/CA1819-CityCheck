@@ -181,8 +181,8 @@ public class TeamController : Controller
 
     //score van een team in een game setten
     [HttpPost]
-    [Route("teams/{id}/{teamName}/setmyscore")]
-    public IActionResult setTeamScore(int id, string teamName, [FromBody] int newScore)
+    [Route("teams/{id}/{teamName}/setmyscore/{newScore}")]
+    public IActionResult setTeamScore(int id, string teamName, int newScore)
     {
         //id is de gamecode
         var score = teamMethods.setTeamScore(id,teamName,newScore);

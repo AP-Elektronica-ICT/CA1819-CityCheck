@@ -137,7 +137,7 @@ namespace BussinessLayer.Methods
         public List<Vraag> getAllLocsQuest(int id)
         {
             //alle vragen ophalen op 1 locatie inclusief antwoorden
-            DoelLocatie doelenQuery = context.DoelLocaties.Include(r => r.Vragen.Select(y => y.Antwoorden)).Where(r=>r.Id == id).Single<DoelLocatie>();
+            DoelLocatie doelenQuery = context.DoelLocaties.Include(r => r.Vragen).ThenInclude(y => y.Antwoorden).Where(r=>r.Id == id).Single<DoelLocatie>();
             List<Vraag> vragenQuery = doelenQuery.Vragen.ToList<Vraag>();
 
 
@@ -154,7 +154,7 @@ namespace BussinessLayer.Methods
             //id is de doellocatie id
 
             //vragen ophalen
-            DoelLocatie doel = context.DoelLocaties.Include(r => r.Vragen.Select(y => y.Antwoorden)).Where(r => r.Id == id).Single<DoelLocatie>();
+            DoelLocatie doel = context.DoelLocaties.Include(r => r.Vragen).ThenInclude(y => y.Antwoorden).Where(r => r.Id == id).Single<DoelLocatie>();
             List<Vraag> vragen = doel.Vragen;
             //aantal vragen
             int vragenAmount = vragen.Count;

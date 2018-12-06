@@ -103,6 +103,8 @@ public class GameController : Controller
     [Route("currentgame/{id}")]
     public IActionResult deleteGame(int id)
     {
+        //id is de gamecode
+
         Game game = gameMethods.deleteGame(id, context);
         if (game == null)
             return NotFound();

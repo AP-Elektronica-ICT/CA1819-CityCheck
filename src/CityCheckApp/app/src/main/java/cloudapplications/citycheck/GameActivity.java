@@ -1,6 +1,7 @@
 package cloudapplications.citycheck;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -11,6 +12,7 @@ import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +34,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import android.os.Handler;
@@ -293,7 +296,86 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
         }
-
-
     }
+
+
+    private void setMultiChoice(){
+        //Alertdialog aanmaken
+        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+
+        // String array for alert dialog multi choice items
+        String[] colors = new String[]{
+                "Red",
+                "Green",
+                "Blue",
+                "Purple",
+                "Olive"
+        };
+
+        // Boolean array for initial selected items
+        final boolean[] checkedColors = new boolean[]{
+                false, // Red
+                true, // Green
+                false, // Blue
+                true, // Purple
+                false // Olive
+
+        };
+
+        // Convert the color array to list
+        final List<String> colorsList = Arrays.asList(colors);
+
+        builder.setMultiChoiceItems(colors, checkedColors, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+
+                // Update the current focused item's checked status
+                checkedColors[which] = isChecked;
+
+                // Get the current focused item
+                String currentItem = colorsList.get(which);
+
+                // Notify the current action
+                Toast.makeText(getApplicationContext(),
+                        currentItem + " " + isChecked, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Specify the dialog is not cancelable
+        builder.setCancelable(false);
+
+        // Set a title for alert dialog
+        builder.setTitle("Your preferred colors?");
+
+        // Set the positive/yes button click listener
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Do something when click positive button
+                Toast.makeText(this, toString(which),Toast.LENGTH_LONG);
+            }
+        });
+
+        // Set the negative/no button click listener
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Do something when click the negative button
+            }
+        });
+
+        // Set the neutral/cancel button click listener
+        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Do something when click the neutral button
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        // Display the alert dialog on interface
+        dialog.show();
+    }
+
+
 }

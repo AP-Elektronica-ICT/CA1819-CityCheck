@@ -44,10 +44,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
 import android.os.Handler;
 
 
-public class GameActivity extends FragmentActivity implements OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener,ResultCallback<Status>{
+public class GameActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
 
     private GoogleMap kaart;
     private TeamLocation myTeam;
@@ -98,6 +99,11 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         teamNaam = getIntent().getExtras().getString("teamNaam");
         String chosenGameTime = getIntent().getExtras().getString("gameTime");
         int gameTimeInMillis = Integer.parseInt(chosenGameTime) * 3600000;
+        // Game die 10 seconden duurt om de EndGameActivity te testen
+        assert chosenGameTime != null;
+        if (chosenGameTime.equals("4")) {
+            gameTimeInMillis = 5000;
+        }
         new CountDownTimer(gameTimeInMillis, 1000) {
             public void onTick(long millisUntilFinished) {
                 int seconds = (int) (millisUntilFinished / 1000) % 60;
@@ -137,15 +143,15 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
-        if(myTeam != null){
+        if (myTeam != null) {
             myTeam.startConnection();
         }
     }
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
         //stop werkt pas onDestroy en niet onPause, opzich wel goed want als ze de app dan even naar de achtergrond brengen dan blijven de lijnen wel tekenen
         myTeam.stopConnection();
@@ -179,13 +185,13 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,String[] permissions,int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == 1) {
-            if(grantResults.length == 1
+            if (grantResults.length == 1
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 return;
             } else {
-                Toast.makeText(this, "Zonder toegang tot locatie kan je niet spelen",Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Zonder toegang tot locatie kan je niet spelen", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -194,7 +200,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     //private helper methoden
 
     //testen voor implementatie in geofencing
-    private void getTargetLocations(){
+    private void getTargetLocations() {
         OkHttpCall call = new OkHttpCall();
         call.get(getString(R.string.database_ip), "allDoelLocs");
         while (call.status == OkHttpCall.RequestStatus.Undefined) ;
@@ -206,8 +212,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
                 Log.d("Locations", "JSON object response: " + obj.toString());
                 Log.d("Locations", "Array of targetlocations: " + obj);
-                for(int i = 0; i<obj.length();i++){
-                    JSONObject target= obj.getJSONObject(i);
+                for (int i = 0; i < obj.length(); i++) {
+                    JSONObject target = obj.getJSONObject(i);
                     //maken van targetlocation class?
                     int id = target.getInt("id");
                     String name = target.getString("titel");
@@ -219,7 +225,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     //werkt
                     //Toast.makeText(this, ""+lat+" "+lng+" "+name, Toast.LENGTH_SHORT).show();
                     //geen zekerheid ivm formaat locatie
-                    DoelLocatie newtargetlocation = new DoelLocatie(id, name,lat,lng,null,vragen);
+                    DoelLocatie newtargetlocation = new DoelLocatie(id, name, lat, lng, null, vragen);
                     //heir ben ik iets aan het foutdoen,...
                     targetLocations.add(newtargetlocation);
 
@@ -227,16 +233,16 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
                 }
                 //Log.d("Doel", "1 teams list: " + currentDoelLocaties);
-                public cloudapplications.citycheck.Constants setTargetLocations(targetLocations);
+                //public cloudapplications.citycheck.Constants setTargetLocations (targetLocations);
                 Toast.makeText(this, targetLocations.size(), Toast.LENGTH_SHORT).show();
-            }catch (Throwable t) {
+            } catch (Throwable t) {
                 Log.e("doelen", "error: " + t);
             }
         }
     }
-    //doorgeven van TargetLocations waardes voor geofencing
-    cloudapplications.citycheck.Constants constants= new cloudapplications.citycheck.Constants();
 
+    //doorgeven van TargetLocations waardes voor geofencing
+    cloudapplications.citycheck.Constants constants = new cloudapplications.citycheck.Constants();
 
 
     private void getTeamsOnMap(int gameId) {
@@ -296,12 +302,12 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
 
-    private void  showDoelLocaties(List<DoelLocatie> newDoelLocaties){
+    private void showDoelLocaties(List<DoelLocatie> newDoelLocaties) {
 
         // place a marker on the locations
-        for (int i=0;i<newDoelLocaties.size();i++) {
+        for (int i = 0; i < newDoelLocaties.size(); i++) {
             DoelLocatie doellocatie = newDoelLocaties.get(i);
-            LatLng Locatie = new LatLng(doellocatie.getLat(),doellocatie.getLong());
+            LatLng Locatie = new LatLng(doellocatie.getLat(), doellocatie.getLong());
             kaart.addMarker(new MarkerOptions().position(Locatie));
         }
     }
@@ -311,47 +317,51 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         scoreview.setText("" + score);
     }
 
-    private void everythingThatNeedsToHappenEvery3s(Long time){
+    private void everythingThatNeedsToHappenEvery3s(Long time) {
         //locatie doorsturen om de 3s
         int TimeCounter = (int) (time / 1000);
-        if(TimeCounter % 3 == 0){
-            if(myTeam.newLocation != null){
+        if (TimeCounter % 3 == 0) {
+            if (myTeam.newLocation != null) {
                 myTeam.handleNewLocation(new LatLng(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude()));
             }
 
         }
 
     }
+
     //opzetten van geofences, nu gebruik van voorbeeldcode voor test
-    public void populateGeoFenceList(){
-        for (Map.Entry<String, LatLng>entry: cloudapplications.citycheck.Constants.LANDMARKS.entrySet()){
+    public void populateGeoFenceList() {
+        for (Map.Entry<String, LatLng> entry : cloudapplications.citycheck.Constants.LANDMARKS.entrySet()) {
             mGeofenceList.add(new Geofence.Builder()
-            .setRequestId(entry.getKey())
-            .setCircularRegion(
-                    entry.getValue().latitude,
-                    entry.getValue().longitude,
-                    cloudapplications.citycheck.Constants.GEOFENCE_RADIUS_IN_METERS
-            )
+                    .setRequestId(entry.getKey())
+                    .setCircularRegion(
+                            entry.getValue().latitude,
+                            entry.getValue().longitude,
+                            cloudapplications.citycheck.Constants.GEOFENCE_RADIUS_IN_METERS
+                    )
                     .setExpirationDuration(cloudapplications.citycheck.Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
                     .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
                     .build());
 
         }
     }
-    protected synchronized void buildGoogleApiClient(){
+
+    protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
     }
+
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
-        if(!mGoogleApiClient.isConnected() || !mGoogleApiClient.isConnected()){
+        if (!mGoogleApiClient.isConnected() || !mGoogleApiClient.isConnected()) {
             mGoogleApiClient.connect();
         }
     }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -362,7 +372,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     @Override
-    public void onConnected( Bundle connectonHint) {
+    public void onConnected(Bundle connectonHint) {
 
     }
 

@@ -68,11 +68,11 @@ class OkHttpCall {
                 if (response.isSuccessful()) {
                     // Als de request gelukt is
                     responseStr = response.body().string();
-                    Log.d("OkHttpCall", "Successful response: " + responseStr);
+                    Log.d("OkHttpCall", "Successful POST response: " + responseStr);
                     status = RequestStatus.Successful;
                 } else {
                     // Als er een fout is bij de request
-                    Log.d("OkHttpCall", "Error response: " + response.message());
+                    Log.d("OkHttpCall", "Error POST response: " + response.message());
                     status = RequestStatus.Unsuccessful;
                 }
             }
@@ -92,11 +92,11 @@ class OkHttpCall {
                 if (response.isSuccessful()) {
                     // Als de request gelukt is
                     responseStr = response.body().string();
-                    Log.d("OkHttpCall", "Successful response: " + responseStr);
+                    Log.d("OkHttpCall", "Successful GET response: " + responseStr);
                     status = RequestStatus.Successful;
                 } else {
                     // Als er een fout is bij de request
-                    Log.d("OkHttpCall", "Error response: " + response.message());
+                    Log.d("OkHttpCall", "Error GET response: " + response.message());
                     status = RequestStatus.Unsuccessful;
                 }
             }
@@ -116,11 +116,11 @@ class OkHttpCall {
                 if (response.isSuccessful()) {
                     // Als de request gelukt is
                     responseStr = response.body().string();
-                    Log.d("OkHttpCall", "Successful response: " + responseStr);
+                    Log.d("OkHttpCall", "Successful DELETE response: " + responseStr);
                     status = RequestStatus.Successful;
                 } else {
                     // Als er een fout is bij de request
-                    Log.d("OkHttpCall", "Error response: " + response.message());
+                    Log.d("OkHttpCall", "Error DELETE response: " + response.message());
                     status = RequestStatus.Unsuccessful;
                 }
             }

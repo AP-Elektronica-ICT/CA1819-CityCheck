@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +56,12 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView scoreview;
     private int score;
     private TextView teamNameTXT;
+
+    //Vragen beantwoorden
+    String[] antwoorden;
+    String vraag;
+    int correctAntwoordIndex;
+    int gekozenAntwoordIndex;
 
     //doellocaties
     //private List<LatLng> currentDoelLocaties;
@@ -107,6 +114,14 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         //teamnaam tonen op het game scherm
         teamNameTXT.setText(teamNaam);
 
+        //Een vraag stellen als ik op de naam klik (Dit is tijdelijk om een vraag toch te kunnen tonen)
+        teamNameTXT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                askQuestion();
+            }
+        });
+
         //ophalen doellocaties
         getTargetLocations();
         //TO-DELETE
@@ -116,6 +131,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         currentDoelLocaties.add(new LatLng(51.2183305, 4.4204524));
         currentDoelLocaties.add(new LatLng(51.2202678, 4.399327));*/
         //na het ready zijn van de map onderaan plaatsen we nieuwe markers
+
+
 
 
     }
@@ -282,11 +299,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void setScore(int newScore) {
-        score = newScore;
-        scoreview.setText("" + score);
-    }
-
     private void everythingThatNeedsToHappenEvery3s(Long time){
         //locatie doorsturen om de 3s
         int TimeCounter = (int) (time / 1000);
@@ -299,82 +311,141 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    private void setMultiChoice(){
+    private void setMultiChoice(final String[] antwoorden, int CorrectIndex, String vraag){
         //Alertdialog aanmaken
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
 
+        /*
         // String array for alert dialog multi choice items
-        String[] colors = new String[]{
-                "Red",
-                "Green",
-                "Blue",
-                "Purple",
-                "Olive"
+        String[] antwoorden = new String[]{
+                "Antwoord1",
+                "Antwoord2",
+                "Antwoord3"
         };
 
+        */
+
         // Boolean array for initial selected items
-        final boolean[] checkedColors = new boolean[]{
-                false, // Red
-                true, // Green
-                false, // Blue
-                true, // Purple
-                false // Olive
+        final boolean[] checkedAntw = new boolean[]{
+                false, // Antwoord1
+                false, // Antwoord2
+                false, // Antwoord3
 
         };
 
         // Convert the color array to list
-        final List<String> colorsList = Arrays.asList(colors);
+        //final List<String> AntwList = Arrays.asList(antwoorden);
 
-        builder.setMultiChoiceItems(colors, checkedColors, new DialogInterface.OnMultiChoiceClickListener() {
+        /*
+        builder.setMultiChoiceItems(antwoorden, checkedAntw, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
 
                 // Update the current focused item's checked status
-                checkedColors[which] = isChecked;
+                checkedAntw[which] = isChecked;
 
                 // Get the current focused item
-                String currentItem = colorsList.get(which);
+                String currentItem = AntwList.get(which);
 
                 // Notify the current action
                 Toast.makeText(getApplicationContext(),
                         currentItem + " " + isChecked, Toast.LENGTH_SHORT).show();
             }
         });
+        */
 
-        // Specify the dialog is not cancelable
-        builder.setCancelable(false);
+        builder.setSingleChoiceItems(antwoorden, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+
+
+                        // Notify the current action
+                        Toast.makeText(GameActivity.this, "Antwoord: "+antwoorden[i], Toast.LENGTH_LONG).show();
+
+                        gekozenAntwoordIndex = i;
+
+
+                    }
+                });
+
+
+                // Specify the dialog is not cancelable
+                builder.setCancelable(true);
 
         // Set a title for alert dialog
-        builder.setTitle("Your preferred colors?");
+        builder.setTitle(vraag);
 
         // Set the positive/yes button click listener
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Kies!", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Do something when click positive button
-                Toast.makeText(this, toString(which),Toast.LENGTH_LONG);
-            }
-        });
+                //Toast.makeText(GameActivity.this, "data: "+gekozenAntwoordIndex, Toast.LENGTH_LONG).show();
 
-        // Set the negative/no button click listener
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Do something when click the negative button
+                //Antwoord controleren
+                checkAnswer(gekozenAntwoordIndex,correctAntwoordIndex);
             }
         });
 
         // Set the neutral/cancel button click listener
-        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        //builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+            //@Override
+            //public void onClick(DialogInterface dialog, int which) {
                 // Do something when click the neutral button
-            }
-        });
+            //}
+        //});
 
         AlertDialog dialog = builder.create();
         // Display the alert dialog on interface
         dialog.show();
+    }
+
+
+
+    private void checkAnswer(int gekozenInd, int correctInd){
+
+
+        //Klopt de gekozen index met het correcte antwoord index
+        if(gekozenInd == correctInd){
+            Toast.makeText(GameActivity.this, "Correct!", Toast.LENGTH_LONG).show();
+
+            //X aantal punten toevoegen bij de gebruiker
+            score += 10;
+            //Nieuwe score tonen en doorpushen naar de db
+            setScore(score);
+        } else {
+            Toast.makeText(GameActivity.this, "Helaas! Volgende keer beter", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+
+    private void setScore(int newScore) {
+        score = newScore;
+        scoreview.setText("" + score);
+        //TODO: Nieuwe score doorpushen naar de API
+        //Path to use: teams/{id}/{teamName}/setmyscore/{newScore}
+    }
+
+
+    private void askQuestion(){
+        //Instellen van een vraag en deze stellen + controleren
+        //-------------------------------------------------------------------------------------
+        //Antwoorden instellen
+        antwoorden = new String[]{
+                "10",
+                "20",
+                "30"
+        };
+        //Vraag instellen
+        vraag = "Hoeveel bla bla?";
+        //Antwoord instellen 0,1 of 2
+        correctAntwoordIndex = 2;
+        //Vraag tonen
+        setMultiChoice(antwoorden, correctAntwoordIndex, vraag);
+        //-------------------------------------------------------------------------------------
+        //Instellen van een vraag en deze stellen + controleren
     }
 
 

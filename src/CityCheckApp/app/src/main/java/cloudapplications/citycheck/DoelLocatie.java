@@ -15,7 +15,8 @@ public class DoelLocatie {
     private Double Lat;
     private Double Long;
 
-    DoelLocatie(String name, double Lat, double Long, Location loc, String vragen){
+    DoelLocatie(int id, String name, double Lat, double Long, Location loc, String vragen){
+        this.id = id;
         this.name = name;
         this.Lat = Lat;
         this.Long = Long;

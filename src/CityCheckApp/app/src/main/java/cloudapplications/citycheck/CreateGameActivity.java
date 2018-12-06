@@ -26,7 +26,7 @@ public class CreateGameActivity extends AppCompatActivity {
         Button createGameButton = findViewById(R.id.button_create_game);
         Spinner gameTimeSpinner = findViewById(R.id.spinner_game_time);
 
-        String[] items = new String[]{"1", "2", "3"};
+        String[] items = new String[]{"1", "2", "3", "10 seconds"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         gameTimeSpinner.setAdapter(adapter);
 
@@ -70,21 +70,6 @@ public class CreateGameActivity extends AppCompatActivity {
             startActivity(i);
         } else {
             Toast.makeText(this, "Error while trying to create a new game", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void addTeamToGame(final String name, final int gamecode) {
-        OkHttpCall call = new OkHttpCall();
-        call.post(getString(R.string.database_ip), "teams/" + Integer.toString(gamecode), "{'teamNaam':'" + name + "'}");
-        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
-        if (call.status == OkHttpCall.RequestStatus.Successful) {
-            Intent i = new Intent(CreateGameActivity.this, GameCodeActivity.class);
-            i.putExtra("gameCode", Integer.toString(gamecode));
-            i.putExtra("gameTime", Integer.toString(gameTime));
-            i.putExtra("teamNaam", name);
-            startActivity(i);
-        } else {
-            Toast.makeText(this, "Error while trying to add the current team to the game", Toast.LENGTH_SHORT).show();
         }
     }
 }

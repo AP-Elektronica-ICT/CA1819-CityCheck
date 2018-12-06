@@ -19,7 +19,7 @@ namespace BussinessLayer.Methods
         }
 
 
-        public Game CreateGame(Game newGame, CityCheckContext context)
+        public Game CreateGame(Game newGame)
         {
 
             IQueryable<Game> query = context.Games;
@@ -51,7 +51,7 @@ namespace BussinessLayer.Methods
         }
 
 
-        public List<Game> GetGames(CityCheckContext context)
+        public List<Game> GetGames()
         {
             List<Game> query = context.Games.ToList<Game>();
             if (query != null)
@@ -62,7 +62,7 @@ namespace BussinessLayer.Methods
 
 
 
-        public Game GetGame(int id, CityCheckContext context)
+        public Game GetGame(int id)
     {
         Game game = context.Games.Where(d => d.GameCode == id).Include(r => r.Teams).Single<Game>();
         return game;
@@ -90,14 +90,17 @@ namespace BussinessLayer.Methods
 
         }
 
-        public Game deleteGame(int id, CityCheckContext context)
+        public Game deleteGame(int id)
         {
             Game game = context.Games.Where(d => d.GameCode == id).Single<Game>();
             if (game == null)
-                return null;
-            context.Games.Remove(game);
-            context.SaveChanges();
-            return game;
+            { return null; }
+            else
+            {
+                context.Games.Remove(game);
+                context.SaveChanges();
+                return game;
+            }
         }
 
     }

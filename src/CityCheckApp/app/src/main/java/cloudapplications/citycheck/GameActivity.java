@@ -1,6 +1,7 @@
 package cloudapplications.citycheck;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -13,7 +14,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +44,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -63,6 +67,12 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView scoreview;
     private int score;
     private TextView teamNameTXT;
+
+    //Vragen beantwoorden
+    String[] antwoorden;
+    String vraag;
+    int correctAntwoordIndex;
+    int gekozenAntwoordIndex;
 
     //doellocaties
     //private List<LatLng> currentDoelLocaties;
@@ -127,6 +137,14 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         //teamnaam tonen op het game scherm
         teamNameTXT.setText(teamNaam);
 
+        //Een vraag stellen als ik op de naam klik (Dit is tijdelijk om een vraag toch te kunnen tonen)
+        teamNameTXT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                askQuestion();
+            }
+        });
+
         //ophalen doellocaties
         getTargetLocations();
         //TO-DELETE
@@ -141,6 +159,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         mGeofenceList = new ArrayList<Geofence>();
         populateGeoFenceList();
         buildGoogleApiClient();
+
+
 
 
     }
@@ -315,12 +335,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void setScore(int newScore) {
-        score = newScore;
-        scoreview.setText("" + score);
-    }
 
-    private void everythingThatNeedsToHappenEvery3s(Long time) {
+    private void everythingThatNeedsToHappenEvery3s(Long time){
         //locatie doorsturen om de 3s
         int TimeCounter = (int) (time / 1000);
         if (TimeCounter % 3 == 0) {
@@ -329,7 +345,124 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
         }
+    }
 
+
+    private void setMultiChoice(final String[] antwoorden, int CorrectIndex, String vraag){
+        //Alertdialog aanmaken
+        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+
+        /*
+        // String array for alert dialog multi choice items
+        String[] antwoorden = new String[]{
+                "Antwoord1",
+                "Antwoord2",
+                "Antwoord3"
+        };
+
+        */
+
+        // Boolean array for initial selected items
+        final boolean[] checkedAntw = new boolean[]{
+                false, // Antwoord1
+                false, // Antwoord2
+                false, // Antwoord3
+
+        };
+
+        // Convert the color array to list
+        //final List<String> AntwList = Arrays.asList(antwoorden);
+
+        /*
+        builder.setMultiChoiceItems(antwoorden, checkedAntw, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+
+                // Update the current focused item's checked status
+                checkedAntw[which] = isChecked;
+
+                // Get the current focused item
+                String currentItem = AntwList.get(which);
+
+                // Notify the current action
+                Toast.makeText(getApplicationContext(),
+                        currentItem + " " + isChecked, Toast.LENGTH_SHORT).show();
+            }
+        });
+        */
+
+        builder.setSingleChoiceItems(antwoorden, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+
+
+                        // Notify the current action
+                        Toast.makeText(GameActivity.this, "Antwoord: "+antwoorden[i], Toast.LENGTH_LONG).show();
+
+                        gekozenAntwoordIndex = i;
+
+
+                    }
+                });
+
+
+                // Specify the dialog is not cancelable
+                builder.setCancelable(true);
+
+        // Set a title for alert dialog
+        builder.setTitle(vraag);
+
+        // Set the positive/yes button click listener
+        builder.setPositiveButton("Kies!", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Do something when click positive button
+                //Toast.makeText(GameActivity.this, "data: "+gekozenAntwoordIndex, Toast.LENGTH_LONG).show();
+
+                //Antwoord controleren
+                checkAnswer(gekozenAntwoordIndex,correctAntwoordIndex);
+            }
+        });
+
+        // Set the neutral/cancel button click listener
+        //builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+            //@Override
+            //public void onClick(DialogInterface dialog, int which) {
+                // Do something when click the neutral button
+            //}
+        //});
+
+        AlertDialog dialog = builder.create();
+        // Display the alert dialog on interface
+        dialog.show();
+    }
+
+
+
+    private void checkAnswer(int gekozenInd, int correctInd){
+
+
+        //Klopt de gekozen index met het correcte antwoord index
+        if(gekozenInd == correctInd){
+            Toast.makeText(GameActivity.this, "Correct!", Toast.LENGTH_LONG).show();
+
+            //X aantal punten toevoegen bij de gebruiker
+            score += 10;
+            //Nieuwe score tonen en doorpushen naar de db
+            setScore(score);
+        } else {
+            Toast.makeText(GameActivity.this, "Helaas! Volgende keer beter", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+
+    private void setScore(int newScore) {
+        score = newScore;
+        scoreview.setText("" + score);
+        //TODO: Nieuwe score doorpushen naar de API
+        //Path to use: teams/{id}/{teamName}/setmyscore/{newScore}
     }
 
     //opzetten van geofences, nu gebruik van voorbeeldcode voor test
@@ -392,7 +525,27 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onResult(@NonNull Status status) {
 
+
+
+    private void askQuestion(){
+        //Instellen van een vraag en deze stellen + controleren
+        //-------------------------------------------------------------------------------------
+        //Antwoorden instellen
+        antwoorden = new String[]{
+                "10",
+                "20",
+                "30"
+        };
+        //Vraag instellen
+        vraag = "Hoeveel bla bla?";
+        //Antwoord instellen 0,1 of 2
+        correctAntwoordIndex = 2;
+        //Vraag tonen
+        setMultiChoice(antwoorden, correctAntwoordIndex, vraag);
+        //-------------------------------------------------------------------------------------
+        //Instellen van een vraag en deze stellen + controleren
     }
+
 
     void endGame() {
         Intent i = new Intent(GameActivity.this, EndGameActivity.class);

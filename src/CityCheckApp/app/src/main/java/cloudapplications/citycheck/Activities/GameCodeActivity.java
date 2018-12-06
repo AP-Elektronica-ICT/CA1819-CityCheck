@@ -109,7 +109,9 @@ public class GameCodeActivity extends AppCompatActivity {
                             //Log.d("tag", "size array: " + game.getTeams().size());
                             for(int i=0; i<game.getTeams().size(); i++){
                                 //Log.d("tag", "size array: " + game.getTeams().get(i));
-                                teamsList.add(game.getTeams().get(i));
+                                Team team = game.getTeams().get(i);
+                                team.setPunten(-1);
+                                teamsList.add(team);
                             }
                         }
                         teamsListView.setAdapter(new TeamsAdapter(GameCodeActivity.this.getBaseContext(), teamsList));

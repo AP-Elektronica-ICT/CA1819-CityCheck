@@ -75,10 +75,12 @@ namespace BussinessLayer.Methods
             if (newDoel != null)
             {
                 //doellocatie zoeken
-                DoelLocatie huidigeLoc = context.DoelLocaties.Include(r=> r.locatie).Where(r=>r.Id == id).Single<DoelLocatie>();
+                DoelLocatie huidigeLoc = context.DoelLocaties.Include(r=> r.locatie).Include(vr => vr.Vragen).ThenInclude(y => y.Antwoorden).Where(r=>r.Id == id).Single<DoelLocatie>();
                 //Locatie titel en locatie aanpassen
                 huidigeLoc.Titel = newDoel.Titel;
-                huidigeLoc.locatie = newDoel.locatie;
+                //context.Locaties.Remove(huidigeLoc.locatie);
+                huidigeLoc.locatie.Lat = newDoel.locatie.Lat;
+                huidigeLoc.locatie.Long = newDoel.locatie.Long;
 
                 //edits opslaan
                 context.SaveChanges();

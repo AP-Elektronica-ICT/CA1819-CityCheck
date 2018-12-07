@@ -27,7 +27,7 @@ namespace BussinessLayer.Methods
         public List<DoelLocatie> getAllLocs(string Naam, int? page, int? pageLength, string direction)
         {
             //alle doellocaties selecteren
-            IQueryable<DoelLocatie> doelen = context.DoelLocaties.Include(r=>r.locatie);
+            IQueryable<DoelLocatie> doelen = context.DoelLocaties.Include(r=>r.locatie).Include(loc => loc.Vragen).ThenInclude(ant => ant.Antwoorden);
 
             //eerst kijken of we een bepaalde loc opvragen volgens naam
             if (!string.IsNullOrWhiteSpace(Naam))
@@ -112,7 +112,7 @@ namespace BussinessLayer.Methods
         {
             //id is de id van de doellocatie
 
-            DoelLocatie doel = context.DoelLocaties.Include(r=> r.Vragen).Where(r=>r.Id == id).Single<DoelLocatie>();
+            DoelLocatie doel = context.DoelLocaties.Include(r=> r.Vragen).ThenInclude(y => y.Antwoorden).Where(r=>r.Id == id).Single<DoelLocatie>();
 
             if (doel != null && newVraag != null)
             {

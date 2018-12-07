@@ -22,11 +22,32 @@ namespace Model
                 var doel = new DoelLocatie();
                 var loc = new Locatie();
 
+                //Antwoorden instellen
+                var ant1 = new Antwoord();
+                ant1.CorrectBool = false;
+                ant1.Antwoordzin = "Groenplaats";
+                var ant2 = new Antwoord();
+                ant2.CorrectBool = true;
+                ant2.Antwoordzin = "Eilandje";
+                var ant3 = new Antwoord();
+                ant3.CorrectBool = false;
+                ant3.Antwoordzin = "Rooseveld";
+
+                //Vraag toevoegen
+                var ques = new Vraag();
+                ques.VraagZin = "Waar zijn we?";
+                ques.Antwoorden = new System.Collections.Generic.List<Antwoord>();
+                ques.Antwoorden.Add(ant1);
+                ques.Antwoorden.Add(ant2);
+                ques.Antwoorden.Add(ant3);
+
                 //mas
                 doel.Titel = "Mas";
                 loc.Lat = 51.2289238;
                 loc.Long = 4.4026316;
                 doel.locatie = loc;
+                doel.Vragen = new System.Collections.Generic.List<Vraag>();
+                doel.Vragen.Add(ques);
                 context.DoelLocaties.Add(doel);
                 context.SaveChanges();
 

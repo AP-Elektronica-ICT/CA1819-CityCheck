@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -109,7 +108,7 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
         Location startLocation = LocationServices.FusedLocationApi.getLastLocation(myGoogleApiClient);
         if (startLocation == null) {
             LocationServices.FusedLocationApi.requestLocationUpdates(myGoogleApiClient, myLocationRequest, this);
-
+            Log.d(TAG, "updates started");
         }
         else {
             handleNewLocation(new LatLng(startLocation.getLatitude(), startLocation.getLongitude()));
@@ -141,8 +140,9 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
 
         }else {
-            LocationServices.FusedLocationApi.requestLocationUpdates(myGoogleApiClient, myLocationRequest, this);
-            Log.d(TAG, "updates started");
+            //LocationServices.FusedLocationApi.requestLocationUpdates(myGoogleApiClient, myLocationRequest, this);
+            //Log.d(TAG, "updates started");
+            getStartLocation();
         }
 
     }
@@ -168,7 +168,7 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
         if (requestCode == 1) {
             if(grantResults.length == 1
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                return;
+                getStartLocation();
             } else {
                 Toast.makeText(activity.getBaseContext(), "Zonder toegang tot locatie kan je niet spelen",Toast.LENGTH_LONG).show();
             }

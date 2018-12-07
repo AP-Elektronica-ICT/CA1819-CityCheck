@@ -37,11 +37,6 @@ export class DetailsComponent implements OnInit {
       this.route.navigate(["/doel"]);
     }
 
-
-
-
-
-
   }
 
 

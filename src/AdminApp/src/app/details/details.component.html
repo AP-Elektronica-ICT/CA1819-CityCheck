@@ -33,6 +33,7 @@
 
 
       <table class="table">
+
           <thead class="grey">
             <tr>
               <th scope="col">#1</th>
@@ -45,19 +46,21 @@
 
 
           <!-- ngfor per vraag -->
+          <ng-container *ngFor="let vraag of location.vragen">
           <tbody class="white black-text">
               <tr>
-                <td colspan="3">Vraag</td>
+                <td colspan="3" class="vraagTxt">{{vraag.vraagZin}}</td>
               </tr>
             </tbody>
 
           <tbody class="white black-text">
             <tr>
-              <td>1</td>
-              <td>2</td>
-              <td>3</td>
+              <td [ngClass]="{'correct': vraag.antwoorden[0].correctBool==true}">{{vraag.antwoorden[0].antwoordzin}}</td>
+              <td [ngClass]="{'correct': vraag.antwoorden[1].correctBool==true}">{{vraag.antwoorden[1].antwoordzin}}</td>
+              <td [ngClass]="{'correct': vraag.antwoorden[2].correctBool==true}">{{vraag.antwoorden[2].antwoordzin}}</td>
             </tr>
           </tbody>
+          </ng-container>
           <!-- ngfor per vraag -->
 
 

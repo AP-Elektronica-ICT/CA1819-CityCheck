@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from "@angular/common/http";
 import { DoelLocatie } from 'src/app/classes/DoelLocatie';
+import { Vraag } from 'src/app/classes/Vragen';
 
 @Injectable()
 export class DataService {
@@ -56,7 +57,7 @@ export class DataService {
 
 
   //locatie editen
-  editLocation(id:number, loc:ILocRoot): Observable<ILocRoot> {
+  editLocation(id:number, loc:DoelLocatie): Observable<ILocRoot> {
     return this._http.put<ILocRoot>(this.url+"editDoelLocs/"+id, loc)
     
   }
@@ -91,18 +92,27 @@ export class DataService {
 
 
 //interfaces
-
-
-export interface ILocRoot {
+  export interface ILocRoot {
     id: number;
     titel: string;
     locatie: Locatie;
-    vragen?: any;
+    vragen: Vragen[];
   }
   
- export interface Locatie {
+  export interface Vragen {
+    id: number;
+    vraagZin: string;
+    antwoorden: Antwoorden[];
+  }
+  
+  export interface Antwoorden {
+    id: number;
+    antwoordzin: string;
+    correctBool: boolean;
+  }
+  
+  export interface Locatie {
     id: number;
     lat: number;
     long: number;
   }
-

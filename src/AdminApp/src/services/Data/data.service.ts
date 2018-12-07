@@ -49,7 +49,17 @@ export class DataService {
 
 
   //locatie verwijderen
+  delLocation(id:number): Observable<string> {
+    return this._http.delete<string>(this.url+"delDoelLocs/"+id)
+    
+  }
 
+
+  //locatie editen
+  editLocation(id:number, loc:ILocRoot): Observable<ILocRoot> {
+    return this._http.put<ILocRoot>(this.url+"editDoelLocs/"+id, loc)
+    
+  }
 
 
   //Vragen bij een locatie ophalen

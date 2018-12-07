@@ -48,11 +48,14 @@ export class DetailsComponent implements OnInit {
 
   public delete(){
     //Delete loc
+    this.data.delLocation(this.location.id).subscribe();
+    this.route.navigate(["/doel"]);
   }
 
 
   public edit(){
     //Edit loc
+    this.data.editLocation(this.location.id,this.location).subscribe(res => console.log(res));
   }
 
 

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -28,6 +29,10 @@ public class GameCodeActivity extends AppCompatActivity {
 
     String currentGameCode;
     String currentGameTime;
+
+    String millisStarted;
+    String lastResponseStr = "";
+
     Boolean gotTeams;
     NetworkManager service;
     ArrayList<Team> prevTeams= new ArrayList<>();
@@ -60,7 +65,12 @@ public class GameCodeActivity extends AppCompatActivity {
         currentGameTime = getIntent().getExtras().getString("gameTime");
 
         codeTextView.setText(currentGameCode);
-        timeTextView.setText(currentGameTime + " hours");
+        // 10 seconden om de EndGameActivity te testen
+        if (currentGameTime.equals("4"))
+            timeTextView.setText("10 seconds");
+        else
+            timeTextView.setText(currentGameTime + " hours");
+
 
         // If the game creator came to this view then he has the right to start the game
         if (!getIntent().getExtras().getBoolean("gameCreator"))
@@ -97,6 +107,21 @@ public class GameCodeActivity extends AppCompatActivity {
                     Log.d("tag", "getTeams response" + team.getTeamNaam());
                 }
                 if(game.getHasStarted()){
+
+        // OkHttpCall call = new OkHttpCall();
+        // call.get(getString(R.string.database_ip), "currentgame/" + currentGameCode);
+        // while (call.status == OkHttpCall.RequestStatus.Undefined) ;
+        // if (call.status == OkHttpCall.RequestStatus.Successful) {
+        //     JSONObject obj;
+        //     JSONArray teamsArray;
+        //     JSONObject teams;
+        //     try {
+        //         // Als de admin de game heeft gestart dan wordt dat ook voor de andere gebruikers gestart
+        //         obj = new JSONObject(call.responseStr);
+        //         boolean isGameStarted = obj.getBoolean("hasStarted");
+        //         millisStarted = String.valueOf(obj.getLong("millisStarted"));
+        //         if (isGameStarted) {
+
                     startGame();
                 }else{
 
@@ -135,6 +160,7 @@ public class GameCodeActivity extends AppCompatActivity {
         i.putExtra("gameTime", currentGameTime);
         i.putExtra("gameCode", currentGameCode);
         i.putExtra("teamNaam", getIntent().getExtras().getString("teamNaam"));
+        i.putExtra("millisStarted", millisStarted);
         startActivity(i);
     }
 
@@ -150,6 +176,17 @@ public class GameCodeActivity extends AppCompatActivity {
                 Toast.makeText(GameCodeActivity.this.getBaseContext(), "Error while trying to start the game", Toast.LENGTH_SHORT).show();
             }
         });
+
+
+        // OkHttpCall call = new OkHttpCall();
+        // millisStarted = String.valueOf(System.currentTimeMillis());
+        // call.post(getString(R.string.database_ip), "startgame/" + currentGameCode + "/" + System.currentTimeMillis(), "");
+        // while (call.status == OkHttpCall.RequestStatus.Undefined) ;
+        // if (call.status == OkHttpCall.RequestStatus.Successful) {
+        //     startGame();
+        // } else {
+        //     Toast.makeText(this, "Error while trying to start the game", Toast.LENGTH_SHORT).show();
+        // }
 
     }
 }

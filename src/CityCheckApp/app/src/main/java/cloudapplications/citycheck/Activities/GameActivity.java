@@ -1,18 +1,31 @@
 package cloudapplications.citycheck.Activities;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.internal.Constants;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -21,13 +34,21 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+
 import android.os.Handler;
 
 import cloudapplications.citycheck.APIService.NetworkManager;
@@ -39,7 +60,7 @@ import cloudapplications.citycheck.R;
 import cloudapplications.citycheck.TeamLocation;
 
 
-public class GameActivity extends FragmentActivity implements OnMapReadyCallback {
+public class GameActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
 
     private GoogleMap kaart;
     private TeamLocation myTeam;
@@ -56,9 +77,19 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private int score;
     private TextView teamNameTXT;
 
+    //Vragen beantwoorden
+    String[] antwoorden;
+    String vraag;
+    int correctAntwoordIndex;
+    int gekozenAntwoordIndex;
+
     //doellocaties
     //private List<LatLng> currentDoelLocaties;
-    private List<DoelLocatie> TargetLocations = new ArrayList<>();
+    private List<DoelLocatie> targetLocations = new ArrayList<>();
+    //opzetten geofencing voor doellocaties te kunnen activeren.
+    protected ArrayList<Geofence> mGeofenceList;
+    protected GoogleApiClient mGoogleApiClient;
+
 
     //callbacks
     @Override
@@ -81,33 +112,49 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         teamNameTXT = (TextView) findViewById(R.id.txt_TeamName);
 
 
-        //locationsarray
+        //locationsarray (testwaardes voor doellocaties)
         //currentDoelLocaties = new ArrayList<>();
 
         final TextView timerTextView = findViewById(R.id.text_view_timer);
 
         teamNaam = getIntent().getExtras().getString("teamNaam");
         String chosenGameTime = getIntent().getExtras().getString("gameTime");
+        long millisStarted = Long.parseLong(getIntent().getExtras().getString("millisStarted"));
         int gameTimeInMillis = Integer.parseInt(chosenGameTime) * 3600000;
-        new CountDownTimer(gameTimeInMillis, 1000) {
-            public void onTick(long millisUntilFinished) {
-                int seconds = (int) (millisUntilFinished / 1000) % 60;
-                int minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
-                int hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
-                timerTextView.setText("Time remaining: " + hours + ":" + minutes + ":" + seconds);
-                everythingThatNeedsToHappenEvery3s(millisUntilFinished);
+        // Game die 10 seconden duurt om de EndGameActivity te testen
+        assert chosenGameTime != null;
+        if (chosenGameTime.equals("4")) {
+            gameTimeInMillis = 10000;
+        }
+        long timerMillis = gameTimeInMillis - (System.currentTimeMillis() - millisStarted);
+        if (timerMillis > 0) {
+            new CountDownTimer(timerMillis, 1000) {
+                public void onTick(long millisUntilFinished) {
+                    int seconds = (int) (millisUntilFinished / 1000) % 60;
+                    int minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
+                    int hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
+                    timerTextView.setText("Time remaining: " + hours + ":" + minutes + ":" + seconds);
+                    everythingThatNeedsToHappenEvery3s(millisUntilFinished);
+                }
 
-            }
-
-            public void onFinish() {
-                Intent i = new Intent(GameActivity.this, EndGameActivity.class);
-                i.putExtra("gameCode", Integer.toString(gamecode));
-                startActivity(i);
-            }
-        }.start();
+                public void onFinish() {
+                    endGame();
+                }
+            }.start();
+        } else {
+            endGame();
+        }
 
         //teamnaam tonen op het game scherm
         teamNameTXT.setText(teamNaam);
+
+        //Een vraag stellen als ik op de naam klik (Dit is tijdelijk om een vraag toch te kunnen tonen)
+        teamNameTXT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                askQuestion();
+            }
+        });
 
         //ophalen doellocaties
         getTargetLocations();
@@ -119,22 +166,27 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         currentDoelLocaties.add(new LatLng(51.2202678, 4.399327));*/
         //na het ready zijn van de map onderaan plaatsen we nieuwe markers
 
+        //geofencing
+        mGeofenceList = new ArrayList<Geofence>();
+        populateGeoFenceList();
+        buildGoogleApiClient();
+
 
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
-        if(myTeam != null){
+        if (myTeam != null)
             myTeam.startConnection();
-        }
     }
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
         //stop werkt pas onDestroy en niet onPause, opzich wel goed want als ze de app dan even naar de achtergrond brengen dan blijven de lijnen wel tekenen
-        myTeam.stopConnection();
+        if (myTeam != null)
+            myTeam.stopConnection();
     }
 
     @Override
@@ -161,24 +213,26 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
         //eerste doellocatie markers tonen
         //inconsistentie ivm latlng en locatie gebruik...
-        showDoelLocaties(TargetLocations);
+        showDoelLocaties(targetLocations);
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,String[] permissions,int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == 1) {
-            if(grantResults.length == 1
+            if (grantResults.length == 1
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 return;
             } else {
-                Toast.makeText(this, "Zonder toegang tot locatie kan je niet spelen",Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Zonder toegang tot locatie kan je niet spelen", Toast.LENGTH_LONG).show();
             }
         }
     }
 
 
     //private helper methoden
-    private void getTargetLocations(){
+
+    //testen voor implementatie in geofencing
+    private void getTargetLocations() {
         OkHttpCall call = new OkHttpCall();
         call.get(getString(R.string.database_ip), "allDoelLocs");
         while (call.status == OkHttpCall.RequestStatus.Undefined) ;
@@ -190,8 +244,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
                 Log.d("Locations", "JSON object response: " + obj.toString());
                 Log.d("Locations", "Array of targetlocations: " + obj);
-                for(int i = 0; i<obj.length();i++){
-                    JSONObject target= obj.getJSONObject(i);
+                for (int i = 0; i < obj.length(); i++) {
+                    JSONObject target = obj.getJSONObject(i);
                     //maken van targetlocation class?
                     int id = target.getInt("id");
                     String name = target.getString("titel");
@@ -203,19 +257,25 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     //werkt
                     //Toast.makeText(this, ""+lat+" "+lng+" "+name, Toast.LENGTH_SHORT).show();
                     //geen zekerheid ivm formaat locatie
-                    DoelLocatie newtargetlocation = new DoelLocatie(name,lat,lng,null,vragen);
+                    DoelLocatie newtargetlocation = new DoelLocatie(id, name, lat, lng, null, vragen);
                     //heir ben ik iets aan het foutdoen,...
-                    TargetLocations.add(newtargetlocation);
+                    targetLocations.add(newtargetlocation);
+
                     //Toast.makeText(this, ""+newtargetlocation, Toast.LENGTH_LONG).show();
 
                 }
                 //Log.d("Doel", "1 teams list: " + currentDoelLocaties);
-                Toast.makeText(this, TargetLocations.size(), Toast.LENGTH_SHORT).show();
-            }catch (Throwable t) {
+                //public cloudapplications.citycheck.Constants setTargetLocations (targetLocations);
+                Toast.makeText(this, targetLocations.size(), Toast.LENGTH_SHORT).show();
+            } catch (Throwable t) {
                 Log.e("doelen", "error: " + t);
             }
         }
     }
+
+    //doorgeven van TargetLocations waardes voor geofencing
+    cloudapplications.citycheck.Constants constants = new cloudapplications.citycheck.Constants();
+
 
     private void getTeamsOnMap(int gameId) {
         service.getAllTeamsFromGame(gameId, new NetworkResponseListener<List<Team>>() {
@@ -259,32 +319,231 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
 
-    private void  showDoelLocaties(List<DoelLocatie> newDoelLocaties){
+    private void showDoelLocaties(List<DoelLocatie> newDoelLocaties) {
 
         // place a marker on the locations
-        for (int i=0;i<newDoelLocaties.size();i++) {
+        for (int i = 0; i < newDoelLocaties.size(); i++) {
             DoelLocatie doellocatie = newDoelLocaties.get(i);
-            //DoelLocatie doellocatie = newDoelLocaties.get(i);
-            LatLng Locatie = new LatLng(doellocatie.getLat(),doellocatie.getLong());
-            kaart.addMarker(new MarkerOptions().position(Locatie).title("Naam locatie").snippet("500").icon(BitmapDescriptorFactory.fromResource(R.drawable.coin_small)));
+
+            LatLng Locatie = new LatLng(doellocatie.getLat(), doellocatie.getLong());
+            kaart.addMarker(new MarkerOptions().position(Locatie));
         }
     }
 
-    private void setScore(int newScore) {
-        score = newScore;
-        scoreview.setText("" + score);
-    }
 
-    private void everythingThatNeedsToHappenEvery3s(Long time){
+    private void everythingThatNeedsToHappenEvery3s(Long time) {
         //locatie doorsturen om de 3s
         int TimeCounter = (int) (time / 1000);
-        if(TimeCounter % 3 == 0){
-            if(myTeam.newLocation != null){
+        if (TimeCounter % 3 == 0) {
+            if (myTeam.newLocation != null) {
                 myTeam.handleNewLocation(new LatLng(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude()));
             }
 
         }
+    }
 
 
+    private void setMultiChoice(final String[] antwoorden, int CorrectIndex, String vraag) {
+        //Alertdialog aanmaken
+        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+
+        /*
+        // String array for alert dialog multi choice items
+        String[] antwoorden = new String[]{
+                "Antwoord1",
+                "Antwoord2",
+                "Antwoord3"
+        };
+
+        */
+
+        // Boolean array for initial selected items
+        final boolean[] checkedAntw = new boolean[]{
+                false, // Antwoord1
+                false, // Antwoord2
+                false, // Antwoord3
+
+        };
+
+        // Convert the color array to list
+        //final List<String> AntwList = Arrays.asList(antwoorden);
+
+        /*
+        builder.setMultiChoiceItems(antwoorden, checkedAntw, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+
+                // Update the current focused item's checked status
+                checkedAntw[which] = isChecked;
+
+                // Get the current focused item
+                String currentItem = AntwList.get(which);
+
+                // Notify the current action
+                Toast.makeText(getApplicationContext(),
+                        currentItem + " " + isChecked, Toast.LENGTH_SHORT).show();
+            }
+        });
+        */
+
+        builder.setSingleChoiceItems(antwoorden, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+
+                // Notify the current action
+                Toast.makeText(GameActivity.this, "Antwoord: " + antwoorden[i], Toast.LENGTH_LONG).show();
+
+                gekozenAntwoordIndex = i;
+
+
+            }
+        });
+
+
+        // Specify the dialog is not cancelable
+        builder.setCancelable(true);
+
+        // Set a title for alert dialog
+        builder.setTitle(vraag);
+
+        // Set the positive/yes button click listener
+        builder.setPositiveButton("Kies!", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Do something when click positive button
+                //Toast.makeText(GameActivity.this, "data: "+gekozenAntwoordIndex, Toast.LENGTH_LONG).show();
+
+                //Antwoord controleren
+                checkAnswer(gekozenAntwoordIndex, correctAntwoordIndex);
+            }
+        });
+
+        // Set the neutral/cancel button click listener
+        //builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+        //@Override
+        //public void onClick(DialogInterface dialog, int which) {
+        // Do something when click the neutral button
+        //}
+        //});
+
+        AlertDialog dialog = builder.create();
+        // Display the alert dialog on interface
+        dialog.show();
+    }
+
+
+    private void checkAnswer(int gekozenInd, int correctInd) {
+
+
+        //Klopt de gekozen index met het correcte antwoord index
+        if (gekozenInd == correctInd) {
+            Toast.makeText(GameActivity.this, "Correct!", Toast.LENGTH_LONG).show();
+
+            //X aantal punten toevoegen bij de gebruiker
+            score += 10;
+            //Nieuwe score tonen en doorpushen naar de db
+            setScore(score);
+        } else {
+            Toast.makeText(GameActivity.this, "Helaas! Volgende keer beter", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+
+    private void setScore(int newScore) {
+        score = newScore;
+        scoreview.setText("" + score);
+        //TODO: Nieuwe score doorpushen naar de API
+        //Path to use: teams/{id}/{teamName}/setmyscore/{newScore}
+    }
+
+    //opzetten van geofences, nu gebruik van voorbeeldcode voor test
+    public void populateGeoFenceList() {
+        for (Map.Entry<String, LatLng> entry : cloudapplications.citycheck.Constants.LANDMARKS.entrySet()) {
+            mGeofenceList.add(new Geofence.Builder()
+                    .setRequestId(entry.getKey())
+                    .setCircularRegion(
+                            entry.getValue().latitude,
+                            entry.getValue().longitude,
+                            cloudapplications.citycheck.Constants.GEOFENCE_RADIUS_IN_METERS
+                    )
+                    .setExpirationDuration(cloudapplications.citycheck.Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                    .build());
+
+        }
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!mGoogleApiClient.isConnected() || !mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.connect();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnecting() || mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+
+    @Override
+    public void onConnected(Bundle connectonHint) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int cause) {
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onResult(@NonNull Status status) {
+
+    }
+
+
+    private void askQuestion() {
+        //Instellen van een vraag en deze stellen + controleren
+        //-------------------------------------------------------------------------------------
+        //Antwoorden instellen
+        antwoorden = new String[]{
+                "10",
+                "20",
+                "30"
+        };
+        //Vraag instellen
+        vraag = "Hoeveel bla bla?";
+        //Antwoord instellen 0,1 of 2
+        correctAntwoordIndex = 2;
+        //Vraag tonen
+        setMultiChoice(antwoorden, correctAntwoordIndex, vraag);
+        //-------------------------------------------------------------------------------------
+        //Instellen van een vraag en deze stellen + controleren
+    }
+
+
+    void endGame() {
+        Intent i = new Intent(GameActivity.this, EndGameActivity.class);
+        i.putExtra("gameCode", Integer.toString(gamecode));
+        startActivity(i);
     }
 }

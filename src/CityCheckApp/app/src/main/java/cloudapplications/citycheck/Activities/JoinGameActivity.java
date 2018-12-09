@@ -123,10 +123,18 @@ public class JoinGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 name = edit_teamName.getText().toString();
-                color = currentColor;
-                gamecode = Integer.parseInt(edit_gamecode.getText().toString());
-                Log.d("JoinGameActivity", "team: " + name + " color: " + color + " gamecode: " + gamecode);
-                addTeamToGame(name, color, gamecode);
+                if (name.matches("")) {
+                    Toast.makeText(JoinGameActivity.this, "You must enter a team name", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (edit_gamecode.getText().toString().matches("\\d{4}")) {
+                        gamecode = Integer.parseInt(edit_gamecode.getText().toString());
+                        color = currentColor;
+                        Log.d("JoinGameActivity", "team: " + name + " color: " + color + " gamecode: " + gamecode);
+                        addTeamToGame(name, color, gamecode);
+                    } else {
+                        Toast.makeText(JoinGameActivity.this, "You must enter a valid game code (4 digits)", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
     }

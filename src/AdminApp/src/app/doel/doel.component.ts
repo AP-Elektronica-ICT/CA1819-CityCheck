@@ -59,7 +59,7 @@ export class DoelComponent implements OnInit {
     else{
       console.log("not logged in");
       //niet ingelogd, eerst inloggen.
-      this.router.navigate([("/login")]);
+      //this.router.navigate([("/login")]);
     }
 
     //eerste locaties ophalen
@@ -131,8 +131,15 @@ export class DoelComponent implements OnInit {
     var doelloc = new DoelLocatie(this.titel,loc,null);
     //doellocatie posten
     this.data.postLocation(doelloc).subscribe(res =>{
-      console.log(res);
+      //console.log(res);
       //this.getLocations();
+
+      //data fields weer clearen
+      this.titel = "";
+      this.newlat = null;
+      this.newlong = null;
+      //aantonen dat deze is toegevoegd
+      alert("De locatie is toegevoegd");
     });
   }
 
@@ -147,6 +154,17 @@ export class DoelComponent implements OnInit {
     this.layers = [
       marker(this.center)
     ];
+
+  }
+
+
+  public edit(loc:ILocRoot):void{
+
+    //Set chosen location in service to acces in other component
+    this.data.setChosenLoc(loc);
+
+    //Go to other component
+    this.router.navigate(["/detail"]);
 
   }
 

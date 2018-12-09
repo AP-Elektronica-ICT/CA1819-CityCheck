@@ -61,11 +61,21 @@ public class EndGameActivity extends AppCompatActivity {
                     }
                 });
                 endListView.setAdapter(new TeamsAdapter(this, teamsList));
+                deleteGame();
             } catch (Throwable t) {
                 Log.e("EndGameActivity", "Could not parse malformed JSON: \"" + call.responseStr + "\"");
             }
         } else {
             Toast.makeText(this, "Error while trying to get the teams", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void deleteGame() {
+        OkHttpCall call = new OkHttpCall();
+        call.delete(getString(R.string.database_ip), "currentgame/" + gameCode);
+        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
+        if (call.status == OkHttpCall.RequestStatus.Unsuccessful) {
+            Toast.makeText(this, "Error while trying to delete the game from the database", Toast.LENGTH_SHORT).show();
         }
     }
 }

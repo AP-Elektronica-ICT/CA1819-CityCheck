@@ -1,0 +1,95 @@
+<header>
+  <h1 id="title">DOEL LOCATIE DETAIL</h1>
+</header>
+
+<button [routerLink]="['/doel']" type="button" class="btn btn-yellow"> Back</button>
+
+<section id="doellocPage">
+
+  <h1>{{location.titel}}</h1>
+  <hr>
+  <br>
+
+    <div id="addCont">
+
+        <section class="forminps">
+          <input type="text" id="namelc" class="form-control mb-4" placeholder="Naam" [(ngModel)]="location.titel">
+          <input type="number" id="latlc" class="form-control mb-4" placeholder="Latitutde" [(ngModel)]="location.locatie.lat">
+          <input type="number" id="lnglc" class="form-control mb-4" placeholder="Longitude" [(ngModel)]="location.locatie.long">
+      
+          <button id="editBtn" (click)="edit()" type="button" class="btn btn-yellow">Edit Location</button>
+          <br>
+          <button id="delBtn" (click)="delete()" type="button" class="btn btn-danger">Delete</button>
+      
+        </section>
+      
+      </div>
+
+      <br>
+
+      <h1>Q/A</h1>
+
+      <hr>
+
+
+      <table class="table">
+
+          <thead class="grey">
+            <tr>
+              <th scope="col">#1</th>
+              <th scope="col">#2</th>
+              <th scope="col">#3</th>
+            </tr>
+          </thead>
+
+
+
+
+          <!-- ngfor per vraag -->
+          <ng-container *ngFor="let vraag of location.vragen">
+          <tbody class="white black-text">
+              <tr>
+                <td colspan="3" class="vraagTxt">{{vraag.vraagZin}}</td>
+              </tr>
+            </tbody>
+
+          <tbody class="white black-text">
+            <tr>
+              <td [ngClass]="{'correct': vraag.antwoorden[0].correctBool==true}">{{vraag.antwoorden[0].antwoordzin}}</td>
+              <td [ngClass]="{'correct': vraag.antwoorden[1].correctBool==true}">{{vraag.antwoorden[1].antwoordzin}}</td>
+              <td [ngClass]="{'correct': vraag.antwoorden[2].correctBool==true}">{{vraag.antwoorden[2].antwoordzin}}</td>
+            </tr>
+          </tbody>
+          </ng-container>
+          <!-- ngfor per vraag -->
+
+
+          </table>
+
+
+          <h1>Add Question</h1>
+
+          <hr>
+
+          
+
+
+          <div id="addquest">
+
+              <section id="addQ">
+                <input type="text" id="namelc" class="form-control mb-4" placeholder="Vraag" [(ngModel)]="newVraag"><br>
+                <input type="text" class="form-control mb-4" placeholder="Antwoord1" [(ngModel)]="newAntw1">
+                <input type="text" class="form-control mb-4" placeholder="Antwoord2" [(ngModel)]="newAntw2">
+                <input type="text" class="form-control mb-4" placeholder="Antwoord3" [(ngModel)]="newAntw3">
+                <br>
+                <p>Correct Answer</p>
+                <input id="correctInp" type="number" min="1" max="3" class="form-control mb-4" placeholder="1" [(ngModel)]="correct">
+            
+                <button (click)="addQ()" type="button" class="btn btn-yellow">Add question</button>
+            
+              </section>
+            
+            </div>
+
+
+</section>

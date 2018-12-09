@@ -16,8 +16,10 @@
   <div id="listView" class="list-group">
       <a href="#!" class="list-group-item list-group-item-action disabled yellow">Gekende locaties</a>
 
-
-      <a (click)="pickLoc(loc)"  class="list-group-item list-group-item-action" *ngFor="let loc of allLocs">{{loc.titel}}</a>
+      <section (click)="pickLoc(loc)" *ngFor="let loc of allLocs" class="list-group-item list-group-item-action locSections">
+      <p>{{loc.titel}}
+      <button (click)="edit(loc)"  type="button" class="btn btn-grey delBtn">Edit</button></p>
+      </section>
 
       <br>
 

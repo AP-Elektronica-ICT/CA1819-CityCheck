@@ -13,6 +13,10 @@ const appRoutes: Routes = [
     path: 'login',
     component: LoginComponent
   },
+  {
+    path: 'detail',
+    component: DetailsComponent
+  },
   { path: '',
     component: LoginComponent
   },
@@ -35,13 +39,15 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
 import { environment } from '../environments/environment';
 import { AuthService } from 'src/services/auth/auth.service';
 import { DataService } from 'src/services/Data/data.service';
+import { DetailsComponent } from './details/details.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    DoelComponent
+    DoelComponent,
+    DetailsComponent
   ],
   imports: [
     BrowserModule,

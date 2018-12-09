@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ILocRoot, DataService } from 'src/services/Data/data.service';
+import { ILocRoot, DataService, Vragen } from 'src/services/Data/data.service';
 import { Router } from '@angular/router';
 import { Antwoord, Vraag } from '../classes/Vragen';
 
@@ -80,10 +80,19 @@ export class DetailsComponent implements OnInit {
     var newVrg = new Vraag(this.newVraag,newAntw);
     //Doorpushen van de vraag binnen deze locatie
 
+    this.data.postQuestion(this.location.id,newVrg).subscribe();
 
-    //Toevoegen van de vraag aan de local locatie => loc.vraag = ;
+    //Toevoegen van de vraag aan de local locatie
+    this.data.getLocations(0,this.location.titel).subscribe(r=>{
+      this.location = r[0];
 
-
+      //data weer clearen
+      this.newVraag = "";
+      this.newAntw1 = "";
+      this.newAntw2 = "";
+      this.newAntw3 = "";
+      this.correct = 1;
+    })
 
   }
 

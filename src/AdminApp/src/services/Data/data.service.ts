@@ -42,8 +42,6 @@ export class DataService {
 
   //nieuwe locatie posten
   postLocation(loc:DoelLocatie): Observable<DoelLocatie> {
-    console.log(loc);
-
     return this._http.post<DoelLocatie>(this.url+"addDoelLocs",loc)
     
   }
@@ -63,30 +61,12 @@ export class DataService {
   }
 
 
-  //Vragen bij een locatie ophalen
-
-
-
-
   //Vraag bij een locatie toevoegen
+  postQuestion(id:number, vraag:Vraag): Observable<any> {
 
-
-
-
-
-//   createAthlete(vnaam:string,anaam:string,natio:string,leeft:number,aantala:number,sportid:number, key:string){
-//     return this._http.post(this.mainUrl+`athletes?key=`+key,{
-//       "voornaam": vnaam,
-//       "achternaam": anaam,
-//       "nationaliteit": natio,
-//       "leeftijd": leeft,
-//       "aantalAwards": aantala,
-//       "SportId": sportid
-//   })
-//   }
-
-
-
+    return this._http.post<any>(this.url+"addDoelLocsQuestion/"+id,vraag)
+    
+  }
 
 }
 

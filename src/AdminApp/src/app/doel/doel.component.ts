@@ -131,7 +131,7 @@ export class DoelComponent implements OnInit {
     var doelloc = new DoelLocatie(this.titel,loc,null);
     //doellocatie posten
     this.data.postLocation(doelloc).subscribe(res =>{
-      console.log(res);
+      //console.log(res);
       //this.getLocations();
 
       //data fields weer clearen

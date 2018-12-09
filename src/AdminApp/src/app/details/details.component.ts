@@ -50,7 +50,10 @@ export class DetailsComponent implements OnInit {
 
   public edit(){
     //Edit loc
-    this.data.editLocation(this.location.id,this.location).subscribe(res => console.log(res));
+    this.data.editLocation(this.location.id,this.location).subscribe(res => {
+      //this.route.navigate(["/doel"]);
+      alert("Edited");
+    });
   }
 
 

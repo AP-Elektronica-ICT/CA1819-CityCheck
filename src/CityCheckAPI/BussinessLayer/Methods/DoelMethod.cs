@@ -27,7 +27,7 @@ namespace BussinessLayer.Methods
         public List<DoelLocatie> getAllLocs(string Naam, int? page, int? pageLength, string direction)
         {
             //alle doellocaties selecteren
-            IQueryable<DoelLocatie> doelen = context.DoelLocaties.Include(r=>r.locatie);
+            IQueryable<DoelLocatie> doelen = context.DoelLocaties.Include(r=>r.locatie).Include(loc => loc.Vragen).ThenInclude(ant => ant.Antwoorden);
 
             //eerst kijken of we een bepaalde loc opvragen volgens naam
             if (!string.IsNullOrWhiteSpace(Naam))
@@ -75,10 +75,12 @@ namespace BussinessLayer.Methods
             if (newDoel != null)
             {
                 //doellocatie zoeken
-                DoelLocatie huidigeLoc = context.DoelLocaties.Include(r=> r.locatie).Where(r=>r.Id == id).Single<DoelLocatie>();
+                DoelLocatie huidigeLoc = context.DoelLocaties.Include(r=> r.locatie).Include(vr => vr.Vragen).ThenInclude(y => y.Antwoorden).Where(r=>r.Id == id).Single<DoelLocatie>();
                 //Locatie titel en locatie aanpassen
                 huidigeLoc.Titel = newDoel.Titel;
-                huidigeLoc.locatie = newDoel.locatie;
+                //context.Locaties.Remove(huidigeLoc.locatie);
+                huidigeLoc.locatie.Lat = newDoel.locatie.Lat;
+                huidigeLoc.locatie.Long = newDoel.locatie.Long;
 
                 //edits opslaan
                 context.SaveChanges();
@@ -112,7 +114,7 @@ namespace BussinessLayer.Methods
         {
             //id is de id van de doellocatie
 
-            DoelLocatie doel = context.DoelLocaties.Include(r=> r.Vragen).Where(r=>r.Id == id).Single<DoelLocatie>();
+            DoelLocatie doel = context.DoelLocaties.Include(r=> r.Vragen).ThenInclude(y => y.Antwoorden).Where(r=>r.Id == id).Single<DoelLocatie>();
 
             if (doel != null && newVraag != null)
             {
@@ -137,7 +139,7 @@ namespace BussinessLayer.Methods
         public List<Vraag> getAllLocsQuest(int id)
         {
             //alle vragen ophalen op 1 locatie inclusief antwoorden
-            DoelLocatie doelenQuery = context.DoelLocaties.Include(r => r.Vragen.Select(y => y.Antwoorden)).Where(r=>r.Id == id).Single<DoelLocatie>();
+            DoelLocatie doelenQuery = context.DoelLocaties.Include(r => r.Vragen).ThenInclude(y => y.Antwoorden).Where(r=>r.Id == id).Single<DoelLocatie>();
             List<Vraag> vragenQuery = doelenQuery.Vragen.ToList<Vraag>();
 
 
@@ -154,7 +156,7 @@ namespace BussinessLayer.Methods
             //id is de doellocatie id
 
             //vragen ophalen
-            DoelLocatie doel = context.DoelLocaties.Include(r => r.Vragen.Select(y => y.Antwoorden)).Where(r => r.Id == id).Single<DoelLocatie>();
+            DoelLocatie doel = context.DoelLocaties.Include(r => r.Vragen).ThenInclude(y => y.Antwoorden).Where(r => r.Id == id).Single<DoelLocatie>();
             List<Vraag> vragen = doel.Vragen;
             //aantal vragen
             int vragenAmount = vragen.Count;

@@ -38,7 +38,7 @@ public class GameController : Controller
     public IActionResult createGame([FromBody] Game newGame)
     {
 
-        var returnValue = gameMethods.CreateGame(newGame, context);
+        var returnValue = gameMethods.CreateGame(newGame);
         if (returnValue != null)
             return Created("Created:", returnValue);
         else
@@ -53,7 +53,7 @@ public class GameController : Controller
     public IActionResult getGames()
     {
 
-        List<Game> games = gameMethods.GetGames(context);
+        List<Game> games = gameMethods.GetGames();
         if (games != null)
             return Ok(games);
         else
@@ -70,7 +70,7 @@ public class GameController : Controller
     {
         //id is de code die voor een game aangemaakt wordt.
 
-        Game game = gameMethods.GetGame(id, context);
+        Game game = gameMethods.GetGame(id);
 
         if (game != null)
             return Ok(game);
@@ -99,6 +99,16 @@ public class GameController : Controller
         }
     }
 
+    [HttpDelete]
+    [Route("currentgame/{id}")]
+    public IActionResult deleteGame(int id)
+    {
+        //id is de gamecode
 
+        bool game = gameMethods.deleteGame(id);
+        if (game == false)
+            return NotFound();
+        return Ok("Deleted");
+    }
 
 }

@@ -96,7 +96,7 @@ namespace BussinessLayer.Methods
             //id is de gamecode
             //we gaan het team selecteren volgens de teamnaam
 
-            Game game = context.Games.Where(r => r.GameCode == id).Include(r => r.Teams.Select(y => y.TeamTraces)).Single<Game>();
+            Game game = context.Games.Where(r => r.GameCode == id).Include(r => r.Teams).ThenInclude(y=>y.TeamTraces).Single<Game>();
             Team team = game.Teams.Where(d => d.TeamNaam == teamname).Single<Team>();
             List<TeamTrace> traces = team.TeamTraces;
 
@@ -154,7 +154,7 @@ namespace BussinessLayer.Methods
         {
             //id is de gamecode
 
-            Game game = context.Games.Include(r => r.Teams.Select(x => x.TeamTraces)).Where(d => d.GameCode == id).Single<Game>();
+            Game game = context.Games.Include(r => r.Teams).ThenInclude(y=>y.TeamTraces).Where(d => d.GameCode == id).Single<Game>();
             List<Team> teams = game.Teams;
 
 
@@ -175,7 +175,7 @@ namespace BussinessLayer.Methods
         {
             //id is de gamecode
 
-            Game game = context.Games.Include(r => r.Teams.Select(x => x.TeamTraces)).Where(d => d.GameCode == id).Single<Game>();
+            Game game = context.Games.Include(r => r.Teams).ThenInclude(y => y.TeamTraces).Where(d => d.GameCode == id).Single<Game>();
             Team team = game.Teams.Where(d => d.TeamNaam == teamNaam).Single<Team>();
             List<TeamTrace> traces = team.TeamTraces;
 

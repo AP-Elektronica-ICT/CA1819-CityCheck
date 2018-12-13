@@ -23,6 +23,10 @@ public class Game {
     @Expose
     private Boolean hasStarted;
 
+    @SerializedName("millisStarted")
+    @Expose
+    private Long millisStarted;
+
     @SerializedName("teams")
     @Expose
     private ArrayList<Team> teams;
@@ -61,6 +65,14 @@ public class Game {
 
     public void setHasStarted(Boolean hasStarted) {
         this.hasStarted = hasStarted;
+    }
+
+    public Long getMillisStarted() {
+        return millisStarted;
+    }
+
+    public void setMillisStarted(Long millisStarted) {
+        this.millisStarted = millisStarted;
     }
 
     public ArrayList<Team> getTeams() {

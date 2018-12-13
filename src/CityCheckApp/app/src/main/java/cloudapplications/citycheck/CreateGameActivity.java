@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
@@ -20,6 +21,7 @@ public class CreateGameActivity extends AppCompatActivity {
 
     private int gameTime;
     private Button btnTime;
+    private TextView txtTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +29,10 @@ public class CreateGameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_game);
 
         Button createGameButton = findViewById(R.id.button_create_game);
-        Spinner gameTimeSpinner = findViewById(R.id.spinner_game_time);
-
         btnTime = (Button) findViewById(R.id.button_timePick);
+        txtTime = (TextView) findViewById(R.id.txt_Time);
+        gameTime = 1;
+        txtTime.setText(""+gameTime);
 
         btnTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,28 +42,13 @@ public class CreateGameActivity extends AppCompatActivity {
             }
         });
 
-        String[] items = new String[]{"1", "2", "3", "10 seconds"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
-        gameTimeSpinner.setAdapter(adapter);
-
-        gameTimeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                gameTime = position + 1;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
         createGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 createNewGame();
             }
         });
+
     }
 
     private void createNewGame() {
@@ -96,13 +84,13 @@ public class CreateGameActivity extends AppCompatActivity {
             Button b1 = (Button) d.findViewById(R.id.btn_timeSet);
             Button b2 = (Button) d.findViewById(R.id.btn_timeCancel);
             final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker);
-            np.setMaxValue(4);
+            np.setMaxValue(3);
             np.setMinValue(1);
             np.setWrapSelectorWheel(false);
             np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
                 @Override
                 public void onValueChange(NumberPicker numberPicker, int old, int newTijd) {
-                    Toast.makeText(getApplicationContext(), "Time: "+Integer.toString(newTijd), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Time: "+Integer.toString(newTijd), Toast.LENGTH_SHORT).show();
                 };
             });
             b1.setOnClickListener(new View.OnClickListener()
@@ -111,7 +99,8 @@ public class CreateGameActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     //de gekozen tijd ophalen
                     gameTime = np.getValue();
-                    Toast.makeText(getApplicationContext(), "Time: "+Integer.toString(gameTime), Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "Gekozen tijdsduur: "+Integer.toString(gameTime), Toast.LENGTH_LONG).show();
+                    txtTime.setText(""+gameTime);
                     //Dialog sluiten
                     d.dismiss();
                 }

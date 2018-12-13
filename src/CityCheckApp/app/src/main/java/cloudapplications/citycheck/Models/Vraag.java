@@ -3,7 +3,7 @@ package cloudapplications.citycheck.Models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Vraag {
 
@@ -17,7 +17,7 @@ public class Vraag {
 
     @SerializedName("antwoorden")
     @Expose
-    private List<Antwoord> Antwoorden;
+    private ArrayList<Antwoord> Antwoorden;
 
     public int getId() {
         return Id;
@@ -35,11 +35,11 @@ public class Vraag {
         VraagZin = vraagZin;
     }
 
-    public List<Antwoord> getAntwoorden() {
+    public ArrayList<Antwoord> getAntwoorden() {
         return Antwoorden;
     }
 
-    public void setAntwoorden(List<Antwoord> antwoorden) {
+    public void setAntwoorden(ArrayList<Antwoord> antwoorden) {
         Antwoorden = antwoorden;
     }
 }

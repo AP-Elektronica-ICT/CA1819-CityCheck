@@ -9,7 +9,7 @@ public class Antwoord {
     @Expose
     private int Id;
 
-    @SerializedName("antwoordZin")
+    @SerializedName("antwoordzin")
     @Expose
     private String Antwoordzin;
 

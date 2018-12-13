@@ -192,7 +192,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
     // Private helper methoden
 
-    // TODO: Volgende call omzetten naar Retrofit
+    // TODO: Een betere call gebruiken (niet alle doellocaties GETen maar enkel de 3 nodige) + Omzetten naar Retrofit
     // Testen voor implementatie in geofencing
     private void getTargetLocations() {
         OkHttpCall call = new OkHttpCall();
@@ -395,7 +395,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    // TODO: volgende 2 calls omzetten naar Retrofit
+    // TODO: call wordt niet gebruikt
     private void getRandomQuestion(int id) {
         // Id is de doellocatie id
         service.getDoelLocatieVraag(id, new NetworkResponseListener<Vraag>() {
@@ -411,6 +411,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    // TODO: deze call werkt niet (ligt aan de backend)
     private void setScore(int newScore) {
         score = newScore;
         scoreview.setText(String.valueOf(score));
@@ -420,7 +421,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onResponseReceived(Boolean aBoolean) {
                 // Score ok
-                // TODO: response verwerken
             }
 
             @Override

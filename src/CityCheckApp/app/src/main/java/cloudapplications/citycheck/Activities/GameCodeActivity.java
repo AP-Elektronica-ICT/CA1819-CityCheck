@@ -41,7 +41,6 @@ public class GameCodeActivity extends AppCompatActivity {
         @Override
         public void run() {
             getTeams();
-            handler.postDelayed(this, 3000);
         }
     };
 
@@ -87,12 +86,6 @@ public class GameCodeActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        handler.postDelayed(runnable, 3000);
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
         handler.removeCallbacksAndMessages(null);
@@ -106,6 +99,7 @@ public class GameCodeActivity extends AppCompatActivity {
                 if (game.getHasStarted()) {
                     startGame();
                 } else {
+                    handler.postDelayed(runnable, 3000);
                     if (game.getTeams().size() != prevTeams.size()) {
                         prevTeams = game.getTeams();
                         if (gotTeams) {

@@ -82,11 +82,16 @@ namespace CityCheckAPI.Controllers
         public IActionResult delLoc(int id)
         {
 
+            //returnObj maken
+            String rtrn = "Deleted";
+            StringReturn stringReturn = new StringReturn();
+            stringReturn.returnWaarde = rtrn;
+
             var doelDeleted= doelMethods.delLoc(id);
             if (!doelDeleted)
                 return NotFound();
             else
-                return Ok("Deleted");
+                return Ok(stringReturn);
         }
 
 
@@ -97,11 +102,16 @@ namespace CityCheckAPI.Controllers
         {
             //id is de id van de doellocatie
 
+            //returnObj maken
+            String rtrn = "Created";
+            StringReturn stringReturn = new StringReturn();
+            stringReturn.returnWaarde = rtrn;
+
             var questAdded = doelMethods.addQuest(newVraag, id);
             if (!questAdded)
                 return NotFound();
             else
-                return Ok("Created");
+                return Ok(stringReturn);
         }
 
 
@@ -117,6 +127,26 @@ namespace CityCheckAPI.Controllers
                 return Ok(vragen);
             else
                 return NotFound();
+        }
+
+
+        //delete question on location
+        [HttpDelete]
+        [Route("dellDoelLocsQuestion/{id}/{vid}")]
+        public IActionResult delQuest(int id, int vid)
+        {
+            //id is de id van de doellocatie
+
+            //returnObj maken
+            String rtrn = "Deleted";
+            StringReturn stringReturn = new StringReturn();
+            stringReturn.returnWaarde = rtrn;
+
+            var questDeleted = doelMethods.delQuest(id, vid);
+            if (!questDeleted)
+                return NotFound();
+            else
+                return Ok(stringReturn);
         }
 
 

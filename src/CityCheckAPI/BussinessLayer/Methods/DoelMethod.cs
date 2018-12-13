@@ -150,6 +150,41 @@ namespace BussinessLayer.Methods
         }
 
 
+        public bool delQuest(int id, int vid)
+        {
+            //id is de id van de doellocatie
+
+
+            DoelLocatie doel = null;
+            Vraag vraag = null;
+            List<Antwoord> antwoorden = null;
+
+
+            try
+            {
+                doel = context.DoelLocaties.Include(vr => vr.Vragen).ThenInclude(antw => antw.Antwoorden).Where(whr => whr.Id == id).Single<DoelLocatie>();
+                vraag = doel.Vragen.Where(r => r.Id == vid).Single<Vraag>();
+                antwoorden = vraag.Antwoorden;
+            }
+            catch
+            {
+                Console.WriteLine("Geen Content");
+            }
+
+            if (vraag != null)
+            {
+
+                context.Antwoorden.RemoveRange(antwoorden);
+                context.Vragen.Remove(vraag);
+                context.SaveChanges();
+
+                return (true);
+            }
+            else {
+                return (false);
+            }
+        }
+
 
         public Vraag getALocQuest(int id)
         {

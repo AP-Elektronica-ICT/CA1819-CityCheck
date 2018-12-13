@@ -55,23 +55,21 @@ public class CreateGameActivity extends AppCompatActivity {
     }
 
     private void createNewGame() {
-    service.createNewGame(new Game(gameTime), new NetworkResponseListener<Game>() {
-        @Override
-        public void onResponseReceived(Game game) {
-            Log.d("retrofit", "resonse new game in listener: " + game.getGameCode());
-            String gameCode = Integer.toString(game.getGameCode());
+        service.createNewGame(new Game(gameTime), new NetworkResponseListener<Game>() {
+            @Override
+            public void onResponseReceived(Game game) {
+                Log.d("Retrofit", "Game code in CreateGameActivity: " + game.getGameCode());
+                String gameCode = Integer.toString(game.getGameCode());
 
-            Intent i = new Intent(CreateGameActivity.this, JoinGameActivity.class);
-            i.putExtra("gameCode", gameCode);
-            startActivity(i);
-        }
+                Intent i = new Intent(CreateGameActivity.this, JoinGameActivity.class);
+                i.putExtra("gameCode", gameCode);
+                startActivity(i);
+            }
 
-        @Override
-        public void onError() {
-            Toast.makeText(CreateGameActivity.this.getBaseContext(), "Error while trying to create a new game", Toast.LENGTH_SHORT).show();
-        }
-    });
-
+            @Override
+            public void onError() {
+                Toast.makeText(CreateGameActivity.this.getBaseContext(), "Error while trying to create a new game", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
-    
 }

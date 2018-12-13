@@ -15,6 +15,7 @@ import retrofit2.Response;
  * A wrapper class around the response to handle the data extraction and retrieval
  * to the requesting listener.
  */
+
 class NetworkResponse<ResponseType> implements Callback<ResponseType> {
     private WeakReference<NetworkResponseListener<ResponseType>> listener;
 
@@ -24,7 +25,7 @@ class NetworkResponse<ResponseType> implements Callback<ResponseType> {
 
     @Override
     public void onResponse(@NonNull Call<ResponseType> call, @NonNull Response<ResponseType> response) {
-
+        Log.d("Retrofit", "Retrofit successfull response: " + response.toString());
         if (listener.get() != null && listener != null) {
             listener.get().onResponseReceived(response.body());
         }
@@ -32,8 +33,7 @@ class NetworkResponse<ResponseType> implements Callback<ResponseType> {
 
     @Override
     public void onFailure(@NonNull Call<ResponseType> call, @NonNull Throwable t) {
-        Log.d("test", "An error occurred: " + t.getMessage());
-
+        Log.d("Retrofit", "Retrofit error response: " + t.getMessage());
         if (listener.get() != null && listener != null) {
             listener.get().onError();
         }

@@ -206,7 +206,7 @@ public class VorigeGameActivity extends FragmentActivity implements OnMapReadyCa
         double Long = location.longitude;
 
         OkHttpCall call = new OkHttpCall();
-        call.post(getString(R.string.database_ip),"teams/"+gameId+"/"+teamNaam+"/huidigeLocatie","{'Lat':'" + Lat + "', 'Long':'" + Long + "'}");
+//        call.post(getString(R.string.database_ip),"teams/"+gameId+"/"+teamNaam+"/huidigeLocatie","{'Lat':'" + Lat + "', 'Long':'" + Long + "'}");
 
     }
 

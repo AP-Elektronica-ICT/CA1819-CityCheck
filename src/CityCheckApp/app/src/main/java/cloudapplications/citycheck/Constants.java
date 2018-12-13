@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import cloudapplications.citycheck.Models.DoelLocatie;
+
 
 public class Constants {
 

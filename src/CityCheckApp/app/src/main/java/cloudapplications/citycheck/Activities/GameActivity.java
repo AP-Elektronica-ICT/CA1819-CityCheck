@@ -60,14 +60,13 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private NetworkManager service;
 
     // Variabelen om teams op te halen uit database
-    private List<Team> teams = new ArrayList<>();
     private String teamNaam;
     private int gamecode;
 
     // Gamescore
-    private TextView scoreview;
+    private TextView scoreTextView;
     private int score;
-    private TextView teamNameTXT;
+    private TextView teamNameTextView;
 
     // Vragen beantwoorden
     String[] antwoorden;
@@ -99,12 +98,12 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         gamecode = Integer.parseInt(getIntent().getExtras().getString("gameCode"));
 
         // Score
-        scoreview = findViewById(R.id.txt_Points);
+        scoreTextView = findViewById(R.id.text_view_points);
         score = 0;
         setScore(30);
 
         // Teamnaam txt view
-        teamNameTXT = findViewById(R.id.txt_TeamName);
+        teamNameTextView = findViewById(R.id.text_view_team_name);
 
         // LocationsArray (testwaardes voor doellocaties)
         // currentDoelLocaties = new ArrayList<>();
@@ -114,10 +113,10 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         gameTimer();
 
         // Teamnaam tonen op het game scherm
-        teamNameTXT.setText(teamNaam);
+        teamNameTextView.setText(teamNaam);
 
         // Een vraag stellen als ik op de naam klik (Dit is tijdelijk om een vraag toch te kunnen tonen)
-        teamNameTXT.setOnClickListener(new View.OnClickListener() {
+        teamNameTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 askQuestion();
@@ -414,7 +413,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     // TODO: deze call werkt niet (ligt aan de backend)
     private void setScore(int newScore) {
         score = newScore;
-        scoreview.setText(String.valueOf(score));
+        scoreTextView.setText(String.valueOf(score));
 
         // TODO: Nieuwe score doorpushen naar de API
         service.setTeamScore(gamecode, teamNaam, score, new NetworkResponseListener<Boolean>() {

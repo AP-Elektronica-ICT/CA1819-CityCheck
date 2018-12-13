@@ -6,9 +6,6 @@ import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,7 +14,6 @@ import cloudapplications.citycheck.APIService.NetworkManager;
 import cloudapplications.citycheck.APIService.NetworkResponseListener;
 import cloudapplications.citycheck.Models.Game;
 import cloudapplications.citycheck.Models.Team;
-import cloudapplications.citycheck.OkHttpCall;
 import cloudapplications.citycheck.R;
 import cloudapplications.citycheck.TeamsAdapter;
 
@@ -57,7 +53,7 @@ public class EndGameActivity extends AppCompatActivity {
 
             @Override
             public void onError() {
-                Toast.makeText(EndGameActivity.this.getBaseContext(), "Error while trying to get the teams", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EndGameActivity.this, "Error while trying to get the teams", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -71,7 +67,7 @@ public class EndGameActivity extends AppCompatActivity {
 
             @Override
             public void onError() {
-//                Toast.makeText(EndGameActivity.this, "Error while trying to delete the game", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EndGameActivity.this, "Error while trying to delete the game", Toast.LENGTH_SHORT).show();
             }
         });
     }

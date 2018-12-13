@@ -68,7 +68,7 @@ public class CreateGameActivity extends AppCompatActivity {
 
             @Override
             public void onError() {
-                Toast.makeText(CreateGameActivity.this.getBaseContext(), "Error while trying to create a new game", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CreateGameActivity.this, "Error while trying to create a new game", Toast.LENGTH_SHORT).show();
             }
         });
     }

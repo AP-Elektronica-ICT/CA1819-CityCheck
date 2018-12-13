@@ -32,10 +32,9 @@ public class Team {
     @Expose
     private ArrayList<TeamTrace> TeamTrace;
 
-    public Team(String teamNaam, int kleur, int punten) {
+    public Team(String teamNaam, int kleur) {
         this.TeamNaam = teamNaam;
         this.Kleur = Integer.toString(kleur);
-        this.Punten = punten;
     }
 
     public int getId() {

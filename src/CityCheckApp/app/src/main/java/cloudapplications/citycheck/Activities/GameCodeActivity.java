@@ -116,7 +116,7 @@ public class GameCodeActivity extends AppCompatActivity {
 
             @Override
             public void onError() {
-                Toast.makeText(GameCodeActivity.this.getBaseContext(), "Error while trying to get the teams", Toast.LENGTH_SHORT).show();
+                Toast.makeText(GameCodeActivity.this, "Error while trying to get the teams", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -140,7 +140,7 @@ public class GameCodeActivity extends AppCompatActivity {
 
             @Override
             public void onError() {
-                Toast.makeText(GameCodeActivity.this.getBaseContext(), "Error while trying to start the game", Toast.LENGTH_SHORT).show();
+                Toast.makeText(GameCodeActivity.this, "Error while trying to start the game", Toast.LENGTH_SHORT).show();
             }
         });
     }

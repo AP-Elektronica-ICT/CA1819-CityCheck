@@ -253,10 +253,10 @@ public class VorigeGameActivity extends FragmentActivity implements OnMapReadyCa
                 for (int i = 0; i < teamsArray.length(); i++) {
                     JSONObject team = teamsArray.getJSONObject(i);
                     Log.d("Teams", "teamobject: " + team);
-                    Team newTeam = new Team(team.getString("teamNaam"), team.getInt("kleur"), team.getInt("punten"));
+//                    Team newTeam = new Team(team.getString("teamNaam"), team.getInt("kleur"), team.getInt("punten"));
                     //newTeam.setHuidigeLat(team.getLong("huidigeLat"));
                     //newTeam.setHuidigeLong(team.getLong("huidigeLong"));
-                    teams.add(newTeam);
+//                    teams.add(newTeam);
                 }
                 Log.d("Teams", "1 teams list: " + teams);
                 // Show teams on map

@@ -9,7 +9,6 @@
     android:orientation="vertical"
     tools:context=".Activities.JoinGameActivity">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="125dp"
@@ -18,7 +17,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/TV_TeamName"
+            android:id="@+id/text_view_team_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -26,7 +25,6 @@
             android:text="Your Name"
             android:textColor="@color/white"
             android:textSize="50dp" />
-
     </LinearLayout>
 
 
@@ -119,7 +117,6 @@
                 android:maxLength="4"
                 android:textColor="@color/white" />
         </LinearLayout>
-
     </LinearLayout>
 
     <Button

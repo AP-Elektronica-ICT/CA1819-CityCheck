@@ -12,13 +12,15 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import cloudapplications.citycheck.Models.Team;
+
 public class TeamsAdapter extends ArrayAdapter<Team> {
 
-    TeamsAdapter(Context context, ArrayList<Team> arr) {
+    public TeamsAdapter(Context context, ArrayList<Team> arr) {
         super(context, -1, arr);
     }
 
-    @SuppressLint("InflateParams")
+    @SuppressLint({"InflateParams", "SetTextI18n"})
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {

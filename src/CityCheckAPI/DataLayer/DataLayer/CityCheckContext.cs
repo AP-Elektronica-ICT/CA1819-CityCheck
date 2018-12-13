@@ -1,7 +1,6 @@
-﻿using CityCheckAPI.Controllers.Model;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace Model
+namespace DataLayer
 {
     public class CityCheckContext : DbContext
     {
@@ -22,8 +21,9 @@ namespace Model
         public DbSet<Vraag> Vragen { get; set; }
 
         public DbSet<Antwoord> Antwoorden { get; set; }
+        public DbSet<Locatie> Locaties { get; set; }
 
-    
+
         public DbSet<Team> Teams { get; set; }
 
         public DbSet<TeamTrace> TeamTraces { get; set; }

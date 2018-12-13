@@ -1,59 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="1">
-    
-    
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@color/redAntw"
-        android:orientation="horizontal"
-        >
-
+        android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/imagePoints"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="25dp"
+            android:id="@+id/image_view_points"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="10dp"
             android:src="@drawable/coin" />
 
-
         <TextView
-            android:id="@+id/txt_Points"
+            android:id="@+id/text_view_points"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
+            android:layout_marginStart="25dp"
             android:text="0"
-            android:textSize="40dp"
-            android:layout_marginLeft="25dp"
-            />
+            android:textColor="@color/white"
+            android:textSize="40sp" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            />
-
+            android:layout_weight="1" />
 
         <TextView
-            android:id="@+id/txt_TeamName"
+            android:id="@+id/text_view_team_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:text="My Name"
             android:textColor="@color/white"
-            android:text="MyName"
-            android:textSize="30dp"
-            android:layout_marginRight="15dp"
-            />
-
+            android:textSize="30sp" />
 
     </LinearLayout>
-
 
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
@@ -63,7 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.9"
-        tools:context=".GameActivity" />
+        tools:context=".Activities.GameActivity" />
 
     <TextView
         android:id="@+id/text_view_timer"
@@ -74,6 +63,5 @@
         android:text="test"
         android:textAlignment="center"
         android:textColor="@color/white" />
-
 
 </LinearLayout>

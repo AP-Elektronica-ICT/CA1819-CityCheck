@@ -18,7 +18,7 @@
 
 
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,20 +39,20 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".GameActivity"
+            android:name=".Activities.GameActivity"
             android:label="@string/title_activity_game"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".CreateGameActivity"
+            android:name=".Activities.CreateGameActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".GameCodeActivity"
+            android:name=".Activities.GameCodeActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".JoinGameActivity"
+            android:name=".Activities.JoinGameActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".EndGameActivity"
+            android:name=".Activities.EndGameActivity"
             android:screenOrientation="portrait" />
     </application>
 

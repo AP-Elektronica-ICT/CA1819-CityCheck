@@ -11,20 +11,20 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
-class OkHttpCall {
+public class OkHttpCall {
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
     private OkHttpClient client = new OkHttpClient();
 
-    String responseStr = "";
+    public String responseStr = "";
 
-    enum RequestStatus {
+    public enum RequestStatus {
         Successful,
         Unsuccessful,
         Undefined
     }
 
-    RequestStatus status = RequestStatus.Undefined;
+    public RequestStatus status = RequestStatus.Undefined;
 
     private Call post(String url, String json, Callback callback) {
         RequestBody body = RequestBody.create(JSON, json);
@@ -56,7 +56,7 @@ class OkHttpCall {
         return call;
     }
 
-    void post(String databaseIP, String route, String jsonBody) {
+    public void post(String databaseIP, String route, String jsonBody) {
         OkHttpCall call = new OkHttpCall();
         Call postCall = call.post("http://" + databaseIP + "/api/citycheck/" + route, jsonBody, new Callback() {
             @Override
@@ -80,7 +80,7 @@ class OkHttpCall {
         });
     }
 
-    void get(String databaseIP, String route) {
+    public void get(String databaseIP, String route) {
         OkHttpCall call = new OkHttpCall();
         Call getCall = call.get("http://" + databaseIP + "/api/citycheck/" + route, new Callback() {
             @Override
@@ -104,7 +104,7 @@ class OkHttpCall {
         });
     }
 
-    void delete(String databaseIP, String route) {
+    public void delete(String databaseIP, String route) {
         OkHttpCall call = new OkHttpCall();
         Call deleteCall = call.delete("http://" + databaseIP + "/api/citycheck/" + route, new Callback() {
             @Override

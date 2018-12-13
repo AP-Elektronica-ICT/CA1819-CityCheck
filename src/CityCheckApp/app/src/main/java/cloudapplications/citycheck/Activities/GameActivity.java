@@ -413,17 +413,21 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void setScore(int newScore) {
         score = newScore;
-        scoreview.setText("" + score);
+        scoreview.setText(String.valueOf(score));
+
         // TODO: Nieuwe score doorpushen naar de API
-        // Path to use: teams/{id}/{teamName}/setmyscore/{newScore}
-        OkHttpCall call = new OkHttpCall();
-        call.post(getString(R.string.database_ip), "teams/" + Integer.toString(gamecode) + "/setmyscore/" + score, "{}");
-        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
-        if (call.status == OkHttpCall.RequestStatus.Successful) {
-            // Score ok
-        } else {
-            // Toast.makeText(this, "Error while trying to set the new score", Toast.LENGTH_SHORT).show();
-        }
+        service.setTeamScore(gamecode, teamNaam, score, new NetworkResponseListener<Boolean>() {
+            @Override
+            public void onResponseReceived(Boolean aBoolean) {
+                // Score ok
+                // TODO: response verwerken
+            }
+
+            @Override
+            public void onError() {
+                Toast.makeText(GameActivity.this, "Error while trying to set the new score", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // Opzetten van geofences, nu gebruik van voorbeeldcode voor test

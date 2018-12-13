@@ -11,7 +11,7 @@ import retrofit2.Response;
 
 /**
  * Created by T.Surkis on 25-Aug-17.
- *
+ * <p>
  * A wrapper class around the response to handle the data extraction and retrieval
  * to the requesting listener.
  */

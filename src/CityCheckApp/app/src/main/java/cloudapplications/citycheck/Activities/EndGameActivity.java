@@ -67,7 +67,7 @@ public class EndGameActivity extends AppCompatActivity {
 
             @Override
             public void onError() {
-                Toast.makeText(EndGameActivity.this, "Error while trying to delete the game", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(EndGameActivity.this, "Error while trying to delete the game", Toast.LENGTH_SHORT).show();
             }
         });
     }

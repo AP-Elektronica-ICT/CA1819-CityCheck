@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -44,7 +43,6 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
     private Activity activity;
     public List<Locatie> Traces;
     Random r;
-    Locatie location;
     NetworkManager service;
     int GameCode;
     String TeamNaam;
@@ -53,7 +51,7 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
     public TeamLocation(Activity activityIn, GoogleMap kaart, int gameCode, String teamNaam) {
         activity = activityIn;
         map = kaart;
-        Traces = new ArrayList<Locatie>();
+        Traces = new ArrayList<>();
         r = new Random();
         GameCode = gameCode;
         TeamNaam = teamNaam;
@@ -176,7 +174,7 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == 1) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getStartLocation();

@@ -30,7 +30,7 @@ public class CreateGameActivity extends AppCompatActivity {
         Button createGameButton = findViewById(R.id.button_create_game);
         Spinner gameTimeSpinner = findViewById(R.id.spinner_game_time);
 
-        String[] items = new String[]{"1", "2", "3"};
+        String[] items = new String[]{"1", "2", "3", "10 seconds"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         gameTimeSpinner.setAdapter(adapter);
 

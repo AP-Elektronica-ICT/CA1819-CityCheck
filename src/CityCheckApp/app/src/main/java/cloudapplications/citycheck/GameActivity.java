@@ -454,11 +454,42 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
+    private void getRandomQuestion(int id){
+        //Id is de doellocatie id
+        OkHttpCall call = new OkHttpCall();
+        //Url:LocQuest/{id}
+        call.get(getString(R.string.database_ip), "LocQuest/" + id);
+        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
+        if (call.status == OkHttpCall.RequestStatus.Successful) {
+            //Vraag is opgehaald
+            //Deze nu verwerken
+            JSONObject obj;
+            try {
+                // Converteer de response string naar een JSONObject om hierop te kunnen verwerken
+                obj = new JSONObject(call.responseStr);
+                Log.d("Vraag_Ophaal", "JSON object response: " + obj.toString());
+            } catch (Throwable t) {
+                Log.e("Vraag_Ophaal", "Could not parse malformed JSON: \"" + call.responseStr + "\"");
+            }
+        } else {
+            Toast.makeText(this, "Error while trying to set the new score", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
     private void setScore(int newScore) {
         score = newScore;
         scoreview.setText("" + score);
         //TODO: Nieuwe score doorpushen naar de API
         //Path to use: teams/{id}/{teamName}/setmyscore/{newScore}
+        OkHttpCall call = new OkHttpCall();
+        call.post(getString(R.string.database_ip), "teams/" + Integer.toString(gamecode)+"/setmyscore/"+score , "{}");
+        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
+        if (call.status == OkHttpCall.RequestStatus.Successful) {
+            //Score ok
+        } else {
+            //Toast.makeText(this, "Error while trying to set the new score", Toast.LENGTH_SHORT).show();
+        }
     }
 
     //opzetten van geofences, nu gebruik van voorbeeldcode voor test

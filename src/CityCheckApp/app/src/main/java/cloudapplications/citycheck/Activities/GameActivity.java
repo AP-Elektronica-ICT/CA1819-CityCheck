@@ -47,6 +47,7 @@ import cloudapplications.citycheck.APIService.NetworkResponseListener;
 import cloudapplications.citycheck.Models.DoelLocatie;
 import cloudapplications.citycheck.Models.Locatie;
 import cloudapplications.citycheck.Models.Team;
+import cloudapplications.citycheck.Models.Vraag;
 import cloudapplications.citycheck.OkHttpCall;
 import cloudapplications.citycheck.R;
 import cloudapplications.citycheck.TeamLocation;
@@ -397,24 +398,17 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     // TODO: volgende 2 calls omzetten naar Retrofit
     private void getRandomQuestion(int id) {
         // Id is de doellocatie id
-        OkHttpCall call = new OkHttpCall();
-        // Url:LocQuest/{id}
-        call.get(getString(R.string.database_ip), "LocQuest/" + id);
-        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
-        if (call.status == OkHttpCall.RequestStatus.Successful) {
-            // Vraag is opgehaald
-            // Deze nu verwerken
-            JSONObject obj;
-            try {
-                // Converteer de response string naar een JSONObject om hierop te kunnen verwerken
-                obj = new JSONObject(call.responseStr);
-                Log.d("Vraag_Ophaal", "JSON object response: " + obj.toString());
-            } catch (Throwable t) {
-                Log.e("Vraag_Ophaal", "Could not parse malformed JSON: \"" + call.responseStr + "\"");
+        service.getDoelLocatieVraag(id, new NetworkResponseListener<Vraag>() {
+            @Override
+            public void onResponseReceived(Vraag vraag) {
+                // TODO: response verwerken
             }
-        } else {
-            Toast.makeText(GameActivity.this, "Error while trying to set the new score", Toast.LENGTH_SHORT).show();
-        }
+
+            @Override
+            public void onError() {
+                Toast.makeText(GameActivity.this, "Error while trying to get the questions", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setScore(int newScore) {

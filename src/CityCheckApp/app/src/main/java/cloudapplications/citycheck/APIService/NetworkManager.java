@@ -5,6 +5,7 @@ import java.util.List;
 import cloudapplications.citycheck.Models.Game;
 import cloudapplications.citycheck.Models.Locatie;
 import cloudapplications.citycheck.Models.Team;
+import cloudapplications.citycheck.Models.Vraag;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -82,4 +83,7 @@ public class NetworkManager {
     }
 
     // TODO: Alle doellocatie calls
+    public void getDoelLocatieVraag(int doelLocatieId, NetworkResponseListener<Vraag> listener) {
+        api.getDoelLocatieVraag(doelLocatieId).enqueue(new NetworkResponse<Vraag>(listener));
+    }
 }

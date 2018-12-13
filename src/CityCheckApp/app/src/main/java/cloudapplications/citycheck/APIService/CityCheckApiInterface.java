@@ -5,6 +5,7 @@ import java.util.List;
 import cloudapplications.citycheck.Models.Game;
 import cloudapplications.citycheck.Models.Locatie;
 import cloudapplications.citycheck.Models.Team;
+import cloudapplications.citycheck.Models.Vraag;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -50,4 +51,6 @@ public interface CityCheckApiInterface {
     Call<Boolean> setTeamScore(@Path("id") int id, @Path("teamname") String teamname, @Body int score);
 
     // TODO: Doellocatie calls
+    @GET("locquest/{id}")
+    Call<Vraag> getDoelLocatieVraag(@Path("id") int id);
 }

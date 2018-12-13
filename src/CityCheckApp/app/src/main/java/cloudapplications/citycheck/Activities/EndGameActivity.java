@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import cloudapplications.citycheck.APIService.NetworkManager;
+import cloudapplications.citycheck.APIService.NetworkResponseListener;
+import cloudapplications.citycheck.Models.Game;
 import cloudapplications.citycheck.Models.Team;
 import cloudapplications.citycheck.OkHttpCall;
 import cloudapplications.citycheck.R;
@@ -23,11 +26,14 @@ public class EndGameActivity extends AppCompatActivity {
     ListView endListView;
     ArrayList<Team> teamsList = new ArrayList<>();
     private String gameCode;
+    NetworkManager service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_end_game);
+
+        service = NetworkManager.getInstance();
 
         endListView = findViewById(R.id.end_list_view);
         gameCode = getIntent().getExtras().getString("gameCode");
@@ -35,47 +41,38 @@ public class EndGameActivity extends AppCompatActivity {
     }
 
     private void getTeams() {
-        OkHttpCall call = new OkHttpCall();
-        call.get(getString(R.string.database_ip), "currentgame/" + gameCode);
-        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
-        if (call.status == OkHttpCall.RequestStatus.Successful) {
-            JSONObject obj;
-            JSONArray teamsArray;
-            JSONObject teams;
-            try {
-                // Converteer de response string naar een JSONObject en de teams er uit halen
-                obj = new JSONObject(call.responseStr);
-                Log.d("EndGameActivity", "JSON object response: " + obj.toString());
-                // Selecteer de "teams" veld
-                teamsArray = obj.getJSONArray("teams");
-
-                for (int i = 0; i < teamsArray.length(); i++) {
-                    teams = teamsArray.getJSONObject(i);
-                    teamsList.add(new Team(teams.getString("teamNaam"), teams.getInt("kleur"), teams.getInt("punten")));
-                }
-
+        service.getCurrentGame(Integer.parseInt(gameCode), new NetworkResponseListener<Game>() {
+            @Override
+            public void onResponseReceived(Game game) {
+                teamsList.addAll(game.getTeams());
                 Collections.sort(teamsList, new Comparator<Team>() {
                     @Override
                     public int compare(Team a, Team b) {
                         return Integer.compare(b.getPunten(), a.getPunten());
                     }
                 });
-                endListView.setAdapter(new TeamsAdapter(this, teamsList));
-//                deleteGame();
-            } catch (Throwable t) {
-                Log.e("EndGameActivity", "Could not parse malformed JSON: \"" + call.responseStr + "\"");
+                endListView.setAdapter(new TeamsAdapter(getApplicationContext(), teamsList));
+                deleteGame();
             }
-        } else {
-            Toast.makeText(this, "Error while trying to get the teams", Toast.LENGTH_SHORT).show();
-        }
+
+            @Override
+            public void onError() {
+                Toast.makeText(EndGameActivity.this.getBaseContext(), "Error while trying to get the teams", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-//    private void deleteGame() {
-//        OkHttpCall call = new OkHttpCall();
-//        call.delete(getString(R.string.database_ip), "currentgame/" + gameCode);
-//        while (call.status == OkHttpCall.RequestStatus.Undefined) ;
-//        if (call.status == OkHttpCall.RequestStatus.Unsuccessful) {
-//            Toast.makeText(this, "Error while trying to delete the game from the database", Toast.LENGTH_SHORT).show();
-//        }
-//    }
+    private void deleteGame() {
+        service.deleteGame(Integer.parseInt(gameCode), new NetworkResponseListener<String>() {
+            @Override
+            public void onResponseReceived(String s) {
+                Log.d("Retrofit", "Game with code " + gameCode + " deleted");
+            }
+
+            @Override
+            public void onError() {
+//                Toast.makeText(EndGameActivity.this, "Error while trying to delete the game", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

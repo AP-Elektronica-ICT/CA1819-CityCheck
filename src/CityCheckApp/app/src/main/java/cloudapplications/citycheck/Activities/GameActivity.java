@@ -71,7 +71,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private String teamNaam;
     private int gamecode;
 
-
     // Gamescore
     private TextView scoreview;
     private int score;
@@ -101,7 +100,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        service=NetworkManager.getInstance();
+        service = NetworkManager.getInstance();
 
         //score
         scoreview = (TextView) findViewById(R.id.txt_Points);
@@ -286,7 +285,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        for (Team team: teams) {
+                        for (Team team : teams) {
                             Log.d("Teams", "Team name: " + team.getTeamNaam());
                             if (!team.getTeamNaam().equals(teamNaam)) {
                                 Random rand = new Random();

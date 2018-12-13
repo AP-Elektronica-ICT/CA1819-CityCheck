@@ -13,7 +13,6 @@ class TeamTrace {
     @Expose
     private Locatie locatie;
 
-
     public int getId() {
         return Id;
     }

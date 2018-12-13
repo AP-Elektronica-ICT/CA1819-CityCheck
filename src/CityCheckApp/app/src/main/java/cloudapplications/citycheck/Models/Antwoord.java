@@ -40,5 +40,4 @@ public class Antwoord {
     public void setCorrectBool(boolean correctBool) {
         CorrectBool = correctBool;
     }
-
 }

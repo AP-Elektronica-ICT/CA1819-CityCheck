@@ -45,6 +45,7 @@ import android.os.Handler;
 import cloudapplications.citycheck.APIService.NetworkManager;
 import cloudapplications.citycheck.APIService.NetworkResponseListener;
 import cloudapplications.citycheck.Models.DoelLocatie;
+import cloudapplications.citycheck.Models.Locatie;
 import cloudapplications.citycheck.Models.Team;
 import cloudapplications.citycheck.OkHttpCall;
 import cloudapplications.citycheck.R;
@@ -167,7 +168,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         kaart.moveCamera(CameraUpdateFactory.newLatLngZoom(Antwerpen, 15));
 
         // Alles ivm locatie van het eigen team
-        myTeam = new TeamLocation(this, kaart);
+        myTeam = new TeamLocation(this, kaart, gamecode, teamNaam);
         myTeam.startConnection();
 
         // Get other team's locations
@@ -290,7 +291,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         int TimeCounter = (int) (time / 1000);
         if (TimeCounter % 3 == 0) {
             if (myTeam.newLocation != null) {
-                myTeam.handleNewLocation(new LatLng(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude()));
+                myTeam.handleNewLocation(new Locatie(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude()));
             }
         }
     }

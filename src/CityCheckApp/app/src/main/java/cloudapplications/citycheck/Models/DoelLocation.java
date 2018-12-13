@@ -60,5 +60,4 @@ public class DoelLocation {
     public void setVragen(List<Vraag> vragen) {
         Vragen = vragen;
     }
-
 }

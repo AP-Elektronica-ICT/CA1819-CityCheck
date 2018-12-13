@@ -1,6 +1,5 @@
 package cloudapplications.citycheck.Models;
 
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -84,5 +83,4 @@ public class Team {
     public void setLocatie(Locatie locatie) {
         this.Locatie = locatie;
     }
-
 }

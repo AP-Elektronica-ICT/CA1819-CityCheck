@@ -42,5 +42,4 @@ public class Vraag {
     public void setAntwoorden(List<Antwoord> antwoorden) {
         Antwoorden = antwoorden;
     }
-
 }

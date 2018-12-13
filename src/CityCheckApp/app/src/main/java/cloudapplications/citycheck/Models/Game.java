@@ -82,5 +82,4 @@ public class Game {
     public void setTeams(ArrayList<Team> teams) {
         this.teams = teams;
     }
-
 }

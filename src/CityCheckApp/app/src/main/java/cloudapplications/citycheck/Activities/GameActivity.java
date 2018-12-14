@@ -44,9 +44,11 @@ import android.os.Handler;
 
 import cloudapplications.citycheck.APIService.NetworkManager;
 import cloudapplications.citycheck.APIService.NetworkResponseListener;
+import cloudapplications.citycheck.IntersectCalculator;
 import cloudapplications.citycheck.Models.DoelLocatie;
 import cloudapplications.citycheck.Models.Locatie;
 import cloudapplications.citycheck.Models.Team;
+import cloudapplications.citycheck.Models.TeamTrace;
 import cloudapplications.citycheck.Models.Vraag;
 import cloudapplications.citycheck.OkHttpCall;
 import cloudapplications.citycheck.R;
@@ -137,6 +139,31 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         mGeofenceList = new ArrayList<Geofence>();
         populateGeoFenceList();
         buildGoogleApiClient();
+
+        IntersectCalculator calc = new IntersectCalculator();
+        Team team=new Team("Bello", 456);
+        Locatie start = new Locatie(1f, 1f);
+        Locatie einde = new Locatie(3.8f, 3.5f);
+        ArrayList<TeamTrace> traces = new ArrayList<>();
+        traces.add(new TeamTrace(new Locatie(2f,1f)));
+        traces.add(new TeamTrace(new Locatie(0f,3f)));
+        traces.add(new TeamTrace(new Locatie(0.8f,4.5f)));
+        traces.add(new TeamTrace(new Locatie(2f,5f)));
+        traces.add(new TeamTrace(new Locatie(2f,3f)));
+        traces.add(new TeamTrace(new Locatie(2f,2f)));
+        traces.add(new TeamTrace(new Locatie(4f,2f)));
+        team.setTeamTrace(traces);
+        for(int i=0; i<team.getTeamTrace().size(); i++){
+            Log.d("intersect", ""+i);
+            if((i+1)<team.getTeamTrace().size()){
+                if(calc.doLineSegmentsIntersect(start, einde, team.getTeamTrace().get(i).getLocatie(), team.getTeamTrace().get(i+1).getLocatie())){
+                    Log.d("intersect", "de lijnen kruisen");
+                }
+                else
+                    Log.d("intersect", "de lijnen kruisen niet");
+            }
+
+        }
     }
 
     @Override
@@ -540,5 +567,35 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         Intent i = new Intent(GameActivity.this, EndGameActivity.class);
         i.putExtra("gameCode", Integer.toString(gamecode));
         startActivity(i);
+    }
+
+    private void calculateIntersect(){
+
+        NetworkManager.getInstance().getAllTeamTraces(gamecode, new NetworkResponseListener<List<Team>>() {
+            @Override
+            public void onResponseReceived(List<Team> teams) {
+                IntersectCalculator calc = new IntersectCalculator();
+                Locatie start = myTeam.Traces.get(myTeam.Traces.size()-2);
+                Locatie einde = myTeam.Traces.get(myTeam.Traces.size()-1);
+
+                for(Team team: teams){
+                    for(int i=0; i<team.getTeamTrace().size(); i++){
+                        if((i+1)<team.getTeamTrace().size()){
+                            if(calc.doLineSegmentsIntersect(start, einde, team.getTeamTrace().get(i).getLocatie(), team.getTeamTrace().get(i+1).getLocatie())){
+                                Log.d("intersect", "de lijnen kruisen");
+                            }
+                            else
+                                Log.d("intersect", "de lijnen kruisen niet");
+                        }
+
+                    }
+                }
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
     }
 }

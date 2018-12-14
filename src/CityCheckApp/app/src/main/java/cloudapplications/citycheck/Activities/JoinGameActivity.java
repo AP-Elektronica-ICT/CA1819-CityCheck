@@ -151,18 +151,21 @@ public class JoinGameActivity extends AppCompatActivity {
         service.getCurrentGame(gamecode, new NetworkResponseListener<Game>() {
             @Override
             public void onResponseReceived(Game game) {
-                gameTime = Integer.toString(game.getTijdsDuur());
+                if (game != null) {
+                    gameTime = Integer.toString(game.getTijdsDuur());
 
-                Intent i = new Intent(JoinGameActivity.this, GameCodeActivity.class);
-                if (gameCreator)
-                    i.putExtra("gameCreator", true);
-                else
-                    i.putExtra("gameCreator", false);
+                    Intent i = new Intent(JoinGameActivity.this, GameCodeActivity.class);
+                    if (gameCreator)
+                        i.putExtra("gameCreator", true);
+                    else
+                        i.putExtra("gameCreator", false);
 
-                i.putExtra("gameCode", Integer.toString(gamecode));
-                i.putExtra("gameTime", gameTime);
-                i.putExtra("teamNaam", name);
-                startActivity(i);
+                    i.putExtra("gameCode", Integer.toString(gamecode));
+                    i.putExtra("gameTime", gameTime);
+                    i.putExtra("teamNaam", name);
+                    startActivity(i);
+                } else
+                    Toast.makeText(JoinGameActivity.this, "The game doesn't exist", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -170,6 +173,5 @@ public class JoinGameActivity extends AppCompatActivity {
                 Toast.makeText(JoinGameActivity.this, "Error while trying to start the game", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 }

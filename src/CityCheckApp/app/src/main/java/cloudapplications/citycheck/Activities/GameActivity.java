@@ -289,6 +289,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 LatLng positie = new LatLng(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude());
                 kaart.moveCamera(CameraUpdateFactory.newLatLng(positie));
             }
+
+            otherTeams.getTeamsOnMap();
         }
     }
 
@@ -533,6 +535,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     void endGame() {
         Intent i = new Intent(GameActivity.this, EndGameActivity.class);
+        //myTeam.stopConnection();
         i.putExtra("gameCode", Integer.toString(gamecode));
         startActivity(i);
     }

@@ -5,14 +5,17 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.util.SparseArray;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -27,12 +30,14 @@ public class OtherTeams {
     private GoogleMap kaart;
     private Activity activity;
     private String teamNaam;
+    private SparseArray<Marker> markers;
 
     public OtherTeams(int gameId, String teamnaam, GoogleMap map, Activity activity){
         this.gameId=gameId;
         this.kaart=map;
         this.activity=activity;
         this.teamNaam=teamnaam;
+        markers = new SparseArray<Marker>();
     }
 
 
@@ -51,13 +56,25 @@ public class OtherTeams {
                                 Random rand = new Random();
                                 float lat = (float) (rand.nextFloat() * (51.30 - 50.00) + 50.00);
                                 float lon = (float) (rand.nextFloat() * (5.30 - 2.30) + 2.30);
-                                // mMap.clear();
+                                if(markers.get(team.getId()) == null){
+                                    markers.append(team.getId(), kaart.addMarker(
+                                            new MarkerOptions()
+                                                    .title(team.getTeamNaam())
+                                                    .position(new LatLng(lat,lon))
+                                                    .icon(getMarkerIcon(team.getKleur()))));
+                                    Log.d("marker", " new marker in markers array: " + markers.size());
+                                }
+                                else{
+                                    markers.get(team.getId()).setPosition(new LatLng(lat,lon));
+                                    Log.d("marker", "update marker: " + markers.size());
+                                }
+                                /*// mMap.clear();
                                 kaart.addMarker(new MarkerOptions()
                                         .position(new LatLng(lat, lon))
                                         // .position(new LatLng(teams.get(i).getHuidigeLocatie().getLatitude(), teams.get(i).getHuidigeLocatie().getLongitude()))
                                         .title(team.getTeamNaam())
                                         .icon(getMarkerIcon(team.getKleur())));
-                                Log.d("Retrofit", "Team marker added: #" + Integer.toHexString(team.getKleur()));
+                                Log.d("Retrofit", "Team marker added: #" + Integer.toHexString(team.getKleur()));*/
                             }
                         }
                     }
@@ -75,5 +92,9 @@ public class OtherTeams {
         float[] hsv = new float[3];
         Color.colorToHSV(color, hsv);
         return BitmapDescriptorFactory.defaultMarker(hsv[0]);
+    }
+
+    private void placeMarker(Locatie locatie){
+
     }
 }

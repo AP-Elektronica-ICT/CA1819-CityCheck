@@ -14,6 +14,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,7 @@ public class OtherTeams {
     private Activity activity;
     private String teamNaam;
     private SparseArray<Marker> markers;
+    private List<Locatie> Traces;
 
     public OtherTeams(int gameId, String teamnaam, GoogleMap map, Activity activity){
         this.gameId=gameId;
@@ -38,6 +41,7 @@ public class OtherTeams {
         this.activity=activity;
         this.teamNaam=teamnaam;
         markers = new SparseArray<Marker>();
+        Traces = new ArrayList<Locatie>();
     }
 
 
@@ -56,25 +60,10 @@ public class OtherTeams {
                                 Random rand = new Random();
                                 float lat = (float) (rand.nextFloat() * (51.30 - 50.00) + 50.00);
                                 float lon = (float) (rand.nextFloat() * (5.30 - 2.30) + 2.30);
-                                if(markers.get(team.getId()) == null){
-                                    markers.append(team.getId(), kaart.addMarker(
-                                            new MarkerOptions()
-                                                    .title(team.getTeamNaam())
-                                                    .position(new LatLng(lat,lon))
-                                                    .icon(getMarkerIcon(team.getKleur()))));
-                                    Log.d("marker", " new marker in markers array: " + markers.size());
-                                }
-                                else{
-                                    markers.get(team.getId()).setPosition(new LatLng(lat,lon));
-                                    Log.d("marker", "update marker: " + markers.size());
-                                }
-                                /*// mMap.clear();
-                                kaart.addMarker(new MarkerOptions()
-                                        .position(new LatLng(lat, lon))
-                                        // .position(new LatLng(teams.get(i).getHuidigeLocatie().getLatitude(), teams.get(i).getHuidigeLocatie().getLongitude()))
-                                        .title(team.getTeamNaam())
-                                        .icon(getMarkerIcon(team.getKleur())));
-                                Log.d("Retrofit", "Team marker added: #" + Integer.toHexString(team.getKleur()));*/
+                                Locatie loc = new Locatie(lat, lon);
+                                Traces.add(loc);
+                                placeMarker(loc, team);
+                                drawPath(team);
                             }
                         }
                     }
@@ -94,7 +83,29 @@ public class OtherTeams {
         return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
 
-    private void placeMarker(Locatie locatie){
+    private void placeMarker(Locatie locatie, Team team){
+        if(markers.get(team.getId()) == null){
+            markers.append(team.getId(), kaart.addMarker(
+                    new MarkerOptions()
+                            .title(team.getTeamNaam())
+                            .position(new LatLng(locatie.getLat(),locatie.getLong()))
+                            .icon(getMarkerIcon(team.getKleur()))));
+            Log.d("marker", " new marker in markers array: " + markers.size());
+        }
+        else{
+            markers.get(team.getId()).setPosition(new LatLng(locatie.getLat(),locatie.getLong()));
+            Log.d("marker", "update marker: " + markers.size());
+        }
+    }
 
+    private void drawPath(Team team) {
+        // Elke keer het traject tussen de laatste locatie en de huidige locatie als polyline tekenen
+        if (Traces.size() > 4) { // 4 intervals wachten voor het tekenen van een lijn om zo collision aan de start te vermijden
+            Polyline polyline1 = kaart.addPolyline(new PolylineOptions()
+                    .add(
+                            new LatLng(Traces.get(Traces.size() - 2).getLat(), Traces.get(Traces.size() - 2).getLong()),
+                            new LatLng(Traces.get(Traces.size() - 1).getLat(), Traces.get(Traces.size() - 1).getLong()))
+                    .color(team.getKleur()));
+        }
     }
 }

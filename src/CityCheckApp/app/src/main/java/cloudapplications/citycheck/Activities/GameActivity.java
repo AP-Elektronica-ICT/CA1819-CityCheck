@@ -192,19 +192,17 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             Toast.makeText(this, "You need to enable permissions to display location !", Toast.LENGTH_SHORT).show();
         }
 
-        // Move the camera to Antwerp
-        LatLng Antwerpen = new LatLng(51.2194, 4.4025);
-        kaart.moveCamera(CameraUpdateFactory.newLatLngZoom(Antwerpen, 15));
 
         // Alles ivm locatie van het eigen team
         myTeam = new MyTeam(this, kaart, gamecode, teamNaam);
         myTeam.startConnection();
 
+        // Move the camera to Antwerp
+        LatLng Antwerpen = new LatLng(51.2194, 4.4025);
+        kaart.moveCamera(CameraUpdateFactory.newLatLngZoom(Antwerpen, 15));
+
         //locaties van andere teams
         otherTeams = new OtherTeams(gamecode, teamNaam, kaart, GameActivity.this);
-
-        // Get other team's locations
-        Log.d("Mapmarker", "Game code to call: " + gamecode);
         otherTeams.getTeamsOnMap();
 
         // Eerste doellocatie markers tonen
@@ -288,6 +286,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         if (TimeCounter % 3 == 0) {
             if (myTeam.newLocation != null) {
                 myTeam.handleNewLocation(new Locatie(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude()));
+                LatLng positie = new LatLng(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude());
+                kaart.moveCamera(CameraUpdateFactory.newLatLng(positie));
             }
         }
     }

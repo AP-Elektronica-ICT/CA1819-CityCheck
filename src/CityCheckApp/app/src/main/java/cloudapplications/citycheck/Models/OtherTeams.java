@@ -33,7 +33,7 @@ public class OtherTeams {
     private Activity activity;
     private String teamNaam;
     private SparseArray<Marker> markers;
-    private List<Locatie> Traces;
+    public List<Locatie> Traces;
 
     public OtherTeams(int gameId, String teamnaam, GoogleMap map, Activity activity){
         this.gameId=gameId;

@@ -202,7 +202,7 @@ namespace BussinessLayer.Methods
             //id is de gamecode
 
             Game game = context.Games.Include(r => r.Teams).Where(d => d.GameCode == id).Single<Game>();
-            Team team = game.Teams.Where(r => r.TeamNaam == teamName).Single<Team>();
+            Team team = game.Teams.Where(r => r.TeamNaam == teamName).FirstOrDefault<Team>();
             int score = team.Punten;
 
 
@@ -223,7 +223,7 @@ namespace BussinessLayer.Methods
             //id is de gamecode
 
             Game game = context.Games.Include(r => r.Teams).Where(d => d.GameCode == id).Single<Game>();
-            Team team = game.Teams.Where(r => r.TeamNaam == teamName).Single<Team>();
+            Team team = game.Teams.Where(r => r.TeamNaam == teamName).FirstOrDefault<Team>();
             int score = team.Punten;
 
 
@@ -231,7 +231,7 @@ namespace BussinessLayer.Methods
                 return false;
             else
             {
-                score = newScore;
+                team.Punten = newScore;
                 context.SaveChanges();
                 return true;
             }

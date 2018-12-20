@@ -172,7 +172,6 @@ public class TeamController : Controller
             return NotFound();
         else
         {
-
             return Ok(score);
         }
 
@@ -191,7 +190,7 @@ public class TeamController : Controller
             return NotFound();
         else
         {
-            return Ok(score);
+            return Ok(newScore);
         }
 
     }

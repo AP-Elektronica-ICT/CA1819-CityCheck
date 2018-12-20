@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +73,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     int gekozenAntwoordIndex;
 
     private TextView timerTextView;
+    private ProgressBar timerProgressBar;
+    private int progress;
 
     // Doellocaties
     // private List<LatLng> currentDoelLocaties;
@@ -106,6 +109,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         // currentDoelLocaties = new ArrayList<>();
 
         timerTextView = findViewById(R.id.text_view_timer);
+        timerProgressBar = findViewById(R.id.progress_bar_timer);
         teamNaam = getIntent().getExtras().getString("teamNaam");
         gameTimer();
 
@@ -136,25 +140,24 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         buildGoogleApiClient();
 
         IntersectCalculator calc = new IntersectCalculator();
-        Team team=new Team("Bello", 456);
+        Team team = new Team("Bello", 456);
         Locatie start = new Locatie(1f, 1f);
         Locatie einde = new Locatie(3.8f, 3.5f);
         ArrayList<TeamTrace> traces = new ArrayList<>();
-        traces.add(new TeamTrace(new Locatie(2f,1f)));
-        traces.add(new TeamTrace(new Locatie(0f,3f)));
-        traces.add(new TeamTrace(new Locatie(0.8f,4.5f)));
-        traces.add(new TeamTrace(new Locatie(2f,5f)));
-        traces.add(new TeamTrace(new Locatie(2f,3f)));
-        traces.add(new TeamTrace(new Locatie(2f,2f)));
-        traces.add(new TeamTrace(new Locatie(4f,2f)));
+        traces.add(new TeamTrace(new Locatie(2f, 1f)));
+        traces.add(new TeamTrace(new Locatie(0f, 3f)));
+        traces.add(new TeamTrace(new Locatie(0.8f, 4.5f)));
+        traces.add(new TeamTrace(new Locatie(2f, 5f)));
+        traces.add(new TeamTrace(new Locatie(2f, 3f)));
+        traces.add(new TeamTrace(new Locatie(2f, 2f)));
+        traces.add(new TeamTrace(new Locatie(4f, 2f)));
         team.setTeamTrace(traces);
-        for(int i=0; i<team.getTeamTrace().size(); i++){
-            Log.d("intersect", ""+i);
-            if((i+1)<team.getTeamTrace().size()){
-                if(calc.doLineSegmentsIntersect(start, einde, team.getTeamTrace().get(i).getLocatie(), team.getTeamTrace().get(i+1).getLocatie())){
+        for (int i = 0; i < team.getTeamTrace().size(); i++) {
+            Log.d("intersect", "" + i);
+            if ((i + 1) < team.getTeamTrace().size()) {
+                if (calc.doLineSegmentsIntersect(start, einde, team.getTeamTrace().get(i).getLocatie(), team.getTeamTrace().get(i + 1).getLocatie())) {
                     Log.d("intersect", "de lijnen kruisen");
-                }
-                else
+                } else
                     Log.d("intersect", "de lijnen kruisen niet");
             }
 
@@ -184,7 +187,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
             Toast.makeText(this, "You need to enable permissions to display location !", Toast.LENGTH_SHORT).show();
         }
-
 
         // Alles ivm locatie van het eigen team
         myTeam = new MyTeam(this, kaart, gamecode, teamNaam);
@@ -259,9 +261,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     // Doorgeven van TargetLocations waardes voor geofencing
     cloudapplications.citycheck.Constants constants = new cloudapplications.citycheck.Constants();
-
-
-
 
 
     private void showDoelLocaties(List<DoelLocatie> newDoelLocaties) {
@@ -506,7 +505,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         if (chosenGameTime.equals("4")) {
             gameTimeInMillis = 10000;
         }
-        long timerMillis = gameTimeInMillis - (System.currentTimeMillis() - millisStarted);
+        final long timerMillis = gameTimeInMillis - (System.currentTimeMillis() - millisStarted);
+        progress = 0;
+        timerProgressBar.setProgress(progress);
         if (timerMillis > 0) {
             new CountDownTimer(timerMillis, 1000) {
                 public void onTick(long millisUntilFinished) {
@@ -515,9 +516,13 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     int hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
                     timerTextView.setText("Time remaining: " + hours + ":" + minutes + ":" + seconds);
                     everythingThatNeedsToHappenEvery3s(millisUntilFinished);
+                    progress++;
+                    timerProgressBar.setProgress((int) (progress * 100 / (timerMillis / 1000)));
                 }
 
                 public void onFinish() {
+                    progress++;
+                    timerProgressBar.setProgress(100);
                     endGame();
                 }
             }.start();
@@ -533,22 +538,21 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         startActivity(i);
     }
 
-    private void calculateIntersect(){
+    private void calculateIntersect() {
 
         NetworkManager.getInstance().getAllTeamTraces(gamecode, new NetworkResponseListener<List<Team>>() {
             @Override
             public void onResponseReceived(List<Team> teams) {
                 IntersectCalculator calc = new IntersectCalculator();
-                Locatie start = myTeam.Traces.get(myTeam.Traces.size()-2);
-                Locatie einde = myTeam.Traces.get(myTeam.Traces.size()-1);
+                Locatie start = myTeam.Traces.get(myTeam.Traces.size() - 2);
+                Locatie einde = myTeam.Traces.get(myTeam.Traces.size() - 1);
 
-                for(Team team: teams){
-                    for(int i=0; i<team.getTeamTrace().size(); i++){
-                        if((i+1)<team.getTeamTrace().size()){
-                            if(calc.doLineSegmentsIntersect(start, einde, team.getTeamTrace().get(i).getLocatie(), team.getTeamTrace().get(i+1).getLocatie())){
+                for (Team team : teams) {
+                    for (int i = 0; i < team.getTeamTrace().size(); i++) {
+                        if ((i + 1) < team.getTeamTrace().size()) {
+                            if (calc.doLineSegmentsIntersect(start, einde, team.getTeamTrace().get(i).getLocatie(), team.getTeamTrace().get(i + 1).getLocatie())) {
                                 Log.d("intersect", "de lijnen kruisen");
-                            }
-                            else
+                            } else
                                 Log.d("intersect", "de lijnen kruisen niet");
                         }
 

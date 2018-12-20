@@ -4,13 +4,16 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import cloudapplications.citycheck.R;
 
@@ -41,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Ask permission for gps
+        // Vraag GPS toestemming
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
     }
 
@@ -55,9 +58,11 @@ public class MainActivity extends AppCompatActivity {
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         assert manager != null;
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER))
             buildAlertMessageNoGps();
-        }
+
+        if (!isStoragePermissionGranted())
+            Toast.makeText(this, "You have to grant storage permissions to play the game.", Toast.LENGTH_LONG).show();
     }
 
     private void buildAlertMessageNoGps() {
@@ -71,5 +76,21 @@ public class MainActivity extends AppCompatActivity {
                 });
         final AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                // Toestemming is in orde
+                return true;
+            } else {
+                // Toestemming is niet in orde
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+                return false;
+            }
+        } else {
+            // Toestemming automatisch in orde op SDK < 23
+            return true;
+        }
     }
 }

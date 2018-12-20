@@ -1,4 +1,4 @@
-package cloudapplications.citycheck.Models;
+package cloudapplications.citycheck;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -24,6 +24,8 @@ import java.util.Random;
 import cloudapplications.citycheck.APIService.NetworkManager;
 import cloudapplications.citycheck.APIService.NetworkResponseListener;
 import cloudapplications.citycheck.Activities.GameActivity;
+import cloudapplications.citycheck.Models.Locatie;
+import cloudapplications.citycheck.Models.Team;
 
 public class OtherTeams {
 

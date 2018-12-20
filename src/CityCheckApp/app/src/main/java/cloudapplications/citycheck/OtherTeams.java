@@ -65,7 +65,7 @@ public class OtherTeams {
                                 Locatie loc = new Locatie(lat, lon);
                                 Traces.add(loc);
                                 placeMarker(loc, team);
-                                drawPath(team);
+                                //drawPath(team);
                             }
                         }
                     }

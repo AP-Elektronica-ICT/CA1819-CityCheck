@@ -49,7 +49,7 @@ import cloudapplications.citycheck.R;
 import cloudapplications.citycheck.MyTeam;
 
 
-public class GameActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
+public class GameActivity extends FragmentActivity implements OnMapReadyCallback /*,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status>*/ {
 
     private GoogleMap kaart;
     private MyTeam myTeam;
@@ -73,12 +73,12 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     private TextView timerTextView;
 
-    // Doellocaties
+/*    // Doellocaties
     // private List<LatLng> currentDoelLocaties;
     private List<DoelLocatie> targetLocations = new ArrayList<>();
     // Opzetten geofencing voor doellocaties te kunnen activeren.
     protected ArrayList<Geofence> mGeofenceList;
-    protected GoogleApiClient mGoogleApiClient;
+    protected GoogleApiClient mGoogleApiClient;*/
 
     // Callbacks
     @Override
@@ -89,6 +89,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
 
         service = NetworkManager.getInstance();
 
@@ -121,7 +122,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         // Ophalen doellocaties
-        getTargetLocations();
+        //getTargetLocations();
         //TO-DELETE
         //Even hardcoded 3 doellocaties adden
         //mogen weg
@@ -130,10 +131,10 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         currentDoelLocaties.add(new LatLng(51.2202678, 4.399327));*/
         //na het ready zijn van de map onderaan plaatsen we nieuwe markers
 
-        // Geofencing
+/*        // Geofencing
         mGeofenceList = new ArrayList<Geofence>();
         populateGeoFenceList();
-        buildGoogleApiClient();
+        buildGoogleApiClient();*/
 
         IntersectCalculator calc = new IntersectCalculator();
         Team team=new Team("Bello", 456);
@@ -168,13 +169,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             myTeam.startConnection();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        // Stop werkt pas onDestroy en niet onPause, opzich wel goed want als ze de app dan even naar de achtergrond brengen dan blijven de lijnen wel tekenen
-        if (myTeam != null)
-            myTeam.stopConnection();
-    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -198,9 +192,10 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         otherTeams = new OtherTeams(gamecode, teamNaam, kaart, GameActivity.this);
         otherTeams.getTeamsOnMap();
 
+        kaart.setMyLocationEnabled(true);
         // Eerste doellocatie markers tonen
         // Inconsistentie ivm latlng en locatie gebruik...
-        showDoelLocaties(targetLocations);
+        //showDoelLocaties(targetLocations);
     }
 
     @Override
@@ -214,7 +209,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
     // Private helper methoden
 
-    // TODO: Een betere call gebruiken (niet alle doellocaties GETen maar enkel de 3 nodige) + Omzetten naar Retrofit
+/*    // TODO: Een betere call gebruiken (niet alle doellocaties GETen maar enkel de 3 nodige) + Omzetten naar Retrofit
     // Testen voor implementatie in geofencing
     private void getTargetLocations() {
         OkHttpCall call = new OkHttpCall();
@@ -258,7 +253,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // Doorgeven van TargetLocations waardes voor geofencing
-    cloudapplications.citycheck.Constants constants = new cloudapplications.citycheck.Constants();
+    cloudapplications.citycheck.Constants constants = new cloudapplications.citycheck.Constants();*/
 
 
 
@@ -420,7 +415,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // Opzetten van geofences, nu gebruik van voorbeeldcode voor test
-    public void populateGeoFenceList() {
+/*    public void populateGeoFenceList() {
         for (Map.Entry<String, LatLng> entry : cloudapplications.citycheck.Constants.LANDMARKS.entrySet()) {
             mGeofenceList.add(new Geofence.Builder()
                     .setRequestId(entry.getKey())
@@ -475,7 +470,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onResult(@NonNull Status status) {
-    }
+    }*/
 
     private void askQuestion() {
         // Instellen van een vraag en deze stellen + controleren
@@ -528,7 +523,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     void endGame() {
         Intent i = new Intent(GameActivity.this, EndGameActivity.class);
-        //myTeam.stopConnection();
+        myTeam.stopConnection();
         i.putExtra("gameCode", Integer.toString(gamecode));
         startActivity(i);
     }

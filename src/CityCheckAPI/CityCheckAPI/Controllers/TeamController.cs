@@ -42,7 +42,7 @@ public class TeamController : Controller
                    
     }
 
-    //get all teams from a game
+    //get all teams from a game and their location
     [HttpGet]
     [Route ("currentgame/teams/{gameId}")]
     public IActionResult getTeams(int gameId)

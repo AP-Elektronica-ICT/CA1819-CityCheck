@@ -2,13 +2,15 @@ package cloudapplications.citycheck;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -33,13 +35,15 @@ import cloudapplications.citycheck.APIService.NetworkResponseListener;
 import cloudapplications.citycheck.Models.Locatie;
 import cloudapplications.citycheck.Models.Team;
 
-public class TeamLocation extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
     private GoogleApiClient myGoogleApiClient;
     private LocationRequest myLocationRequest;
     public Location newLocation;
     private GoogleMap map;
     private Marker Me;
-    private static final String TAG = TeamLocation.class.getSimpleName();
+    private static final String TAG = MyTeam.class.getSimpleName();
+    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private Activity activity;
     public List<Locatie> Traces;
     Random r;
@@ -48,7 +52,7 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
     String TeamNaam;
 
     // Public methoden
-    public TeamLocation(Activity activityIn, GoogleMap kaart, int gameCode, String teamNaam) {
+    public MyTeam(Activity activityIn, GoogleMap kaart, int gameCode, String teamNaam) {
         activity = activityIn;
         map = kaart;
         Traces = new ArrayList<>();
@@ -69,6 +73,7 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
 
     public void startConnection() {
         if (!myGoogleApiClient.isConnected()) {
+            if(checkLocationPermission())
             myGoogleApiClient.connect();
         }
     }
@@ -109,7 +114,7 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
         service.postHuidigeLocatie(GameCode, TeamNaam, location, new NetworkResponseListener<Team>() {
             @Override
             public void onResponseReceived(Team team) {
-
+                Log.d(TAG, "location send to database: " + team.getLocatie().getLat() + team.getLocatie().getLong());
             }
 
             @Override
@@ -119,22 +124,12 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
         });
     }
 
-    private void getStartLocation() {
-        // Permissies worden gecheckt, warning negeren!
-        Location startLocation = LocationServices.FusedLocationApi.getLastLocation(myGoogleApiClient);
-        if (startLocation == null) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(myGoogleApiClient, myLocationRequest, this);
-            Log.d(TAG, "updates started");
-        } else {
-            handleNewLocation(new Locatie(startLocation.getLatitude(), startLocation.getLongitude()));
-        }
-    }
 
     public void handleNewLocation(Locatie location) {
         // Test data
         // location= new LatLng((r.nextDouble()*(51.2500 - 50.1800) + 50.1800),(r.nextDouble()* (4.8025 - 4.0000) + 4.0000));
 
-        Log.d(TAG, location.toString());
+        Log.d(TAG, "handle new location: " + location.getLat() + ", " + location.getLong());
         Traces.add(new Locatie(location.getLat(), location.getLong()));
         Log.d(TAG, Integer.toString(Traces.size()));
         placeMarker(location);
@@ -148,13 +143,10 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
     public void onConnected(Bundle bundle) {
         Log.i(TAG, "Location services connected.");
 
-        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-        } else {
-            // LocationServices.FusedLocationApi.requestLocationUpdates(myGoogleApiClient, myLocationRequest, this);
-            // Log.d(TAG, "updates started");
-            getStartLocation();
+        if(checkLocationPermission()){
+
+            LocationServices.FusedLocationApi.requestLocationUpdates(myGoogleApiClient, myLocationRequest, this);
+
         }
     }
 
@@ -173,14 +165,76 @@ public class TeamLocation extends Activity implements GoogleApiClient.Connection
         newLocation = location;
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 1) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getStartLocation();
+    public boolean checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(activity,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                new AlertDialog.Builder(this)
+                        .setTitle("permission")
+                        .setMessage("location permissions")
+                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(activity,
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        MY_PERMISSIONS_REQUEST_LOCATION);
+                            }
+                        })
+                        .create()
+                        .show();
+
+
             } else {
-                Toast.makeText(activity.getBaseContext(), "Zonder toegang tot locatie kan je niet spelen", Toast.LENGTH_LONG).show();
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
             }
+            return false;
+        } else {
+            Log.d(TAG, "permissions granted");
+            return true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+
+                        //Request location updates:
+                        startConnection();
+                        Log.d(TAG, "permissions granted");
+                    }
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+
+                }
+                return;
+            }
+
         }
     }
 }

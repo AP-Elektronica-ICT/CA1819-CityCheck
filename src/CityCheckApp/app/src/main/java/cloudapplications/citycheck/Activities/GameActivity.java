@@ -47,18 +47,20 @@ import cloudapplications.citycheck.APIService.NetworkResponseListener;
 import cloudapplications.citycheck.IntersectCalculator;
 import cloudapplications.citycheck.Models.DoelLocatie;
 import cloudapplications.citycheck.Models.Locatie;
+import cloudapplications.citycheck.Models.OtherTeams;
 import cloudapplications.citycheck.Models.Team;
 import cloudapplications.citycheck.Models.TeamTrace;
 import cloudapplications.citycheck.Models.Vraag;
 import cloudapplications.citycheck.OkHttpCall;
 import cloudapplications.citycheck.R;
-import cloudapplications.citycheck.TeamLocation;
+import cloudapplications.citycheck.MyTeam;
 
 
 public class GameActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
 
     private GoogleMap kaart;
-    private TeamLocation myTeam;
+    private MyTeam myTeam;
+    private OtherTeams otherTeams;
     private NetworkManager service;
 
     // Variabelen om teams op te halen uit database
@@ -190,17 +192,18 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             Toast.makeText(this, "You need to enable permissions to display location !", Toast.LENGTH_SHORT).show();
         }
 
+
+        // Alles ivm locatie van het eigen team
+        myTeam = new MyTeam(this, kaart, gamecode, teamNaam);
+        myTeam.startConnection();
+
         // Move the camera to Antwerp
         LatLng Antwerpen = new LatLng(51.2194, 4.4025);
         kaart.moveCamera(CameraUpdateFactory.newLatLngZoom(Antwerpen, 15));
 
-        // Alles ivm locatie van het eigen team
-        myTeam = new TeamLocation(this, kaart, gamecode, teamNaam);
-        myTeam.startConnection();
-
-        // Get other team's locations
-        Log.d("Mapmarker", "Game code to call: " + gamecode);
-        getTeamsOnMap(gamecode);
+        //locaties van andere teams
+        otherTeams = new OtherTeams(gamecode, teamNaam, kaart, GameActivity.this);
+        otherTeams.getTeamsOnMap();
 
         // Eerste doellocatie markers tonen
         // Inconsistentie ivm latlng en locatie gebruik...
@@ -264,46 +267,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     // Doorgeven van TargetLocations waardes voor geofencing
     cloudapplications.citycheck.Constants constants = new cloudapplications.citycheck.Constants();
 
-    private void getTeamsOnMap(int gameId) {
-        service.getAllTeamsFromGame(gameId, new NetworkResponseListener<List<Team>>() {
-            @Override
-            public void onResponseReceived(final List<Team> teams) {
-                // Show teams on map
-                Handler handler = new Handler(Looper.getMainLooper());
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (Team team : teams) {
-                            Log.d("Teams", "Team name: " + team.getTeamNaam());
-                            if (!team.getTeamNaam().equals(teamNaam)) {
-                                Random rand = new Random();
-                                float lat = (float) (rand.nextFloat() * (51.30 - 50.00) + 50.00);
-                                float lon = (float) (rand.nextFloat() * (5.30 - 2.30) + 2.30);
-                                // mMap.clear();
-                                kaart.addMarker(new MarkerOptions()
-                                        .position(new LatLng(lat, lon))
-                                        // .position(new LatLng(teams.get(i).getHuidigeLocatie().getLatitude(), teams.get(i).getHuidigeLocatie().getLongitude()))
-                                        .title(team.getTeamNaam())
-                                        .icon(getMarkerIcon(team.getKleur())));
-                                Log.d("Retrofit", "Team marker added: #" + Integer.toHexString(team.getKleur()));
-                            }
-                        }
-                    }
-                });
-            }
 
-            @Override
-            public void onError() {
-                Toast.makeText(GameActivity.this, "Error while trying to get the teams of the current game", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
-    private BitmapDescriptor getMarkerIcon(int color) {
-        float[] hsv = new float[3];
-        Color.colorToHSV(color, hsv);
-        return BitmapDescriptorFactory.defaultMarker(hsv[0]);
-    }
+
 
     private void showDoelLocaties(List<DoelLocatie> newDoelLocaties) {
         // Place a marker on the locations
@@ -320,7 +286,11 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         if (TimeCounter % 3 == 0) {
             if (myTeam.newLocation != null) {
                 myTeam.handleNewLocation(new Locatie(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude()));
+                LatLng positie = new LatLng(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude());
+                kaart.moveCamera(CameraUpdateFactory.newLatLng(positie));
             }
+
+            otherTeams.getTeamsOnMap();
         }
     }
 
@@ -565,6 +535,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     void endGame() {
         Intent i = new Intent(GameActivity.this, EndGameActivity.class);
+        //myTeam.stopConnection();
         i.putExtra("gameCode", Integer.toString(gamecode));
         startActivity(i);
     }

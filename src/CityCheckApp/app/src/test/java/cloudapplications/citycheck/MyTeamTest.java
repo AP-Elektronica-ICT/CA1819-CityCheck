@@ -10,7 +10,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 @SmallTest
 
-public class TeamLocationTest {
+public class MyTeamTest {
     @Before
     void setup(){
 

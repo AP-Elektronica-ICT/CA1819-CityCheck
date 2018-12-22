@@ -9,7 +9,7 @@ public class TeamTrace {
     @Expose
     private int Id;
 
-    @SerializedName("locatie")
+    @SerializedName("trace")
     @Expose
     private Locatie locatie;
 

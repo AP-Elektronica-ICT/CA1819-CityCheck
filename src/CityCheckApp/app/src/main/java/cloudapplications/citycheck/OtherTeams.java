@@ -26,6 +26,7 @@ import cloudapplications.citycheck.APIService.NetworkResponseListener;
 import cloudapplications.citycheck.Activities.GameActivity;
 import cloudapplications.citycheck.Models.Locatie;
 import cloudapplications.citycheck.Models.Team;
+import cloudapplications.citycheck.Models.TeamTrace;
 
 public class OtherTeams {
 
@@ -35,7 +36,7 @@ public class OtherTeams {
     private Activity activity;
     private String teamNaam;
     private SparseArray<Marker> markers;
-    public List<Locatie> Traces;
+    public SparseArray<Locatie> Traces;
 
     public OtherTeams(int gameId, String teamnaam, GoogleMap map, Activity activity){
         this.gameId=gameId;
@@ -43,7 +44,7 @@ public class OtherTeams {
         this.activity=activity;
         this.teamNaam=teamnaam;
         markers = new SparseArray<Marker>();
-        Traces = new ArrayList<Locatie>();
+        Traces = new SparseArray<Locatie>();
     }
 
 
@@ -65,8 +66,11 @@ public class OtherTeams {
                                 float lon = (float) (rand.nextFloat() * (5.30 - 2.30) + 2.30);
                                 Locatie loc = new Locatie(lat, lon);
                                 Traces.add(loc);*/
-                                    placeMarker(team.getLocatie(), team);
-                                    drawPath(team);
+                                    if(team.getLocatie() != null){
+                                        placeMarker(team.getLocatie(), team);
+                                        drawPath(team);
+                                    }
+
                                 }
                             }
                         }
@@ -103,12 +107,28 @@ public class OtherTeams {
     }
 
     private void drawPath(Team team) {
-        if(team.getTeamTrace() != null && team.getTeamTrace().size() >4){
-            Polyline polyline1 = kaart.addPolyline(new PolylineOptions()
-                    .add(
-                            new LatLng(Traces.get(Traces.size() - 2).getLat(), Traces.get(Traces.size() - 2).getLong()),
-                            new LatLng(Traces.get(Traces.size() - 1).getLat(), Traces.get(Traces.size() - 1).getLong()))
-                    .color(team.getKleur()));
+        if(team.getTeamTrace() != null && team.getTeamTrace().size() > 4){
+            //Log.d("traces", "traces for: "+team.getTeamNaam() + ", lengte traces: "+ team.getTeamTrace().size());
+                for(int i=3; i<team.getTeamTrace().size(); i++){
+
+                    if(Traces.get(team.getTeamTrace().get(i).getId()) == null){
+                        //Log.d("traces", "new trace for: "+team.getTeamNaam() + ", trace: "+ team.getTeamTrace().get(i).getLocatie().getLat());
+                        Polyline teamPad = kaart.addPolyline(new PolylineOptions()
+                                .add(
+                                        new LatLng(team.getTeamTrace().get(i-1).getLocatie().getLat(), team.getTeamTrace().get(i-1).getLocatie().getLong()),
+                                        new LatLng(team.getTeamTrace().get(i).getLocatie().getLat(), team.getTeamTrace().get(i).getLocatie().getLong()))
+                                .color(team.getKleur())
+                                .width(7f));
+                        Traces.append(team.getTeamTrace().get(i).getId(),team.getTeamTrace().get(i).getLocatie());
+                    }
+
+                }
+                /*Polyline polyline1 = kaart.addPolyline(new PolylineOptions()
+                        .add(
+                                new LatLng(Traces.get(Traces.size() - 2).getLat(), Traces.get(Traces.size() - 2).getLong()),
+                                new LatLng(Traces.get(Traces.size() - 1).getLat(), Traces.get(Traces.size() - 1).getLong()))
+                        .color(team.getKleur()));*/
+
         }
     }
 }

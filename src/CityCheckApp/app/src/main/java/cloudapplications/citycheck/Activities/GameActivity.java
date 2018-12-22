@@ -194,7 +194,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         otherTeams = new OtherTeams(gamecode, teamNaam, kaart, GameActivity.this);
         otherTeams.getTeamsOnMap();
 
-        kaart.setMyLocationEnabled(true);
         // Eerste doellocatie markers tonen
         // Inconsistentie ivm latlng en locatie gebruik...
         //showDoelLocaties(targetLocations);
@@ -528,7 +527,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     void endGame() {
         Intent i = new Intent(GameActivity.this, EndGameActivity.class);
-        myTeam.stopConnection();
+        if(myTeam != null)
+            myTeam.stopConnection();
         i.putExtra("gameCode", Integer.toString(gamecode));
         startActivity(i);
     }

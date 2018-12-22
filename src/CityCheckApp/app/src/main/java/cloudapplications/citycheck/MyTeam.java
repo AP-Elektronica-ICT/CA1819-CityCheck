@@ -107,7 +107,8 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
             Polyline polyline1 = map.addPolyline(new PolylineOptions()
                     .add(
                             new LatLng(Traces.get(Traces.size() - 2).getLat(), Traces.get(Traces.size() - 2).getLong()),
-                            new LatLng(Traces.get(Traces.size() - 1).getLat(), Traces.get(Traces.size() - 1).getLong())));
+                            new LatLng(Traces.get(Traces.size() - 1).getLat(), Traces.get(Traces.size() - 1).getLong()))
+                    .width(7f));
         }
     }
 
@@ -121,7 +122,7 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
 
             @Override
             public void onError() {
-
+                Log.d(TAG, "error in sending location to database");
             }
         });
     }

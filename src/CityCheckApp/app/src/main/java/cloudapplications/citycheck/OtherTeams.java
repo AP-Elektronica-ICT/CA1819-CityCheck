@@ -48,28 +48,30 @@ public class OtherTeams {
 
 
     public void getTeamsOnMap() {
-        service.getAllTeamsFromGame(gameId, new NetworkResponseListener<List<Team>>() {
+        service.getAllTeamTraces(gameId, new NetworkResponseListener<List<Team>>() {
             @Override
             public void onResponseReceived(final List<Team> teams) {
-                // Show teams on map
-                Handler handler = new Handler(Looper.getMainLooper());
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (Team team : teams) {
-                            Log.d("Teams", "Team name: " + team.getTeamNaam());
-                            if (!team.getTeamNaam().equals(teamNaam)) {
-                                Random rand = new Random();
+                if (teams != null) {
+                    // Show teams on map
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (Team team : teams) {
+                                Log.d("Teams", "Team name: " + team.getTeamNaam());
+                                if (!team.getTeamNaam().equals(teamNaam)) {
+                                /*Random rand = new Random();
                                 float lat = (float) (rand.nextFloat() * (51.30 - 50.00) + 50.00);
                                 float lon = (float) (rand.nextFloat() * (5.30 - 2.30) + 2.30);
                                 Locatie loc = new Locatie(lat, lon);
-                                Traces.add(loc);
-                                placeMarker(loc, team);
-                                //drawPath(team);
+                                Traces.add(loc);*/
+                                    placeMarker(team.getLocatie(), team);
+                                    drawPath(team);
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
             }
 
             @Override
@@ -101,8 +103,7 @@ public class OtherTeams {
     }
 
     private void drawPath(Team team) {
-        // Elke keer het traject tussen de laatste locatie en de huidige locatie als polyline tekenen
-        if (Traces.size() > 4) { // 4 intervals wachten voor het tekenen van een lijn om zo collision aan de start te vermijden
+        if(team.getTeamTrace() != null && team.getTeamTrace().size() >4){
             Polyline polyline1 = kaart.addPolyline(new PolylineOptions()
                     .add(
                             new LatLng(Traces.get(Traces.size() - 2).getLat(), Traces.get(Traces.size() - 2).getLong()),

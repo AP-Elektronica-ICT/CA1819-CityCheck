@@ -272,6 +272,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         if (TimeCounter % 3 == 0) {
             if (myTeam.newLocation != null) {
                 myTeam.handleNewLocation(new Locatie(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude()));
+                calculateIntersect();
                 LatLng positie = new LatLng(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude());
                 kaart.moveCamera(CameraUpdateFactory.newLatLng(positie));
             }
@@ -368,10 +369,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             Toast.makeText(GameActivity.this, "Correct!", Toast.LENGTH_LONG).show();
 
             // X aantal punten toevoegen bij de gebruiker
-            score += 10;
-
             // Nieuwe score tonen en doorpushen naar de db
-            setScore(score);
+            setScore(10);
         } else {
             Toast.makeText(GameActivity.this, "Helaas! Volgende keer beter", Toast.LENGTH_LONG).show();
         }
@@ -395,7 +394,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     // TODO: deze call werkt niet (ligt aan de backend)
     private void setScore(int newScore) {
-        score = newScore;
+        score += newScore;
         scoreTextView.setText(String.valueOf(score));
 
         // TODO: Nieuwe score doorpushen naar de API
@@ -534,31 +533,39 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void calculateIntersect() {
+        if(myTeam.Traces.size()>4){
 
-        NetworkManager.getInstance().getAllTeamTraces(gamecode, new NetworkResponseListener<List<Team>>() {
-            @Override
-            public void onResponseReceived(List<Team> teams) {
-                IntersectCalculator calc = new IntersectCalculator();
-                Locatie start = myTeam.Traces.get(myTeam.Traces.size() - 2);
-                Locatie einde = myTeam.Traces.get(myTeam.Traces.size() - 1);
+            NetworkManager.getInstance().getAllTeamTraces(gamecode, new NetworkResponseListener<List<Team>>() {
+                @Override
+                public void onResponseReceived(List<Team> teams) {
+                    IntersectCalculator calc = new IntersectCalculator();
+                    Locatie start = myTeam.Traces.get(myTeam.Traces.size() - 2);
+                    Locatie einde = myTeam.Traces.get(myTeam.Traces.size() - 1);
 
-                for (Team team : teams) {
-                    for (int i = 0; i < team.getTeamTrace().size(); i++) {
-                        if ((i + 1) < team.getTeamTrace().size()) {
-                            if (calc.doLineSegmentsIntersect(start, einde, team.getTeamTrace().get(i).getLocatie(), team.getTeamTrace().get(i + 1).getLocatie())) {
-                                Log.d("intersect", "de lijnen kruisen");
-                            } else
-                                Log.d("intersect", "de lijnen kruisen niet");
+                    for (Team team : teams) {
+                        if (!team.getTeamNaam().equals(teamNaam)){
+                            Log.d("intersect", "size: "+team.getTeamTrace().size());
+                            for (int i = 0; i < team.getTeamTrace().size(); i++) {
+                                if ((i + 1) < team.getTeamTrace().size()) {
+                                    if (calc.doLineSegmentsIntersect(start, einde, team.getTeamTrace().get(i).getLocatie(), team.getTeamTrace().get(i + 1).getLocatie())) {
+                                        Log.d("intersect", team.getTeamNaam()+ " kruist");
+                                        setScore(-5);
+                                    } //else
+                                        //Log.d("intersect", team.getTeamNaam()+ " kruist niet");
+                                }
+
+                            }
                         }
-
                     }
                 }
-            }
 
-            @Override
-            public void onError() {
+                @Override
+                public void onError() {
 
-            }
-        });
+                }
+            });
+        }
     }
+
+
 }

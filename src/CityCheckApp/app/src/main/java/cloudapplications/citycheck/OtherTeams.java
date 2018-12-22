@@ -30,13 +30,13 @@ import cloudapplications.citycheck.Models.TeamTrace;
 
 public class OtherTeams {
 
+    public SparseArray<SparseArray<Locatie>> Traces;
     private NetworkManager service = NetworkManager.getInstance();
     private int gameId;
     private GoogleMap kaart;
     private Activity activity;
     private String teamNaam;
     private SparseArray<Marker> markers;
-    public SparseArray<Locatie> Traces;
 
     public OtherTeams(int gameId, String teamnaam, GoogleMap map, Activity activity){
         this.gameId=gameId;
@@ -44,7 +44,7 @@ public class OtherTeams {
         this.activity=activity;
         this.teamNaam=teamnaam;
         markers = new SparseArray<Marker>();
-        Traces = new SparseArray<Locatie>();
+        Traces = new SparseArray<SparseArray<Locatie>>();
     }
 
 
@@ -59,7 +59,7 @@ public class OtherTeams {
                         @Override
                         public void run() {
                             for (Team team : teams) {
-                                Log.d("Teams", "Team name: " + team.getTeamNaam());
+                                //Log.d("Teams", "Team name: " + team.getTeamNaam());
                                 if (!team.getTeamNaam().equals(teamNaam)) {
                                 /*Random rand = new Random();
                                 float lat = (float) (rand.nextFloat() * (51.30 - 50.00) + 50.00);
@@ -67,6 +67,10 @@ public class OtherTeams {
                                 Locatie loc = new Locatie(lat, lon);
                                 Traces.add(loc);*/
                                     if(team.getLocatie() != null){
+                                        if(Traces.get(team.getId()) == null){
+                                            Traces.append(team.getId(),new SparseArray<Locatie>());
+                                            Log.d("Teams", Traces.indexOfKey(team.getId()) + "");
+                                        }
                                         placeMarker(team.getLocatie(), team);
                                         drawPath(team);
                                     }
@@ -108,27 +112,21 @@ public class OtherTeams {
 
     private void drawPath(Team team) {
         if(team.getTeamTrace() != null && team.getTeamTrace().size() > 4){
-            //Log.d("traces", "traces for: "+team.getTeamNaam() + ", lengte traces: "+ team.getTeamTrace().size());
-                for(int i=3; i<team.getTeamTrace().size(); i++){
-
-                    if(Traces.get(team.getTeamTrace().get(i).getId()) == null){
-                        //Log.d("traces", "new trace for: "+team.getTeamNaam() + ", trace: "+ team.getTeamTrace().get(i).getLocatie().getLat());
+            // Pas een pad tekenen na 4 intervals
+            for(int i=4; i<team.getTeamTrace().size(); i++){
+                //Remote en lokaal vergelijken of het pad al getekend is en enkel bijtekenen wat er nog niet was
+                if(Traces.get(team.getId()).get(team.getTeamTrace().get(i).getId()) == null){
+                    Traces.get(team.getId()).append(team.getTeamTrace().get(i).getId(),team.getTeamTrace().get(i).getLocatie());
+                        Log.d("Teams","new trace: " + Traces.get(team.getId()).size());
                         Polyline teamPad = kaart.addPolyline(new PolylineOptions()
                                 .add(
                                         new LatLng(team.getTeamTrace().get(i-1).getLocatie().getLat(), team.getTeamTrace().get(i-1).getLocatie().getLong()),
                                         new LatLng(team.getTeamTrace().get(i).getLocatie().getLat(), team.getTeamTrace().get(i).getLocatie().getLong()))
                                 .color(team.getKleur())
                                 .width(7f));
-                        Traces.append(team.getTeamTrace().get(i).getId(),team.getTeamTrace().get(i).getLocatie());
-                    }
-
                 }
-                /*Polyline polyline1 = kaart.addPolyline(new PolylineOptions()
-                        .add(
-                                new LatLng(Traces.get(Traces.size() - 2).getLat(), Traces.get(Traces.size() - 2).getLong()),
-                                new LatLng(Traces.get(Traces.size() - 1).getLat(), Traces.get(Traces.size() - 1).getLong()))
-                        .color(team.getKleur()));*/
 
+            }
         }
     }
 }

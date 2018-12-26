@@ -1,6 +1,5 @@
 package cloudapplications.citycheck;
 
-import android.graphics.Point;
 import android.graphics.PointF;
 
 import cloudapplications.citycheck.Models.Locatie;
@@ -57,7 +56,7 @@ public class IntersectCalculator {
      *
      * @return the cross product result as a float
      */
-    float crossProduct(PointF point1, PointF point2) {
+    private float crossProduct(PointF point1, PointF point2) {
         return point1.x * point2.y - point1.y * point2.x;
     }
 
@@ -69,7 +68,7 @@ public class IntersectCalculator {
      *
      * @return the subtraction result as a pointf object
      */
-    PointF subtractPoints(PointF point1,PointF point2) {
+    private PointF subtractPoints(PointF point1,PointF point2) {
         PointF result = new PointF();
         result.x = point1.x - point2.x;
         result.y = point1.y - point2.y;

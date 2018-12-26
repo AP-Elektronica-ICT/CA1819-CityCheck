@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
@@ -16,10 +15,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -27,26 +22,19 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import cloudapplications.citycheck.APIService.NetworkManager;
 import cloudapplications.citycheck.APIService.NetworkResponseListener;
 import cloudapplications.citycheck.IntersectCalculator;
-import cloudapplications.citycheck.Models.DoelLocatie;
+import cloudapplications.citycheck.Models.DoelLocation;
 import cloudapplications.citycheck.Models.Locatie;
+import cloudapplications.citycheck.Models.TeamTrace;
 import cloudapplications.citycheck.OtherTeams;
 import cloudapplications.citycheck.Models.Team;
-import cloudapplications.citycheck.Models.TeamTrace;
 import cloudapplications.citycheck.Models.Vraag;
-import cloudapplications.citycheck.OkHttpCall;
 import cloudapplications.citycheck.R;
 import cloudapplications.citycheck.MyTeam;
 
@@ -92,6 +80,30 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         calc = new IntersectCalculator();
         service = NetworkManager.getInstance();
 
+        IntersectCalculator calc = new IntersectCalculator();
+        Team team = new Team("Bello", 456);
+        Locatie start = new Locatie(1f, 1f);
+        Locatie einde = new Locatie(3.8f, 3.5f);
+        ArrayList<TeamTrace> traces = new ArrayList<>();
+        traces.add(new TeamTrace(new Locatie(2f, 1f)));
+        traces.add(new TeamTrace(new Locatie(0f, 3f)));
+        traces.add(new TeamTrace(new Locatie(0.8f, 4.5f)));
+        traces.add(new TeamTrace(new Locatie(2f, 5f)));
+        traces.add(new TeamTrace(new Locatie(2f, 3f)));
+        traces.add(new TeamTrace(new Locatie(2f, 2f)));
+        traces.add(new TeamTrace(new Locatie(4f, 2f)));
+        team.setTeamTrace(traces);
+        for (int i = 0; i < team.getTeamTrace().size(); i++) {
+            Log.d("intersect", "" + i);
+            if ((i + 1) < team.getTeamTrace().size()) {
+                if (calc.doLineSegmentsIntersect(start, einde, team.getTeamTrace().get(i).getLocatie(), team.getTeamTrace().get(i + 1).getLocatie())) {
+                    Log.d("intersect", "de lijnen kruisen");
+                } else
+                    Log.d("intersect", "de lijnen kruisen niet");
+            }
+
+        }
+
         gamecode = Integer.parseInt(getIntent().getExtras().getString("gameCode"));
 
         // Score
@@ -127,7 +139,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             myTeam.startConnection();
     }
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         kaart = googleMap;
@@ -149,9 +160,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         otherTeams = new OtherTeams(gamecode, teamNaam, kaart, GameActivity.this);
         otherTeams.getTeamsOnMap();
 
-        // Eerste doellocatie markers tonen
-        // Inconsistentie ivm latlng en locatie gebruik...
-        //showDoelLocaties(targetLocations);
     }
 
     @Override
@@ -163,19 +171,19 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
-    // Private helper methoden
 
-    private void showDoelLocaties(List<DoelLocatie> newDoelLocaties) {
+    // Private helper methoden
+    private void showDoelLocaties(List<DoelLocation> newDoelLocaties) {
         // Place a marker on the locations
         for (int i = 0; i < newDoelLocaties.size(); i++) {
-            DoelLocatie doellocatie = newDoelLocaties.get(i);
-            LatLng Locatie = new LatLng(doellocatie.getLat(), doellocatie.getLong());
+            DoelLocation doellocatie = newDoelLocaties.get(i);
+            LatLng Locatie = new LatLng(doellocatie.getLocatie().getLat(), doellocatie.getLocatie().getLong());
             kaart.addMarker(new MarkerOptions().position(Locatie).title("Naam locatie").snippet("500").icon(BitmapDescriptorFactory.fromResource(R.drawable.coin_small)));
         }
     }
 
     private void everythingThatNeedsToHappenEvery3s(Long time) {
-        // Locatie doorsturen om de 3s
+
         int TimeCounter = (int) (time / 1000);
         if (TimeCounter % 3 == 0) {
             if (myTeam.newLocation != null) {
@@ -270,7 +278,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         dialog.show();
     }
 
-
     private void checkAnswer(int gekozenInd, int correctInd) {
         // Klopt de gekozen index met het correcte antwoord index
         if (gekozenInd == correctInd) {
@@ -319,7 +326,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-
     private void askQuestion() {
         // Instellen van een vraag en deze stellen + controleren
         // -------------------------------------------------------------------------------------
@@ -340,7 +346,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         // Instellen van een vraag en deze stellen + controleren
     }
 
-    void gameTimer() {
+    private void gameTimer() {
         String chosenGameTime = getIntent().getExtras().getString("gameTime");
         long millisStarted = Long.parseLong(getIntent().getExtras().getString("millisStarted"));
         int gameTimeInMillis = Integer.parseInt(chosenGameTime) * 3600000;
@@ -375,7 +381,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    void endGame() {
+    private void endGame() {
         Intent i = new Intent(GameActivity.this, EndGameActivity.class);
         if(myTeam != null)
             myTeam.stopConnection();
@@ -411,7 +417,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
                 @Override
                 public void onError() {
-
+                    Toast.makeText(GameActivity.this,"Er ging iets mis bij het opvragen van de teamtraces", Toast.LENGTH_SHORT);
                 }
             });
         }

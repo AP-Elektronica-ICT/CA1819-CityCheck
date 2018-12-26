@@ -22,7 +22,7 @@ public class IntersectCalculator {
      *  representing the end of the 2nd line.
      */
     public boolean doLineSegmentsIntersect(Locatie start, Locatie einde, Locatie anderTeamStart, Locatie anderTeamEinde) {
-        //convert Locatie naar PointF, Long is de y-as, Latis de x-as
+        //convert Locatie naar PointF, Long is de y-as, Lat is de x-as
         PointF p = new PointF((float)start.getLong(), (float)start.getLat());
         PointF p2 = new PointF((float)einde.getLong(), (float)einde.getLat());
         PointF q = new PointF((float)anderTeamStart.getLong(), (float)anderTeamStart.getLat());

@@ -81,7 +81,23 @@ namespace api_tests
 
 
         //Locatie opslaan op een team
+        public void setLoc()
+        {
 
+            //Arrange
+            int gameID = 3252;
+            string teamName = "mijnTeam";
+            int score = 50;
+
+
+            //Act
+            var createdResponse = tmController.setTeamScore(gameID, teamName, score);
+
+
+            //Assert
+            Assert.IsType<OkObjectResult>(createdResponse);
+
+        }
 
 
 

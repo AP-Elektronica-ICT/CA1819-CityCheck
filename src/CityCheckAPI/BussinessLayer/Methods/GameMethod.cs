@@ -99,7 +99,7 @@ namespace BussinessLayer.Methods
 
         public Game GetGame(int id)
     {
-        Game game = context.Games.Where(d => d.GameCode == id).Include(r => r.Teams).Single<Game>();
+        Game game = context.Games.Where(d => d.GameCode == id).Include(r => r.Teams).Include(r=>r.GameDoelen).ThenInclude(doel=>doel.Doel).Single<Game>();
         return game;
     }
 
@@ -127,7 +127,7 @@ namespace BussinessLayer.Methods
 
         public bool deleteGame(int id)
         {
-            Game game = context.Games.Where(d => d.GameCode == id).Include(gm => gm.Teams).ThenInclude(tm => tm.TeamTraces).SingleOrDefault<Game>();
+            Game game = context.Games.Where(d => d.GameCode == id).Include(gm => gm.Teams).ThenInclude(tm => tm.TeamTraces).Include(r => r.GameDoelen).ThenInclude(doel => doel.Doel).SingleOrDefault<Game>();
             if (game == null)
             {
                 return false;

@@ -166,6 +166,29 @@ namespace CityCheckAPI.Controllers
 
 
 
+        //Check game's locations claimed status
+
+
+        //Claim a location in a game
+        [HttpPost]
+        [Route("claimDoelLoc/{id}/{locid}")]
+        public IActionResult claimQuest(int id, int locid)
+        {
+            //id is de gameID
+
+            //returnObj maken
+            String rtrn = "Claimed";
+            StringReturn stringReturn = new StringReturn();
+            stringReturn.returnWaarde = rtrn;
+
+            var locClaimed = doelMethods.claimQuest(id, locid);
+            if (!locClaimed)
+                return NotFound();
+            else
+                return Ok(stringReturn);
+        }
+
+
 
 
 

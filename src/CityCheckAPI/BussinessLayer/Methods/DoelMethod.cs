@@ -208,5 +208,25 @@ namespace BussinessLayer.Methods
         }
 
 
+
+
+        public bool claimQuest(int id, int locid)
+        {
+            //id is de gameID
+
+            Game game = context.Games.Where(r => r.GameCode == id).Include(r=>r.GameDoelen).SingleOrDefault<Game>();
+            GameDoelen doel = game.GameDoelen.Where(r => r.Id == locid).SingleOrDefault<GameDoelen>();
+            if (doel != null)
+            {
+                doel.Claimed = true;
+                context.SaveChanges();
+                return true;
+            }
+            else
+                return false;
+
+        }
+
+
     }
 }

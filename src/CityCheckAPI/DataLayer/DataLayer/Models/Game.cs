@@ -10,6 +10,7 @@ namespace DataLayer
         public bool hasStarted { get; set; }
         public double millisStarted { get; set; }
         public List<Team> Teams { get; set; }
+        public List<DoelLocatie> Doelen { get; set; }
 
     }
 }

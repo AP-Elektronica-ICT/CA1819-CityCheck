@@ -43,6 +43,37 @@ namespace BussinessLayer.Methods
             newGame.GameCode = Int32.Parse(gameCodeStr);
             //random game code einde
 
+            //random doellocaties toevoegen aan de game
+
+            List<DoelLocatie> doelen = new List<DoelLocatie>();
+
+            List<DoelLocatie> alleLocs = context.DoelLocaties.ToList<DoelLocatie>();
+            int totaalLocs = alleLocs.Count();
+
+            int aantalTeZoekenLocs = newGame.TijdsDuur * 6; //6x10minuten per tijdsduur uren.
+            Random rndLocInd = new Random();
+            for (int i = 0; i < aantalTeZoekenLocs; i++)
+            {
+                int newIndex1;
+                int newIndex2;
+                int newIndex3;
+                do
+                {
+                    //Steeds 3 verschillende locaties
+                    newIndex1 = rndLocInd.Next(0, totaalLocs);
+                    newIndex2 = rndLocInd.Next(0, totaalLocs);
+                    newIndex3 = rndLocInd.Next(0, totaalLocs);
+                } while (newIndex1 == newIndex2 || newIndex1 == newIndex3 || newIndex2 == newIndex3);
+                
+                doelen.Add(alleLocs[newIndex1]);
+                doelen.Add(alleLocs[newIndex2]);
+                doelen.Add(alleLocs[newIndex3]);
+            }
+
+            newGame.Doelen = doelen;
+
+            //random doellocaties toevoegen aan de game
+
 
             context.Games.Add(newGame);
             context.SaveChanges();

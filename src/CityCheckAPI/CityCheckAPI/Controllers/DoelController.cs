@@ -167,6 +167,20 @@ namespace CityCheckAPI.Controllers
 
 
         //Check game's locations claimed status
+        [HttpGet]
+        [Route("checkClaims/{id}")]
+        public IActionResult checkClaims(int id)
+        {
+            //id is de game id
+
+            List<GameDoelen> claims = doelMethods.checkClaims(id);
+            if (claims != null)
+                return Ok(claims);
+            else
+                return NotFound();
+        }
+
+
 
 
         //Claim a location in a game

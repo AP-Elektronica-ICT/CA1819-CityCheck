@@ -228,5 +228,26 @@ namespace BussinessLayer.Methods
         }
 
 
+
+
+        public List<GameDoelen> checkClaims(int id)
+        {
+            //id is de game id
+            Game game = context.Games.Where(r => r.GameCode == id).Include(r => r.GameDoelen).SingleOrDefault<Game>();
+            List<GameDoelen> doelen = game.GameDoelen.ToList<GameDoelen>();
+            List<bool> claims = new List<bool>();
+
+            foreach (GameDoelen dl in doelen)
+            {
+                claims.Add(dl.Claimed);
+            }
+
+            if (claims != null)
+                return doelen;
+            else
+                return null;
+        }
+
+
     }
 }

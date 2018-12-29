@@ -70,11 +70,15 @@ namespace BussinessLayer.Methods
                 doelen.Add(alleLocs[newIndex3]);
             }
 
-            newGame.Doelen = doelen;
+            //Unieke gegenereerde lijst van doellocaties toevoegen aan de gameDoelen van de huidige game.
+            newGame.GameDoelen = new List<GameDoelen>();
+            foreach (DoelLocatie doelL in doelen)
+            {
+                GameDoelen tempDoel = new GameDoelen{ Doel = doelL, Claimed = false };
+                newGame.GameDoelen.Add(tempDoel);
+            }
 
-            //random doellocaties toevoegen aan de game
-
-
+            //doellocaties toevoegen aan de game
             context.Games.Add(newGame);
             context.SaveChanges();
             return newGame;

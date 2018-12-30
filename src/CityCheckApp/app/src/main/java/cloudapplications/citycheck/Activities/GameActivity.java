@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import cloudapplications.citycheck.APIService.NetworkManager;
 import cloudapplications.citycheck.APIService.NetworkResponseListener;
@@ -348,17 +349,26 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void gameTimer() {
         String chosenGameTime = getIntent().getExtras().getString("gameTime");
-        long millisStarted = Long.parseLong(getIntent().getExtras().getString("millisStarted"));
-        int gameTimeInMillis = Integer.parseInt(chosenGameTime) * 3600000;
+        long millisStarted = Long.parseLong(Objects.requireNonNull(getIntent().getExtras().getString("millisStarted")));
+        int gameTimeInMillis = Integer.parseInt(Objects.requireNonNull(chosenGameTime)) * 3600000;
+
         // Game die 10 seconden duurt om de EndGameActivity te testen
-        assert chosenGameTime != null;
         if (chosenGameTime.equals("4")) {
             gameTimeInMillis = 10000;
         }
-        final long timerMillis = gameTimeInMillis - (System.currentTimeMillis() - millisStarted);
-        progress = 0;
+
+        // Het verschil tussen de tijd van nu en de tijd van wanneer de game is gestart
+        long differenceFromMillisStarted = System.currentTimeMillis() - millisStarted;
+
+        // Hoe lang dat de timer moet doorlopen
+        long timerMillis = gameTimeInMillis - differenceFromMillisStarted;
+
+        // De progress begint op de juiste plek, dus niet altijd vanaf 0
+        progress = (int) ((gameTimeInMillis - timerMillis) / 1000);
+
         timerProgressBar.setProgress(progress);
         if (timerMillis > 0) {
+            final int finalGameTimeInMillis = gameTimeInMillis;
             new CountDownTimer(timerMillis, 1000) {
                 public void onTick(long millisUntilFinished) {
                     int seconds = (int) (millisUntilFinished / 1000) % 60;
@@ -367,7 +377,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     timerTextView.setText("Time remaining: " + hours + ":" + minutes + ":" + seconds);
                     everythingThatNeedsToHappenEvery3s(millisUntilFinished);
                     progress++;
-                    timerProgressBar.setProgress((int) (progress * 100 / (timerMillis / 1000)));
+                    timerProgressBar.setProgress(progress * 100 / (finalGameTimeInMillis / 1000));
                 }
 
                 public void onFinish() {
@@ -383,15 +393,14 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void endGame() {
         Intent i = new Intent(GameActivity.this, EndGameActivity.class);
-        if(myTeam != null)
+        if (myTeam != null)
             myTeam.stopConnection();
         i.putExtra("gameCode", Integer.toString(gamecode));
         startActivity(i);
     }
 
     private void calculateIntersect() {
-        if(myTeam.Traces.size()>4){
-
+        if (myTeam.Traces.size() > 4) {
             NetworkManager.getInstance().getAllTeamTraces(gamecode, new NetworkResponseListener<List<Team>>() {
                 @Override
                 public void onResponseReceived(List<Team> teams) {
@@ -399,17 +408,16 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     Locatie einde = myTeam.Traces.get(myTeam.Traces.size() - 1);
 
                     for (Team team : teams) {
-                        if (!team.getTeamNaam().equals(teamNaam)){
-                            Log.d("intersect", "size: "+team.getTeamTrace().size());
+                        if (!team.getTeamNaam().equals(teamNaam)) {
+                            Log.d("intersect", "size: " + team.getTeamTrace().size());
                             for (int i = 0; i < team.getTeamTrace().size(); i++) {
                                 if ((i + 1) < team.getTeamTrace().size()) {
                                     if (calc.doLineSegmentsIntersect(start, einde, team.getTeamTrace().get(i).getLocatie(), team.getTeamTrace().get(i + 1).getLocatie())) {
-                                        Log.d("intersect", team.getTeamNaam()+ " kruist");
+                                        Log.d("intersect", team.getTeamNaam() + " kruist");
                                         setScore(-5);
                                     } //else
-                                        //Log.d("intersect", team.getTeamNaam()+ " kruist niet");
+                                    //Log.d("intersect", team.getTeamNaam()+ " kruist niet");
                                 }
-
                             }
                         }
                     }
@@ -417,11 +425,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
                 @Override
                 public void onError() {
-                    Toast.makeText(GameActivity.this,"Er ging iets mis bij het opvragen van de teamtraces", Toast.LENGTH_SHORT);
+                    Toast.makeText(GameActivity.this, "Er ging iets mis bij het opvragen van de teamtraces", Toast.LENGTH_SHORT);
                 }
             });
         }
     }
-
-
 }

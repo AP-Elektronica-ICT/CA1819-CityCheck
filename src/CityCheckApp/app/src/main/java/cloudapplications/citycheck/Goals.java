@@ -10,7 +10,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import cloudapplications.citycheck.APIService.NetworkManager;
 import cloudapplications.citycheck.APIService.NetworkResponseListener;
@@ -24,13 +23,13 @@ public class Goals {
     private String TAG= "goals";
     private GoogleMap map;
     private SparseArray<Marker> markers;
-    private  Random r;
+    //private  Random r;
 
     public Goals(int gameId, GoogleMap kaart ){
         this.gameId=gameId;
         this.map = kaart;
 
-        r = new Random();
+        //r = new Random();
         markers = new SparseArray<Marker>();
         service = NetworkManager.getInstance();
         getGoals();
@@ -66,6 +65,10 @@ public class Goals {
 
     }
 
+    public void claimLocatie(){
+
+    }
+
     private void getGoals(){
         service.getCurrentGame(gameId, new NetworkResponseListener<Game>() {
             @Override
@@ -83,18 +86,19 @@ public class Goals {
     }
 
     private void placeMarker(int i){
-        LatLng loc = new LatLng((r.nextDouble()*(51.2500 - 50.1800) + 50.1800),(r.nextDouble()* (4.8025 - 4.0000) + 4.0000));
+        //LatLng loc = new LatLng((r.nextDouble()*(51.2500 - 50.1800) + 50.1800),(r.nextDouble()* (4.8025 - 4.0000) + 4.0000));
         Log.d(TAG, "add new locatio: " +goals.get(i).getDoel().getTitel());
         GameDoel locatie = goals.get(i);
         markers.append(locatie.getId(), map.addMarker(
                 new MarkerOptions()
                         .title(locatie.getDoel().getTitel())
-                        .position(loc)
-                        //.position(new LatLng(locatie.getDoel().getLocatie().getLat(), locatie.getDoel().getLocatie().getLong()))
+                        //.position(loc)
+                        .position(new LatLng(locatie.getDoel().getLocatie().getLat(), locatie.getDoel().getLocatie().getLong()))
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.coin_small))
                         .snippet("50")
         ));
     }
+
     private void removePreviousMarkers(){
         //delete previous marker locations
         if(markers.size() > 0){

@@ -23,14 +23,12 @@ public class Goals {
     private ArrayList<GameDoel> goals;
     private String TAG= "goals";
     private GoogleMap map;
-    private int teller;
     private SparseArray<Marker> markers;
     private  Random r;
 
     public Goals(int gameId, GoogleMap kaart ){
         this.gameId=gameId;
         this.map = kaart;
-        teller = 0;
 
         r = new Random();
         markers = new SparseArray<Marker>();
@@ -101,7 +99,7 @@ public class Goals {
         //delete previous marker locations
         if(markers.size() > 0){
             Log.d(TAG, "size markers to delete: "+markers.size());
-            //eerst size opslaan want die veranderd als je een element verwijderd uit de array
+            //eerst size opslaan want die veranderd als je een element delete uit de array
             int size = markers.size();
             for(int i = 0; i < size; i++){
                 Log.d(TAG, "marker to delete: "+i);
@@ -110,7 +108,7 @@ public class Goals {
                 markers.get(key).remove();
             }
         }
-        //markers uit array verwijderen
+        //voor de zekerheid array volledig clearen
         markers.clear();
     }
 

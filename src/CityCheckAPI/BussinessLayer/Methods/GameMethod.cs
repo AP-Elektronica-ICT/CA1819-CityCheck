@@ -47,7 +47,7 @@ namespace BussinessLayer.Methods
 
             List<DoelLocatie> doelen = new List<DoelLocatie>();
 
-            List<DoelLocatie> alleLocs = context.DoelLocaties.ToList<DoelLocatie>();
+            List<DoelLocatie> alleLocs = context.DoelLocaties.Include(r=>r.locatie).ToList<DoelLocatie>();
             int totaalLocs = alleLocs.Count();
 
             int aantalTeZoekenLocs = newGame.TijdsDuur * 6; //6x10minuten per tijdsduur uren.

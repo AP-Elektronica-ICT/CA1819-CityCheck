@@ -98,15 +98,20 @@ public class Goals {
         ));
     }
     private void removePreviousMarkers(){
+        //delete previous marker locations
         if(markers.size() > 0){
             Log.d(TAG, "size markers to delete: "+markers.size());
-            //delete previous marker locations
-            for(int j = 0; j < markers.size(); j++){
-                int key = markers.keyAt(j);
+            //eerst size opslaan want die veranderd als je een element verwijderd uit de array
+            int size = markers.size();
+            for(int i = 0; i < size; i++){
+                Log.d(TAG, "marker to delete: "+i);
+                int key = markers.keyAt(i);
+                //marker van kaart verwijderen
                 markers.get(key).remove();
-                markers.delete(key);
             }
         }
+        //markers uit array verwijderen
+        markers.clear();
     }
 
 }

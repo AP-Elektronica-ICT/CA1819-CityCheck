@@ -23,21 +23,20 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import cloudapplications.citycheck.APIService.NetworkManager;
 import cloudapplications.citycheck.APIService.NetworkResponseListener;
+import cloudapplications.citycheck.Goals;
 import cloudapplications.citycheck.IntersectCalculator;
 import cloudapplications.citycheck.Models.DoelLocation;
 import cloudapplications.citycheck.Models.Locatie;
-import cloudapplications.citycheck.Models.TeamTrace;
-import cloudapplications.citycheck.OtherTeams;
 import cloudapplications.citycheck.Models.Team;
 import cloudapplications.citycheck.Models.Vraag;
-import cloudapplications.citycheck.R;
 import cloudapplications.citycheck.MyTeam;
+import cloudapplications.citycheck.OtherTeams;
+import cloudapplications.citycheck.R;
 
 
 public class GameActivity extends FragmentActivity implements OnMapReadyCallback /*,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status>*/ {
@@ -45,6 +44,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap kaart;
     private MyTeam myTeam;
     private OtherTeams otherTeams;
+    private Goals goals;
     private NetworkManager service;
     private IntersectCalculator calc;
 
@@ -80,30 +80,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
         calc = new IntersectCalculator();
         service = NetworkManager.getInstance();
-
-        IntersectCalculator calc = new IntersectCalculator();
-        Team team = new Team("Bello", 456);
-        Locatie start = new Locatie(1f, 1f);
-        Locatie einde = new Locatie(3.8f, 3.5f);
-        ArrayList<TeamTrace> traces = new ArrayList<>();
-        traces.add(new TeamTrace(new Locatie(2f, 1f)));
-        traces.add(new TeamTrace(new Locatie(0f, 3f)));
-        traces.add(new TeamTrace(new Locatie(0.8f, 4.5f)));
-        traces.add(new TeamTrace(new Locatie(2f, 5f)));
-        traces.add(new TeamTrace(new Locatie(2f, 3f)));
-        traces.add(new TeamTrace(new Locatie(2f, 2f)));
-        traces.add(new TeamTrace(new Locatie(4f, 2f)));
-        team.setTeamTrace(traces);
-        for (int i = 0; i < team.getTeamTrace().size(); i++) {
-            Log.d("intersect", "" + i);
-            if ((i + 1) < team.getTeamTrace().size()) {
-                if (calc.doLineSegmentsIntersect(start, einde, team.getTeamTrace().get(i).getLocatie(), team.getTeamTrace().get(i + 1).getLocatie())) {
-                    Log.d("intersect", "de lijnen kruisen");
-                } else
-                    Log.d("intersect", "de lijnen kruisen niet");
-            }
-
-        }
 
         gamecode = Integer.parseInt(getIntent().getExtras().getString("gameCode"));
 
@@ -161,6 +137,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         otherTeams = new OtherTeams(gamecode, teamNaam, kaart, GameActivity.this);
         otherTeams.getTeamsOnMap();
 
+        //alles ivm doellocaties
+        goals = new Goals(gamecode, kaart);
     }
 
     @Override
@@ -193,7 +171,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 LatLng positie = new LatLng(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude());
                 kaart.moveCamera(CameraUpdateFactory.newLatLng(positie));
             }
-
             otherTeams.getTeamsOnMap();
         }
     }
@@ -376,6 +353,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     int hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
                     timerTextView.setText("Time remaining: " + hours + ":" + minutes + ":" + seconds);
                     everythingThatNeedsToHappenEvery3s(millisUntilFinished);
+                    getNewGoalsAfterInterval(finalGameTimeInMillis - millisUntilFinished);
                     progress++;
                     timerProgressBar.setProgress(progress * 100 / (finalGameTimeInMillis / 1000));
                 }
@@ -429,5 +407,13 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             });
         }
+    }
+
+    private void getNewGoalsAfterInterval(Long verstrekenTijd){
+        int tijd = (int)(verstrekenTijd/1000);
+
+        //nieuwe locaties elke 1 minuut om te testen, interval meegeven in seconden
+        goals.getNewGoals(tijd, 60);
+
     }
 }

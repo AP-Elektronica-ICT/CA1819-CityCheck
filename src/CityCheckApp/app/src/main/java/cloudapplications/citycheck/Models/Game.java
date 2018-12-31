@@ -31,6 +31,10 @@ public class Game {
     @Expose
     private ArrayList<Team> teams;
 
+    @SerializedName("gameDoelen")
+    @Expose
+    private ArrayList<GameDoel> gameDoelen;
+
     public Game(Integer tijdsDuur) {
         this.tijdsDuur = tijdsDuur;
     }
@@ -81,5 +85,13 @@ public class Game {
 
     public void setTeams(ArrayList<Team> teams) {
         this.teams = teams;
+    }
+
+    public ArrayList<GameDoel> getGameDoelen() {
+        return gameDoelen;
+    }
+
+    public void setGameDoelen(ArrayList<GameDoel> gameDoelen) {
+        this.gameDoelen = gameDoelen;
     }
 }

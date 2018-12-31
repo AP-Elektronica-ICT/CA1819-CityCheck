@@ -210,7 +210,7 @@ namespace BussinessLayer.Methods
 
 
 
-        public bool claimQuest(int id, int locid)
+        public bool claimLoc(int id, int locid)
         {
             //id is de gameID
 

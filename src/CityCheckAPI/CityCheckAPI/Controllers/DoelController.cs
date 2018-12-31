@@ -186,7 +186,7 @@ namespace CityCheckAPI.Controllers
         //Claim a location in a game
         [HttpPost]
         [Route("claimDoelLoc/{id}/{locid}")]
-        public IActionResult claimQuest(int id, int locid)
+        public IActionResult claimLoc(int id, int locid)
         {
             //id is de gameID
 
@@ -195,7 +195,7 @@ namespace CityCheckAPI.Controllers
             StringReturn stringReturn = new StringReturn();
             stringReturn.returnWaarde = rtrn;
 
-            var locClaimed = doelMethods.claimQuest(id, locid);
+            var locClaimed = doelMethods.claimLoc(id, locid);
             if (!locClaimed)
                 return NotFound();
             else

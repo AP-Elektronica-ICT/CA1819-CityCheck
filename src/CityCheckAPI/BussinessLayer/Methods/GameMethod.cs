@@ -99,7 +99,7 @@ namespace BussinessLayer.Methods
 
         public Game GetGame(int id)
     {
-        Game game = context.Games.Where(d => d.GameCode == id).Include(r => r.Teams).Include(r=>r.GameDoelen).ThenInclude(doel=>doel.Doel).Single<Game>();
+        Game game = context.Games.Where(d => d.GameCode == id).Include(r => r.Teams).Include(r=>r.GameDoelen).ThenInclude(doel=>doel.Doel).ThenInclude(loc => loc.locatie).Single<Game>();
         return game;
     }
 

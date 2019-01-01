@@ -96,4 +96,24 @@ export class DetailsComponent implements OnInit {
 
   }
 
+
+  public delQ(vraag:number){
+    this.data.delQuestion(this.location.id, vraag).subscribe(r=> {
+      if(r.returnWaarde == null){
+        alert("Er is iets fout gelopen");
+      } else
+      if(r.returnWaarde != ""){
+        //Deleted
+        this.refresh();
+      }
+    });
+  }
+
+
+  private refresh(){
+    this.data.getLocations(0,this.location.titel).subscribe(r=>{
+      this.location = r[0];
+    })
+  }
+
 }

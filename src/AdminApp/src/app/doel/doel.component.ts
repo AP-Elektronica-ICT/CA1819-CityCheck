@@ -59,7 +59,7 @@ export class DoelComponent implements OnInit {
     else{
       console.log("not logged in");
       //niet ingelogd, eerst inloggen.
-      //this.router.navigate([("/login")]);
+      this.router.navigate([("/login")]);
     }
 
     //eerste locaties ophalen

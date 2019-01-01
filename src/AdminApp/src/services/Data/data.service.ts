@@ -62,9 +62,9 @@ export class DataService {
 
 
   //Vraag bij een locatie toevoegen
-  postQuestion(id:number, vraag:Vraag): Observable<any> {
+  postQuestion(id:number, vraag:Vraag): Observable<stringReturn> {
 
-    return this._http.post<any>(this.url+"addDoelLocsQuestion/"+id,vraag)
+    return this._http.post<stringReturn>(this.url+"addDoelLocsQuestion/"+id,vraag)
     
   }
 

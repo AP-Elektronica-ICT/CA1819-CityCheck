@@ -26,7 +26,7 @@ public class GameCodeActivity extends AppCompatActivity {
     String currentGameCode;
     String currentGameTime;
 
-    String millisStarted;
+    long millisStarted;
 
     Boolean gotTeams;
     NetworkManager service;
@@ -92,8 +92,8 @@ public class GameCodeActivity extends AppCompatActivity {
         service.getCurrentGame(Integer.parseInt(currentGameCode), new NetworkResponseListener<Game>() {
             @Override
             public void onResponseReceived(Game game) {
-                millisStarted = String.valueOf(game.getMillisStarted());
                 if (game.getHasStarted()) {
+                    millisStarted = game.getMillisStarted();
                     startGame();
                 } else {
                     if (game.getTeams().size() != prevTeams.size()) {
@@ -128,7 +128,7 @@ public class GameCodeActivity extends AppCompatActivity {
         i.putExtra("gameTime", currentGameTime);
         i.putExtra("gameCode", currentGameCode);
         i.putExtra("teamNaam", getIntent().getExtras().getString("teamNaam"));
-        i.putExtra("millisStarted", millisStarted);
+        i.putExtra("millisStarted", String.valueOf(millisStarted));
 
         if (getIntent().getExtras().getBoolean("gameCreator"))
             i.putExtra("gameCreator", true);
@@ -139,8 +139,8 @@ public class GameCodeActivity extends AppCompatActivity {
     }
 
     private void creatorStartGame() {
-        millisStarted = String.valueOf(System.currentTimeMillis());
-        service.startGame(Integer.parseInt(currentGameCode), System.currentTimeMillis(), new NetworkResponseListener<Double>() {
+        millisStarted = System.currentTimeMillis();
+        service.startGame(Integer.parseInt(currentGameCode), millisStarted, new NetworkResponseListener<Double>() {
             @Override
             public void onResponseReceived(Double aDouble) {
                 startGame();
@@ -151,5 +151,9 @@ public class GameCodeActivity extends AppCompatActivity {
                 Toast.makeText(GameCodeActivity.this, "Error while trying to start the game", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 }

@@ -422,4 +422,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         goals.getNewGoals(tijd, 60);
 
     }
+
+    @Override
+    public void onBackPressed() {
+    }
 }

@@ -83,4 +83,8 @@ public class EndGameActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+    }
 }

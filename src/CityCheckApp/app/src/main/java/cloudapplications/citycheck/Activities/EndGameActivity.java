@@ -1,5 +1,6 @@
 package cloudapplications.citycheck.Activities;
 
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Objects;
 
 import cloudapplications.citycheck.APIService.NetworkManager;
 import cloudapplications.citycheck.APIService.NetworkResponseListener;
@@ -48,7 +50,17 @@ public class EndGameActivity extends AppCompatActivity {
                     }
                 });
                 endListView.setAdapter(new TeamsAdapter(getApplicationContext(), teamsList));
-                deleteGame();
+
+                // Verwijder de game na 5 seconden (door de game creator)
+                if (Objects.requireNonNull(getIntent().getExtras()).getBoolean("gameCreator")) {
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            deleteGame();
+                        }
+                    }, 5000);
+                }
             }
 
             @Override

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import cloudapplications.citycheck.APIService.NetworkManager;
 import cloudapplications.citycheck.APIService.NetworkResponseListener;
@@ -86,6 +88,7 @@ public class GameCodeActivity extends AppCompatActivity {
     }
 
     private void getTeams() {
+        handler.postDelayed(runnable, 3000);
         service.getCurrentGame(Integer.parseInt(currentGameCode), new NetworkResponseListener<Game>() {
             @Override
             public void onResponseReceived(Game game) {
@@ -93,7 +96,6 @@ public class GameCodeActivity extends AppCompatActivity {
                 if (game.getHasStarted()) {
                     startGame();
                 } else {
-                    handler.postDelayed(runnable, 3000);
                     if (game.getTeams().size() != prevTeams.size()) {
                         prevTeams = game.getTeams();
                         if (gotTeams) {
@@ -127,6 +129,12 @@ public class GameCodeActivity extends AppCompatActivity {
         i.putExtra("gameCode", currentGameCode);
         i.putExtra("teamNaam", getIntent().getExtras().getString("teamNaam"));
         i.putExtra("millisStarted", millisStarted);
+
+        if (getIntent().getExtras().getBoolean("gameCreator"))
+            i.putExtra("gameCreator", true);
+        else
+            i.putExtra("gameCreator", false);
+
         startActivity(i);
     }
 

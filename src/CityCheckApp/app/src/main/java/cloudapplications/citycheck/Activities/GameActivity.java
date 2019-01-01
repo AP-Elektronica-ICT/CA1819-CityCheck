@@ -373,6 +373,12 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         Intent i = new Intent(GameActivity.this, EndGameActivity.class);
         if (myTeam != null)
             myTeam.stopConnection();
+
+        if (Objects.requireNonNull(getIntent().getExtras()).getBoolean("gameCreator"))
+            i.putExtra("gameCreator", true);
+        else
+            i.putExtra("gameCreator", false);
+
         i.putExtra("gameCode", Integer.toString(gamecode));
         startActivity(i);
     }
@@ -409,8 +415,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void getNewGoalsAfterInterval(Long verstrekenTijd){
-        int tijd = (int)(verstrekenTijd/1000);
+    private void getNewGoalsAfterInterval(Long verstrekenTijd) {
+        int tijd = (int) (verstrekenTijd / 1000);
 
         //nieuwe locaties elke 1 minuut om te testen, interval meegeven in seconden
         goals.getNewGoals(tijd, 60);

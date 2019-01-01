@@ -63,6 +63,7 @@ hr {
     background-color: rgba(255,255,255,0.5);
     -moz-border-bottom-colors: none;
     -moz-border-image: none;
+    border-image: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
     -moz-border-top-colors: none;
@@ -110,4 +111,17 @@ hr {
       font-weight: bold;
       text-decoration: underline;
       color: green;
+      background-color: lightgray;
+  }
+
+
+  .vraagRows{
+      color: black;
+  }
+
+
+  .delQBtn{
+      float: right;
+      height: 40px;
+      
   }

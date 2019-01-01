@@ -62,9 +62,17 @@ export class DataService {
 
 
   //Vraag bij een locatie toevoegen
-  postQuestion(id:number, vraag:Vraag): Observable<any> {
+  postQuestion(id:number, vraag:Vraag): Observable<stringReturn> {
 
-    return this._http.post<any>(this.url+"addDoelLocsQuestion/"+id,vraag)
+    return this._http.post<stringReturn>(this.url+"addDoelLocsQuestion/"+id,vraag)
+    
+  }
+
+
+  //Vraag bij een locatie verwijderen
+  delQuestion(id:number, vid:number): Observable<stringReturn> {
+
+    return this._http.delete<stringReturn>(this.url+"dellDoelLocsQuestion/"+id+"/"+vid)
     
   }
 
@@ -95,4 +103,9 @@ export class DataService {
     id: number;
     lat: number;
     long: number;
+  }
+
+
+  export interface stringReturn {
+    returnWaarde: string;
   }

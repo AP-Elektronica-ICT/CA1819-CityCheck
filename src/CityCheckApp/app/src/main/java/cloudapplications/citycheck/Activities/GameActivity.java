@@ -399,6 +399,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                                     if (calc.doLineSegmentsIntersect(start, einde, team.getTeamTrace().get(i).getLocatie(), team.getTeamTrace().get(i + 1).getLocatie())) {
                                         Log.d("intersect", team.getTeamNaam() + " kruist");
                                         setScore(-5);
+                                        Toast.makeText(GameActivity.this, "Oh oohw you crossed another team's path, bye bye 5 points", Toast.LENGTH_SHORT).show();
                                     } //else
                                     //Log.d("intersect", team.getTeamNaam()+ " kruist niet");
                                 }

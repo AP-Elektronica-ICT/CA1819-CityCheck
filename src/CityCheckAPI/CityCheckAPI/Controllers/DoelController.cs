@@ -82,11 +82,16 @@ namespace CityCheckAPI.Controllers
         public IActionResult delLoc(int id)
         {
 
+            //returnObj maken
+            String rtrn = "Deleted";
+            StringReturn stringReturn = new StringReturn();
+            stringReturn.returnWaarde = rtrn;
+
             var doelDeleted= doelMethods.delLoc(id);
             if (!doelDeleted)
                 return NotFound();
             else
-                return Ok("Deleted");
+                return Ok(stringReturn);
         }
 
 
@@ -97,11 +102,16 @@ namespace CityCheckAPI.Controllers
         {
             //id is de id van de doellocatie
 
+            //returnObj maken
+            String rtrn = "Created";
+            StringReturn stringReturn = new StringReturn();
+            stringReturn.returnWaarde = rtrn;
+
             var questAdded = doelMethods.addQuest(newVraag, id);
             if (!questAdded)
                 return NotFound();
             else
-                return Ok("Created");
+                return Ok(stringReturn);
         }
 
 
@@ -120,6 +130,26 @@ namespace CityCheckAPI.Controllers
         }
 
 
+        //delete question on location
+        [HttpDelete]
+        [Route("dellDoelLocsQuestion/{id}/{vid}")]
+        public IActionResult delQuest(int id, int vid)
+        {
+            //id is de id van de doellocatie
+
+            //returnObj maken
+            String rtrn = "Deleted";
+            StringReturn stringReturn = new StringReturn();
+            stringReturn.returnWaarde = rtrn;
+
+            var questDeleted = doelMethods.delQuest(id, vid);
+            if (!questDeleted)
+                return NotFound();
+            else
+                return Ok(stringReturn);
+        }
+
+
         //get 1 random questions at 1 loc
         [HttpGet]
         [Route("LocQuest/{id}")]
@@ -134,6 +164,43 @@ namespace CityCheckAPI.Controllers
                 return NotFound();
         }
 
+
+
+        //Check game's locations claimed status
+        [HttpGet]
+        [Route("checkClaims/{id}")]
+        public IActionResult checkClaims(int id)
+        {
+            //id is de game id
+
+            List<GameDoelen> claims = doelMethods.checkClaims(id);
+            if (claims != null)
+                return Ok(claims);
+            else
+                return NotFound();
+        }
+
+
+
+
+        //Claim a location in a game
+        [HttpPost]
+        [Route("claimDoelLoc/{id}/{locid}")]
+        public IActionResult claimLoc(int id, int locid)
+        {
+            //id is de gameID
+
+            //returnObj maken
+            String rtrn = "Claimed";
+            StringReturn stringReturn = new StringReturn();
+            stringReturn.returnWaarde = rtrn;
+
+            var locClaimed = doelMethods.claimLoc(id, locid);
+            if (!locClaimed)
+                return NotFound();
+            else
+                return Ok(stringReturn);
+        }
 
 
 

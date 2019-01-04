@@ -43,7 +43,42 @@ namespace BussinessLayer.Methods
             newGame.GameCode = Int32.Parse(gameCodeStr);
             //random game code einde
 
+            //random doellocaties toevoegen aan de game
 
+            List<DoelLocatie> doelen = new List<DoelLocatie>();
+
+            List<DoelLocatie> alleLocs = context.DoelLocaties.Include(r=>r.locatie).ToList<DoelLocatie>();
+            int totaalLocs = alleLocs.Count();
+
+            int aantalTeZoekenLocs = newGame.TijdsDuur * 6; //6x10minuten per tijdsduur uren.
+            Random rndLocInd = new Random();
+            for (int i = 0; i < aantalTeZoekenLocs; i++)
+            {
+                int newIndex1;
+                int newIndex2;
+                int newIndex3;
+                do
+                {
+                    //Steeds 3 verschillende locaties
+                    newIndex1 = rndLocInd.Next(0, totaalLocs);
+                    newIndex2 = rndLocInd.Next(0, totaalLocs);
+                    newIndex3 = rndLocInd.Next(0, totaalLocs);
+                } while (newIndex1 == newIndex2 || newIndex1 == newIndex3 || newIndex2 == newIndex3);
+                
+                doelen.Add(alleLocs[newIndex1]);
+                doelen.Add(alleLocs[newIndex2]);
+                doelen.Add(alleLocs[newIndex3]);
+            }
+
+            //Unieke gegenereerde lijst van doellocaties toevoegen aan de gameDoelen van de huidige game.
+            newGame.GameDoelen = new List<GameDoelen>();
+            foreach (DoelLocatie doelL in doelen)
+            {
+                GameDoelen tempDoel = new GameDoelen{ Doel = doelL, Claimed = false };
+                newGame.GameDoelen.Add(tempDoel);
+            }
+
+            //doellocaties toevoegen aan de game
             context.Games.Add(newGame);
             context.SaveChanges();
             return newGame;
@@ -64,7 +99,7 @@ namespace BussinessLayer.Methods
 
         public Game GetGame(int id)
     {
-        Game game = context.Games.Where(d => d.GameCode == id).Include(r => r.Teams).Single<Game>();
+        Game game = context.Games.Where(d => d.GameCode == id).Include(r => r.Teams).Include(r=>r.GameDoelen).ThenInclude(doel=>doel.Doel).ThenInclude(loc => loc.locatie).Single<Game>();
         return game;
     }
 
@@ -92,7 +127,7 @@ namespace BussinessLayer.Methods
 
         public bool deleteGame(int id)
         {
-            Game game = context.Games.Where(d => d.GameCode == id).Include(gm => gm.Teams).ThenInclude(tm => tm.TeamTraces).SingleOrDefault<Game>();
+            Game game = context.Games.Where(d => d.GameCode == id).Include(gm => gm.Teams).ThenInclude(tm => tm.TeamTraces).Include(r => r.GameDoelen).ThenInclude(doel => doel.Doel).SingleOrDefault<Game>();
             if (game == null)
             {
                 return false;

@@ -53,7 +53,7 @@ namespace BussinessLayer.Methods
 
         public List<Team> getTeams(int gameId)
         {
-            var game = context.Games.Include(r => r.Teams).Where(d => d.GameCode == gameId).Single<Game>();
+            var game = context.Games.Include(r => r.Teams).ThenInclude(huidige => huidige.huidigeLocatie).Include(r => r.Teams).ThenInclude(trace => trace.TeamTraces).ThenInclude(loc=> loc.trace).Where(d => d.GameCode == gameId).Single<Game>();
             List<Team> teams = game.Teams;
             if (game == null)
                 return null;
@@ -154,7 +154,7 @@ namespace BussinessLayer.Methods
         {
             //id is de gamecode
 
-            Game game = context.Games.Include(r => r.Teams).ThenInclude(y=>y.TeamTraces).Where(d => d.GameCode == id).Single<Game>();
+            var game = context.Games.Include(r => r.Teams).ThenInclude(huidige => huidige.huidigeLocatie).Include(r => r.Teams).ThenInclude(trace => trace.TeamTraces).ThenInclude(loc => loc.trace).Where(d => d.GameCode == id).Single<Game>();
             List<Team> teams = game.Teams;
 
 
@@ -202,7 +202,7 @@ namespace BussinessLayer.Methods
             //id is de gamecode
 
             Game game = context.Games.Include(r => r.Teams).Where(d => d.GameCode == id).Single<Game>();
-            Team team = game.Teams.Where(r => r.TeamNaam == teamName).Single<Team>();
+            Team team = game.Teams.Where(r => r.TeamNaam == teamName).FirstOrDefault<Team>();
             int score = team.Punten;
 
 
@@ -223,7 +223,7 @@ namespace BussinessLayer.Methods
             //id is de gamecode
 
             Game game = context.Games.Include(r => r.Teams).Where(d => d.GameCode == id).Single<Game>();
-            Team team = game.Teams.Where(r => r.TeamNaam == teamName).Single<Team>();
+            Team team = game.Teams.Where(r => r.TeamNaam == teamName).FirstOrDefault<Team>();
             int score = team.Punten;
 
 
@@ -231,7 +231,7 @@ namespace BussinessLayer.Methods
                 return false;
             else
             {
-                score = newScore;
+                team.Punten = newScore;
                 context.SaveChanges();
                 return true;
             }

@@ -150,6 +150,41 @@ namespace BussinessLayer.Methods
         }
 
 
+        public bool delQuest(int id, int vid)
+        {
+            //id is de id van de doellocatie
+
+
+            DoelLocatie doel = null;
+            Vraag vraag = null;
+            List<Antwoord> antwoorden = null;
+
+
+            try
+            {
+                doel = context.DoelLocaties.Include(vr => vr.Vragen).ThenInclude(antw => antw.Antwoorden).Where(whr => whr.Id == id).Single<DoelLocatie>();
+                vraag = doel.Vragen.Where(r => r.Id == vid).Single<Vraag>();
+                antwoorden = vraag.Antwoorden;
+            }
+            catch
+            {
+                Console.WriteLine("Geen Content");
+            }
+
+            if (vraag != null)
+            {
+
+                context.Antwoorden.RemoveRange(antwoorden);
+                context.Vragen.Remove(vraag);
+                context.SaveChanges();
+
+                return (true);
+            }
+            else {
+                return (false);
+            }
+        }
+
 
         public Vraag getALocQuest(int id)
         {
@@ -168,6 +203,47 @@ namespace BussinessLayer.Methods
             Vraag vraag = vragen[randomVraagPos];
             if (vraag != null)
                 return vraag;
+            else
+                return null;
+        }
+
+
+
+
+        public bool claimLoc(int id, int locid)
+        {
+            //id is de gameID
+
+            Game game = context.Games.Where(r => r.GameCode == id).Include(r=>r.GameDoelen).SingleOrDefault<Game>();
+            GameDoelen doel = game.GameDoelen.Where(r => r.Id == locid).SingleOrDefault<GameDoelen>();
+            if (doel != null)
+            {
+                doel.Claimed = true;
+                context.SaveChanges();
+                return true;
+            }
+            else
+                return false;
+
+        }
+
+
+
+
+        public List<GameDoelen> checkClaims(int id)
+        {
+            //id is de game id
+            Game game = context.Games.Where(r => r.GameCode == id).Include(r => r.GameDoelen).SingleOrDefault<Game>();
+            List<GameDoelen> doelen = game.GameDoelen.ToList<GameDoelen>();
+            List<bool> claims = new List<bool>();
+
+            foreach (GameDoelen dl in doelen)
+            {
+                claims.Add(dl.Claimed);
+            }
+
+            if (claims != null)
+                return doelen;
             else
                 return null;
         }

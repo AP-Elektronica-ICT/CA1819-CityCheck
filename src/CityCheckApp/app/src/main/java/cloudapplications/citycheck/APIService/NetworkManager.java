@@ -4,6 +4,7 @@ import java.util.List;
 
 import cloudapplications.citycheck.Models.Game;
 import cloudapplications.citycheck.Models.Locatie;
+import cloudapplications.citycheck.Models.StringReturn;
 import cloudapplications.citycheck.Models.Team;
 import cloudapplications.citycheck.Models.Vraag;
 import retrofit2.Retrofit;
@@ -82,8 +83,13 @@ public class NetworkManager {
         api.getScoreTeam(gameId, teamNaam).enqueue(new NetworkResponse<Integer>(listener));
     }
 
-    // TODO: Alle doellocatie calls
+    //Doellocatie calls
     public void getDoelLocatieVraag(int doelLocatieId, NetworkResponseListener<Vraag> listener) {
         api.getDoelLocatieVraag(doelLocatieId).enqueue(new NetworkResponse<Vraag>(listener));
+    }
+
+
+    public void claimDoelLocatie(int gameId, int locId, NetworkResponseListener<StringReturn> listener) {
+        api.claimDoelLocatie(gameId, locId).enqueue(new NetworkResponse<StringReturn>(listener));
     }
 }

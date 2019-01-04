@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import cloudapplications.citycheck.APIService.NetworkManager;
 import cloudapplications.citycheck.APIService.NetworkResponseListener;
+import cloudapplications.citycheck.Models.DoelLocation;
 import cloudapplications.citycheck.Models.Game;
 import cloudapplications.citycheck.Models.GameDoel;
 
@@ -20,6 +21,7 @@ public class Goals {
     private NetworkManager service;
     private int gameId;
     private ArrayList<GameDoel> goals;
+    public ArrayList<GameDoel> currentGoals;
     private String TAG= "goals";
     private GoogleMap map;
     private SparseArray<Marker> markers;
@@ -46,6 +48,18 @@ public class Goals {
                 if(!(interval == 0 && markers.size() > 0)){
                     removePreviousMarkers();
 
+                    //Huidige doelen instellen
+                    currentGoals = new ArrayList<GameDoel>();
+                    for (int i = interval; i<interval+3;i++){
+                        currentGoals.add(goals.get(i));
+                    }
+                    /*
+                    Log.d("mynewlocs", currentGoals.get(0).getDoel().getTitel());
+                    Log.d("mynewlocs", currentGoals.get(1).getDoel().getTitel());
+                    Log.d("mynewlocs", currentGoals.get(2).getDoel().getTitel());
+                    */
+
+
                     //add 3 new location markers
                     for(int i=(interval*3); i < ((interval*3)+3); i++){
                         if(i< goals.size()){
@@ -65,10 +79,6 @@ public class Goals {
 
     }
 
-    public void claimLocatie(){
-
-    }
-
     private void getGoals(){
         service.getCurrentGame(gameId, new NetworkResponseListener<Game>() {
             @Override
@@ -76,6 +86,13 @@ public class Goals {
                 //Log.d(TAG, ""+ Arrays.toString(game.getGameDoelen().toArray()));
                 goals = game.getGameDoelen();
                 Log.d(TAG, "size: " + goals.size());
+
+                //Huidige doelen instellen
+                currentGoals = new ArrayList<GameDoel>();
+                for (int i = 0; i<3;i++){
+                    currentGoals.add(goals.get(i));
+                }
+
             }
 
             @Override

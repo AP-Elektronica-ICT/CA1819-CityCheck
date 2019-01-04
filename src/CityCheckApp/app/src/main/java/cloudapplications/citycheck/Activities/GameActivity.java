@@ -23,6 +23,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,8 +31,10 @@ import cloudapplications.citycheck.APIService.NetworkManager;
 import cloudapplications.citycheck.APIService.NetworkResponseListener;
 import cloudapplications.citycheck.Goals;
 import cloudapplications.citycheck.IntersectCalculator;
+import cloudapplications.citycheck.Models.Antwoord;
 import cloudapplications.citycheck.Models.DoelLocation;
 import cloudapplications.citycheck.Models.Locatie;
+import cloudapplications.citycheck.Models.StringReturn;
 import cloudapplications.citycheck.Models.Team;
 import cloudapplications.citycheck.Models.Vraag;
 import cloudapplications.citycheck.MyTeam;
@@ -41,6 +44,7 @@ import cloudapplications.citycheck.R;
 
 public class GameActivity extends FragmentActivity implements OnMapReadyCallback /*,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status>*/ {
 
+    //Kaart vars
     private GoogleMap kaart;
     private MyTeam myTeam;
     private OtherTeams otherTeams;
@@ -63,6 +67,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     int correctAntwoordIndex;
     int gekozenAntwoordIndex;
 
+    //timer vars
     private TextView timerTextView;
     private ProgressBar timerProgressBar;
     private int progress;
@@ -103,7 +108,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         teamNameTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                askQuestion();
+                claimLocatie(1, 1);
             }
         });
 
@@ -173,47 +178,37 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             }
             otherTeams.getTeamsOnMap();
         }
+
+
+        //Controleren op doellocatie triggers om te kunnen claimen
+
+        //Huidige locaties van de doelen ophalen
+        if(goals.currentGoals != null && myTeam.Traces.size() > 0) {
+            Locatie loc1 = goals.currentGoals.get(0).getDoel().getLocatie();
+            LatLng loc1ltln = new LatLng(loc1.getLat(), loc1.getLong());
+            Locatie loc2 = goals.currentGoals.get(1).getDoel().getLocatie();
+            LatLng loc2ltln = new LatLng(loc2.getLat(), loc2.getLong());
+            Locatie loc3 = goals.currentGoals.get(2).getDoel().getLocatie();
+            LatLng loc3ltln = new LatLng(loc3.getLat(), loc3.getLong());
+
+            //Mijn huidige locatie ophalen
+            int tempTraceSize = myTeam.Traces.size();
+            double tempLat = myTeam.Traces.get(tempTraceSize - 1).getLat();
+            double tempLong = myTeam.Traces.get(tempTraceSize - 1).getLong();
+            LatLng currentLocTeam = new LatLng(tempLat, tempLong);
+
+            //Kijken of er een hit is
+            //TODO: hit checken
+
+        }
+
     }
 
     private void setMultiChoice(final String[] antwoorden, int CorrectIndex, String vraag) {
         // Alertdialog aanmaken
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
 
-        // String array for alert dialog multi choice items
-//        String[] antwoorden = new String[]{
-//                "Antwoord1",
-//                "Antwoord2",
-//                "Antwoord3"
-//        };
-
-        // Boolean array for initial selected items
-        final boolean[] checkedAntw = new boolean[]{
-                false, // Antwoord1
-                false, // Antwoord2
-                false, // Antwoord3
-        };
-
-        // Convert the color array to list
-        // final List<String> AntwList = Arrays.asList(antwoorden);
-
-        /*
-        builder.setMultiChoiceItems(antwoorden, checkedAntw, new DialogInterface.OnMultiChoiceClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-
-                // Update the current focused item's checked status
-                checkedAntw[which] = isChecked;
-
-                // Get the current focused item
-                String currentItem = AntwList.get(which);
-
-                // Notify the current action
-                Toast.makeText(getApplicationContext(),
-                        currentItem + " " + isChecked, Toast.LENGTH_SHORT).show();
-            }
-        });
-        */
-
+        //Single choice dialog met de antwoorden
         builder.setSingleChoiceItems(antwoorden, -1, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -243,14 +238,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        // Set the neutral/cancel button click listener
-        //builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-        //@Override
-        //public void onClick(DialogInterface dialog, int which) {
-        // Do something when click the neutral button
-        //}
-        //});
-
         AlertDialog dialog = builder.create();
         // Display the alert dialog on interface
         dialog.show();
@@ -263,34 +250,17 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
             // X aantal punten toevoegen bij de gebruiker
             // Nieuwe score tonen en doorpushen naar de db
-            setScore(10);
+            setScore(20);
         } else {
-            Toast.makeText(GameActivity.this, "Helaas! Volgende keer beter", Toast.LENGTH_LONG).show();
+            Toast.makeText(GameActivity.this, "Helaas!", Toast.LENGTH_LONG).show();
+            setScore(5);
         }
     }
 
-    // TODO: call wordt niet gebruikt
-    private void getRandomQuestion(int id) {
-        // Id is de doellocatie id
-        service.getDoelLocatieVraag(id, new NetworkResponseListener<Vraag>() {
-            @Override
-            public void onResponseReceived(Vraag vraag) {
-                // TODO: response verwerken
-            }
-
-            @Override
-            public void onError() {
-                Toast.makeText(GameActivity.this, "Error while trying to get the questions", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    // TODO: deze call werkt niet (ligt aan de backend)
     private void setScore(int newScore) {
         score += newScore;
         scoreTextView.setText(String.valueOf(score));
 
-        // TODO: Nieuwe score doorpushen naar de API
         service.setTeamScore(gamecode, teamNaam, score, new NetworkResponseListener<Boolean>() {
             @Override
             public void onResponseReceived(Boolean aBoolean) {
@@ -304,24 +274,86 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+
+    public void claimLocatie(final int locId, final int doellocID){
+    //locid => gamelocaties ID, doellocID => id van de daadwerkelijke doellocatie
+
+        //Een team een locatie laten claimen als ze op deze plek zijn.
+            service.claimDoelLocatie(gamecode, locId, new NetworkResponseListener<StringReturn>() {
+                @Override
+                public void onResponseReceived(StringReturn rtrn) {
+                    //response verwerken
+                    try {
+                    String waarde = rtrn.getWaarde();
+                    Toast.makeText(GameActivity.this, waarde, Toast.LENGTH_SHORT).show();
+                    } catch (Throwable err){
+                        Toast.makeText(GameActivity.this, "Error while trying to claim the location", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onError() {
+                    Toast.makeText(GameActivity.this, "Error while trying to claim the location", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+        //Dialog tonen met de vraag claim of bonus vraag
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Claimen of bonus vraag(risico) oplossen?")
+                //niet cancel-baar
+                .setCancelable(false)
+                .setPositiveButton("Claim", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //de location alleen claimen zonder bonusvraag
+                        setScore(10);
+                    }
+                })
+                .setNegativeButton("Bonus vraag", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        //Random vraag bij deze locatie ophalen uit de backend
+                        service.getDoelLocatieVraag(doellocID, new NetworkResponseListener<Vraag>() {
+                            @Override
+                            public void onResponseReceived(Vraag newVraag) {
+                                //response verwerken
+
+                                //Vraagtitel bewaren
+                                String vra = newVraag.getVraagZin();
+                                vraag = vra;
+                                //3 Antwoorden bewaren
+                                ArrayList<Antwoord> allAnswers = newVraag.getAntwoorden();
+                                antwoorden = new String[3];
+                                for (int i=0;i<3;i++){
+                                    antwoorden[i] = allAnswers.get(i).getAntwoordzin();
+                                    if(allAnswers.get(i).isCorrectBool()){
+                                        correctAntwoordIndex =  i;
+                                    }
+                                }
+
+                                //Vraag stellen
+                                askQuestion();
+                            }
+
+                            @Override
+                            public void onError() {
+                                Toast.makeText(GameActivity.this, "Error while trying to get the question", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+
+    }
+
     private void askQuestion() {
         // Instellen van een vraag en deze stellen + controleren
-        // -------------------------------------------------------------------------------------
-        // Antwoorden instellen
-        antwoorden = new String[]{
-                "10",
-                "20",
-                "30"
-        };
-        // Vraag instellen
-        vraag = "Hoeveel bla bla?";
 
-        // Antwoord instellen 0,1 of 2
-        correctAntwoordIndex = 2;
         // Vraag tonen
         setMultiChoice(antwoorden, correctAntwoordIndex, vraag);
-        // -------------------------------------------------------------------------------------
-        // Instellen van een vraag en deze stellen + controleren
+
     }
 
     private void gameTimer() {

@@ -4,6 +4,7 @@ import java.util.List;
 
 import cloudapplications.citycheck.Models.Game;
 import cloudapplications.citycheck.Models.Locatie;
+import cloudapplications.citycheck.Models.StringReturn;
 import cloudapplications.citycheck.Models.Team;
 import cloudapplications.citycheck.Models.Vraag;
 import retrofit2.Call;
@@ -50,7 +51,10 @@ public interface CityCheckApiInterface {
     @POST("teams/{id}/{teamname}/setmyscore/{newscore}")
     Call<Boolean> setTeamScore(@Path("id") int id, @Path("teamname") String teamname, @Path("newscore") int newscore);
 
-    // TODO: Doellocatie calls
+    //Doellocatiecalls
     @GET("locquest/{id}")
     Call<Vraag> getDoelLocatieVraag(@Path("id") int id);
+
+    @POST("claimDoelLoc/{id}/{locid}")
+    Call<StringReturn> claimDoelLocatie(@Path("id") int id, @Path("locid") int locid);
 }

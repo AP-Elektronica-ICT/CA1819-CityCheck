@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.ActivityCompat;
@@ -66,6 +67,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     String vraag;
     int correctAntwoordIndex;
     int gekozenAntwoordIndex;
+    boolean isClaiming;
 
     //timer vars
     private TextView timerTextView;
@@ -92,6 +94,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         scoreTextView = findViewById(R.id.text_view_points);
         score = 0;
         setScore(30);
+
+        //Claiming naar false
+        isClaiming = false;
 
         // Teamnaam txt view
         teamNameTextView = findViewById(R.id.text_view_team_name);
@@ -183,22 +188,67 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         //Controleren op doellocatie triggers om te kunnen claimen
 
         //Huidige locaties van de doelen ophalen
-        if(goals.currentGoals != null && myTeam.Traces.size() > 0) {
+        if(goals.currentGoals != null && myTeam.Traces.size() > 0 && !isClaiming) {
             Locatie loc1 = goals.currentGoals.get(0).getDoel().getLocatie();
-            LatLng loc1ltln = new LatLng(loc1.getLat(), loc1.getLong());
             Locatie loc2 = goals.currentGoals.get(1).getDoel().getLocatie();
-            LatLng loc2ltln = new LatLng(loc2.getLat(), loc2.getLong());
             Locatie loc3 = goals.currentGoals.get(2).getDoel().getLocatie();
-            LatLng loc3ltln = new LatLng(loc3.getLat(), loc3.getLong());
 
             //Mijn huidige locatie ophalen
             int tempTraceSize = myTeam.Traces.size();
             double tempLat = myTeam.Traces.get(tempTraceSize - 1).getLat();
             double tempLong = myTeam.Traces.get(tempTraceSize - 1).getLong();
-            LatLng currentLocTeam = new LatLng(tempLat, tempLong);
 
             //Kijken of er een hit is
-            //TODO: hit checken
+            float[] afstandResult;
+            float treshHoldAfstand = 50; //(meter)
+
+
+            //Locatie 1 check
+            //Afstand berekenen tussen de doellocatie en de huidige locatie in meters
+            afstandResult = new float[1];
+            Location.distanceBetween(loc1.getLat(),loc1.getLong(),tempLat,tempLong, afstandResult);
+            if(afstandResult[0] < treshHoldAfstand){
+                //GameDoelID en doellocID ophalen
+                int GD = goals.currentGoals.get(0).getId();
+                int LC = goals.currentGoals.get(0).getDoel().getId();
+
+                //Locatie claim triggeren
+                claimLocatie(GD,LC);
+                //Claimen instellen zolang we bezig zijn met claimen
+                isClaiming = true;
+            }
+
+
+            //Locatie 2 check
+            //Afstand berekenen tussen de doellocatie en de huidige locatie in meters
+            afstandResult = new float[1];
+            Location.distanceBetween(loc2.getLat(),loc2.getLong(),tempLat,tempLong, afstandResult);
+            if(afstandResult[0] < treshHoldAfstand){
+                //GameDoelID en doellocID ophalen
+                int GD = goals.currentGoals.get(1).getId();
+                int LC = goals.currentGoals.get(1).getDoel().getId();
+
+                //Locatie claim triggeren
+                claimLocatie(GD,LC);
+                //Claimen instellen zolang we bezig zijn met claimen
+                isClaiming = true;
+            }
+
+
+            //Locatie 3 check
+            //Afstand berekenen tussen de doellocatie en de huidige locatie in meters
+            afstandResult = new float[1];
+            Location.distanceBetween(loc3.getLat(),loc3.getLong(),tempLat,tempLong, afstandResult);
+            if(afstandResult[0] < treshHoldAfstand){
+                //GameDoelID en doellocID ophalen
+                int GD = goals.currentGoals.get(2).getId();
+                int LC = goals.currentGoals.get(2).getDoel().getId();
+
+                //Locatie claim triggeren
+                claimLocatie(GD,LC);
+                //Claimen instellen zolang we bezig zijn met claimen
+                isClaiming = true;
+            }
 
         }
 
@@ -251,9 +301,11 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             // X aantal punten toevoegen bij de gebruiker
             // Nieuwe score tonen en doorpushen naar de db
             setScore(20);
+            isClaiming = false;
         } else {
             Toast.makeText(GameActivity.this, "Helaas!", Toast.LENGTH_LONG).show();
             setScore(5);
+            isClaiming = false;
         }
     }
 
@@ -307,6 +359,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     public void onClick(DialogInterface dialog, int id) {
                         //de location alleen claimen zonder bonusvraag
                         setScore(10);
+                        isClaiming = false;
                     }
                 })
                 .setNegativeButton("Bonus vraag", new DialogInterface.OnClickListener() {

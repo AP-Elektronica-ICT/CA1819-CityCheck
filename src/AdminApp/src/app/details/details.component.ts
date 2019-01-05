@@ -80,20 +80,38 @@ export class DetailsComponent implements OnInit {
     var newVrg = new Vraag(this.newVraag,newAntw);
     //Doorpushen van de vraag binnen deze locatie
 
-    this.data.postQuestion(this.location.id,newVrg).subscribe();
-
-    //Toevoegen van de vraag aan de local locatie
-    this.data.getLocations(0,this.location.titel).subscribe(r=>{
-      this.location = r[0];
-
-      //data weer clearen
+    this.data.postQuestion(this.location.id,newVrg).subscribe(r=>{
+      if(r.returnWaarde == "Created"){
+        this.refresh();
+        //data weer clearen
       this.newVraag = "";
       this.newAntw1 = "";
       this.newAntw2 = "";
       this.newAntw3 = "";
       this.correct = 1;
-    })
+      }
+    });
 
+  }
+
+
+  public delQ(vraag:number){
+    this.data.delQuestion(this.location.id, vraag).subscribe(r=> {
+      if(r.returnWaarde == null){
+        alert("Er is iets fout gelopen");
+      } else
+      if(r.returnWaarde != ""){
+        //Deleted
+        this.refresh();
+      }
+    });
+  }
+
+
+  private refresh(){
+    this.data.getLocations(0,this.location.titel).subscribe(r=>{
+      this.location = r[0];
+    })
   }
 
 }

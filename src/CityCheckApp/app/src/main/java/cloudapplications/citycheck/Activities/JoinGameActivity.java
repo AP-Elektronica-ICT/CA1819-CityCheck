@@ -28,19 +28,17 @@ import cloudapplications.citycheck.R;
 
 public class JoinGameActivity extends AppCompatActivity {
 
-    private Button btnPickColor;
-    private Button btnJoinGame;
+    private Button pickColorButton;
+    private Button joinGameButton;
     private int currentColor = 0xffffffff;
 
-    private TextView txt_teamName;
-    private EditText edit_teamName;
-    private EditText edit_gamecode;
+    private TextView teamNameTextView;
+    private EditText teamNameEditText;
+    private EditText gameCodeEditText;
 
     private String name;
     private int color;
     private int gamecode;
-    private long lat = 0;
-    private long lon = 0;
     private String gameTime;
     private boolean gameCreator;
     private NetworkManager service;
@@ -52,16 +50,16 @@ public class JoinGameActivity extends AppCompatActivity {
 
         service = NetworkManager.getInstance();
 
-        btnPickColor = findViewById(R.id.button_pick_color);
-        txt_teamName = findViewById(R.id.TV_TeamName);
-        edit_teamName = findViewById(R.id.edit_text_team_name);
-        edit_gamecode = findViewById(R.id.edit_text_game_code);
-        btnJoinGame = findViewById(R.id.button_join_game);
+        pickColorButton = findViewById(R.id.button_pick_color);
+        teamNameTextView = findViewById(R.id.text_view_team_name);
+        teamNameEditText = findViewById(R.id.edit_text_team_name);
+        gameCodeEditText = findViewById(R.id.edit_text_game_code);
+        joinGameButton = findViewById(R.id.button_join_game);
 
-        edit_teamName.addTextChangedListener(new TextWatcher() {
+        teamNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                txt_teamName.setText("Your Name");
+                teamNameTextView.setText("Your Name");
             }
 
             @Override
@@ -71,23 +69,21 @@ public class JoinGameActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                txt_teamName.setText(edit_teamName.getText());
+                teamNameTextView.setText(teamNameEditText.getText());
             }
         });
 
         gameCreator = !Objects.equals(Objects.requireNonNull(getIntent().getExtras()).getString("gameCode"), "-1");
         if (gameCreator) {
             gamecode = Integer.parseInt(getIntent().getExtras().getString("gameCode"));
-            edit_gamecode.setText(Integer.toString(gamecode));
-            edit_gamecode.setFocusable(false);
-            edit_gamecode.setEnabled(false);
+            gameCodeEditText.setText(Integer.toString(gamecode));
+            gameCodeEditText.setFocusable(false);
+            gameCodeEditText.setEnabled(false);
         }
 
-        btnPickColor.setOnClickListener(new View.OnClickListener() {
+        pickColorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(getApplicationContext(), "kleur kiezen", Toast.LENGTH_LONG).show();
-
                 // Kleurkiezer weergeven
                 ColorPickerDialogBuilder
                         .with(JoinGameActivity.this)
@@ -98,15 +94,13 @@ public class JoinGameActivity extends AppCompatActivity {
                         .setOnColorSelectedListener(new OnColorSelectedListener() {
                             @Override
                             public void onColorSelected(int selectedColor) {
-                                //Toast.makeText(getApplicationContext(), "Gekozen kleur: "+selectedColor, Toast.LENGTH_SHORT).show();
                             }
                         })
-                        .setPositiveButton("ok", new ColorPickerClickListener() {
+                        .setPositiveButton("OK", new ColorPickerClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
                                 currentColor = selectedColor;
-                                //Toast.makeText(getApplicationContext(), "Bevestigde kleur: "+selectedColor, Toast.LENGTH_LONG).show();
-                                txt_teamName.setTextColor(selectedColor);
+                                teamNameTextView.setTextColor(selectedColor);
                             }
                         })
                         .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
@@ -119,15 +113,15 @@ public class JoinGameActivity extends AppCompatActivity {
             }
         });
 
-        btnJoinGame.setOnClickListener(new View.OnClickListener() {
+        joinGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                name = edit_teamName.getText().toString();
+                name = teamNameEditText.getText().toString();
                 if (name.matches("")) {
                     Toast.makeText(JoinGameActivity.this, "You must enter a team name", Toast.LENGTH_SHORT).show();
                 } else {
-                    if (edit_gamecode.getText().toString().matches("\\d{4}")) {
-                        gamecode = Integer.parseInt(edit_gamecode.getText().toString());
+                    if (gameCodeEditText.getText().toString().matches("\\d{4}")) {
+                        gamecode = Integer.parseInt(gameCodeEditText.getText().toString());
                         color = currentColor;
                         Log.d("JoinGameActivity", "team: " + name + " color: " + color + " gamecode: " + gamecode);
                         addTeamToGame(name, color, gamecode);
@@ -140,8 +134,7 @@ public class JoinGameActivity extends AppCompatActivity {
     }
 
     private void addTeamToGame(String name, int color, final int gamecode) {
-
-        service.createTeam(gamecode, new Team(name, color, 0), new NetworkResponseListener<Team>() {
+        service.createTeam(gamecode, new Team(name, color), new NetworkResponseListener<Team>() {
             @Override
             public void onResponseReceived(Team team) {
                 startGame(gamecode);
@@ -149,34 +142,36 @@ public class JoinGameActivity extends AppCompatActivity {
 
             @Override
             public void onError() {
-                Toast.makeText(JoinGameActivity.this.getBaseContext(), "Error while trying to join the game", Toast.LENGTH_SHORT).show();
+                Toast.makeText(JoinGameActivity.this, "Error while trying to join the game", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     private void startGame(final int gamecode) {
         service.getCurrentGame(gamecode, new NetworkResponseListener<Game>() {
             @Override
             public void onResponseReceived(Game game) {
-                gameTime = Integer.toString(game.getTijdsDuur());
+                if (game != null) {
+                    gameTime = Integer.toString(game.getTijdsDuur());
 
-                Intent i = new Intent(JoinGameActivity.this, GameCodeActivity.class);
-                if (gameCreator)
-                    i.putExtra("gameCreator", true);
-                else
-                    i.putExtra("gameCreator", false);
-                i.putExtra("gameCode", Integer.toString(gamecode));
-                i.putExtra("gameTime", gameTime);
-                i.putExtra("teamNaam", name);
-                startActivity(i);
+                    Intent i = new Intent(JoinGameActivity.this, GameCodeActivity.class);
+                    if (gameCreator)
+                        i.putExtra("gameCreator", true);
+                    else
+                        i.putExtra("gameCreator", false);
+
+                    i.putExtra("gameCode", Integer.toString(gamecode));
+                    i.putExtra("gameTime", gameTime);
+                    i.putExtra("teamNaam", name);
+                    startActivity(i);
+                } else
+                    Toast.makeText(JoinGameActivity.this, "The game doesn't exist", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError() {
-                Toast.makeText(JoinGameActivity.this.getBaseContext(), "Error while trying to start the game", Toast.LENGTH_SHORT).show();
+                Toast.makeText(JoinGameActivity.this, "Error while trying to start the game", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 }

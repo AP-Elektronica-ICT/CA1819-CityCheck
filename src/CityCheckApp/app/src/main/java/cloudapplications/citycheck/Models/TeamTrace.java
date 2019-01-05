@@ -3,16 +3,19 @@ package cloudapplications.citycheck.Models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-class TeamTrace {
+public class TeamTrace {
 
     @SerializedName("id")
     @Expose
     private int Id;
 
-    @SerializedName("locatie")
+    @SerializedName("trace")
     @Expose
     private Locatie locatie;
 
+    public TeamTrace(Locatie locatie) {
+        this.locatie = locatie;
+    }
 
     public int getId() {
         return Id;

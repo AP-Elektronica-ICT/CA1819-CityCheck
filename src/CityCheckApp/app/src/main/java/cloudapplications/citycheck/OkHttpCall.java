@@ -56,7 +56,7 @@ public class OkHttpCall {
         return call;
     }
 
-    void post(String databaseIP, String route, String jsonBody) {
+    public void post(String databaseIP, String route, String jsonBody) {
         OkHttpCall call = new OkHttpCall();
         Call postCall = call.post("http://" + databaseIP + "/api/citycheck/" + route, jsonBody, new Callback() {
             @Override
@@ -104,7 +104,7 @@ public class OkHttpCall {
         });
     }
 
-    void delete(String databaseIP, String route) {
+    public void delete(String databaseIP, String route) {
         OkHttpCall call = new OkHttpCall();
         Call deleteCall = call.delete("http://" + databaseIP + "/api/citycheck/" + route, new Callback() {
             @Override

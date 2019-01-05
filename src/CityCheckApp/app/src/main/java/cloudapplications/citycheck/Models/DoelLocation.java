@@ -3,7 +3,7 @@ package cloudapplications.citycheck.Models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class DoelLocation {
 
@@ -21,9 +21,9 @@ public class DoelLocation {
 
     @SerializedName("vragen")
     @Expose
-    private List<Vraag> Vragen;
+    private ArrayList<Vraag> Vragen;
 
-    public DoelLocation(String titel, Locatie locatie, List<Vraag> vragen) {
+    public DoelLocation(String titel, Locatie locatie, ArrayList<Vraag> vragen) {
         Titel = titel;
         Locatie = locatie;
         Vragen = vragen;
@@ -53,12 +53,11 @@ public class DoelLocation {
         Locatie = locatie;
     }
 
-    public List<Vraag> getVragen() {
+    public ArrayList<Vraag> getVragen() {
         return Vragen;
     }
 
-    public void setVragen(List<Vraag> vragen) {
+    public void setVragen(ArrayList<Vraag> vragen) {
         Vragen = vragen;
     }
-
 }

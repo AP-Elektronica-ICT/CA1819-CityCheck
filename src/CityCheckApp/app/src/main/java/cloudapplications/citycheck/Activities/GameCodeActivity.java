@@ -11,17 +11,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
+import java.util.Objects;
 
 import cloudapplications.citycheck.APIService.NetworkManager;
 import cloudapplications.citycheck.APIService.NetworkResponseListener;
 import cloudapplications.citycheck.Models.Game;
 import cloudapplications.citycheck.Models.Team;
-import cloudapplications.citycheck.OkHttpCall;
 import cloudapplications.citycheck.R;
 import cloudapplications.citycheck.TeamsAdapter;
 
@@ -30,21 +26,20 @@ public class GameCodeActivity extends AppCompatActivity {
     String currentGameCode;
     String currentGameTime;
 
-    String millisStarted;
-    String lastResponseStr = "";
+    long millisStarted;
 
     Boolean gotTeams;
     NetworkManager service;
-    ArrayList<Team> prevTeams= new ArrayList<>();
+    ArrayList<Team> prevTeams = new ArrayList<>();
 
     private Handler handler = new Handler();
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
             getTeams();
-            handler.postDelayed(this, 3000);
         }
     };
+
     ArrayList<Team> teamsList = new ArrayList<>();
     ListView teamsListView;
 
@@ -53,24 +48,23 @@ public class GameCodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_code);
 
-        service=NetworkManager.getInstance();
+        service = NetworkManager.getInstance();
 
         Button startGameButton = findViewById(R.id.button_start_game);
         TextView codeTextView = findViewById(R.id.text_view_code);
         TextView timeTextView = findViewById(R.id.text_view_time);
         teamsListView = findViewById(R.id.teams_list_view);
 
-        Log.d("Teams", "gamecode from intent: " + getIntent().getExtras().get("gameCode"));
         currentGameCode = getIntent().getExtras().getString("gameCode");
         currentGameTime = getIntent().getExtras().getString("gameTime");
 
         codeTextView.setText(currentGameCode);
+
         // 10 seconden om de EndGameActivity te testen
         if (currentGameTime.equals("4"))
             timeTextView.setText("10 seconds");
         else
             timeTextView.setText(currentGameTime + " hours");
-
 
         // If the game creator came to this view then he has the right to start the game
         if (!getIntent().getExtras().getBoolean("gameCreator"))
@@ -88,71 +82,45 @@ public class GameCodeActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        handler.postDelayed(runnable, 3000);
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
         handler.removeCallbacksAndMessages(null);
     }
 
     private void getTeams() {
-        NetworkManager.getInstance().getCurrentGame(Integer.parseInt(currentGameCode), new NetworkResponseListener<Game>() {
+        handler.postDelayed(runnable, 3000);
+        service.getCurrentGame(Integer.parseInt(currentGameCode), new NetworkResponseListener<Game>() {
             @Override
             public void onResponseReceived(Game game) {
-                for(Team team: game.getTeams()){
-                    Log.d("tag", "getTeams response" + team.getTeamNaam());
-                }
-                if(game.getHasStarted()){
-
-        // OkHttpCall call = new OkHttpCall();
-        // call.get(getString(R.string.database_ip), "currentgame/" + currentGameCode);
-        // while (call.status == OkHttpCall.RequestStatus.Undefined) ;
-        // if (call.status == OkHttpCall.RequestStatus.Successful) {
-        //     JSONObject obj;
-        //     JSONArray teamsArray;
-        //     JSONObject teams;
-        //     try {
-        //         // Als de admin de game heeft gestart dan wordt dat ook voor de andere gebruikers gestart
-        //         obj = new JSONObject(call.responseStr);
-        //         boolean isGameStarted = obj.getBoolean("hasStarted");
-        //         millisStarted = String.valueOf(obj.getLong("millisStarted"));
-        //         if (isGameStarted) {
-
+                if (game.getHasStarted()) {
+                    millisStarted = game.getMillisStarted();
                     startGame();
-                }else{
-
-                    if(game.getTeams().size() != prevTeams.size()){
-                        prevTeams=game.getTeams();
-                        if(gotTeams){
-                            Team team= game.getTeams().get(game.getTeams().size() -1);
+                } else {
+                    if (game.getTeams().size() != prevTeams.size()) {
+                        prevTeams = game.getTeams();
+                        if (gotTeams) {
+                            Team team = game.getTeams().get(game.getTeams().size() - 1);
+                            team.setPunten(-1);
                             teamsList.add(team);
-                        }else{
-                            //Log.d("tag", "size array: " + game.getTeams().size());
-                            for(int i=0; i<game.getTeams().size(); i++){
-                                //Log.d("tag", "size array: " + game.getTeams().get(i));
+                        } else {
+                            for (int i = 0; i < game.getTeams().size(); i++) {
                                 Team team = game.getTeams().get(i);
                                 team.setPunten(-1);
                                 teamsList.add(team);
                             }
                         }
                         teamsListView.setAdapter(new TeamsAdapter(GameCodeActivity.this.getBaseContext(), teamsList));
-                    }else{
+                    } else {
                         gotTeams = true;
                     }
-
                 }
             }
 
             @Override
             public void onError() {
-                Toast.makeText(GameCodeActivity.this.getBaseContext(), "Error while trying to get the teams", Toast.LENGTH_SHORT).show();
+                Toast.makeText(GameCodeActivity.this, "Error while trying to get the teams", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     private void startGame() {
@@ -160,12 +128,19 @@ public class GameCodeActivity extends AppCompatActivity {
         i.putExtra("gameTime", currentGameTime);
         i.putExtra("gameCode", currentGameCode);
         i.putExtra("teamNaam", getIntent().getExtras().getString("teamNaam"));
-        i.putExtra("millisStarted", millisStarted);
+        i.putExtra("millisStarted", String.valueOf(millisStarted));
+
+        if (getIntent().getExtras().getBoolean("gameCreator"))
+            i.putExtra("gameCreator", true);
+        else
+            i.putExtra("gameCreator", false);
+
         startActivity(i);
     }
 
     private void creatorStartGame() {
-        service.startGame(Integer.parseInt(currentGameCode), System.currentTimeMillis(), new NetworkResponseListener<Double>() {
+        millisStarted = System.currentTimeMillis();
+        service.startGame(Integer.parseInt(currentGameCode), millisStarted, new NetworkResponseListener<Double>() {
             @Override
             public void onResponseReceived(Double aDouble) {
                 startGame();
@@ -173,20 +148,12 @@ public class GameCodeActivity extends AppCompatActivity {
 
             @Override
             public void onError() {
-                Toast.makeText(GameCodeActivity.this.getBaseContext(), "Error while trying to start the game", Toast.LENGTH_SHORT).show();
+                Toast.makeText(GameCodeActivity.this, "Error while trying to start the game", Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
-
-        // OkHttpCall call = new OkHttpCall();
-        // millisStarted = String.valueOf(System.currentTimeMillis());
-        // call.post(getString(R.string.database_ip), "startgame/" + currentGameCode + "/" + System.currentTimeMillis(), "");
-        // while (call.status == OkHttpCall.RequestStatus.Undefined) ;
-        // if (call.status == OkHttpCall.RequestStatus.Successful) {
-        //     startGame();
-        // } else {
-        //     Toast.makeText(this, "Error while trying to start the game", Toast.LENGTH_SHORT).show();
-        // }
-
+    @Override
+    public void onBackPressed() {
     }
 }

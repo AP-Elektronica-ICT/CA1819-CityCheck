@@ -9,7 +9,7 @@ public class Antwoord {
     @Expose
     private int Id;
 
-    @SerializedName("antwoordZin")
+    @SerializedName("antwoordzin")
     @Expose
     private String Antwoordzin;
 
@@ -40,5 +40,4 @@ public class Antwoord {
     public void setCorrectBool(boolean correctBool) {
         CorrectBool = correctBool;
     }
-
 }

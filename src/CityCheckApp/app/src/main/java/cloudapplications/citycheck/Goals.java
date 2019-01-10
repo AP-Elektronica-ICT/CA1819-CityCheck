@@ -37,7 +37,6 @@ public class Goals {
     }
 
     public void getNewGoals(int Time, int Interval) {
-        if (Time < Interval || Time % Interval == 0) {
 
             // Bepalen welke locaties getoond moeten worden adhv de verstreken tijd
             int interval = (Time / Interval);
@@ -46,22 +45,10 @@ public class Goals {
             if (goals != null) {
                 if (!(interval == 0 && markers.size() > 0)) {
                     removePreviousMarkers();
-
-                    // Huidige doelen instellen
-                    currentGoals = new ArrayList<>();
-                    for (int i = interval; i < interval + 3; i++) {
-                        currentGoals.add(goals.get(i));
-                    }
-
-                    /*
-                    Log.d("mynewlocs", currentGoals.get(0).getDoel().getTitel());
-                    Log.d("mynewlocs", currentGoals.get(1).getDoel().getTitel());
-                    Log.d("mynewlocs", currentGoals.get(2).getDoel().getTitel());
-                    */
-
-                    // 3 nieuwe locatie markers toevoegen
+                    // 3 nieuwe locaties toevoegen
                     for (int i = (interval * 3); i < ((interval * 3) + 3); i++) {
                         if (i < goals.size()) {
+                            currentGoals.add(goals.get(i));
                             placeMarker(i);
                         }
                     }
@@ -71,7 +58,7 @@ public class Goals {
                 Log.d(TAG, "There are no goals to show. New request");
                 getGoals();
             }
-        }
+
     }
 
     private void getGoals() {

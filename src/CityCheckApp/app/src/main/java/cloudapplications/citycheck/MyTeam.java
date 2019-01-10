@@ -109,8 +109,10 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
     public void clearTraces(){
         Traces.clear();
         for(Polyline line: polylines){
+            //lijn van map verwijderen
             line.remove();
         }
+        //lijnen uit array verwijderen
         polylines.clear();
         //call om traces in database te clearen
     }
@@ -146,7 +148,7 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
         service.postHuidigeLocatie(GameCode, TeamNaam, location, new NetworkResponseListener<Team>() {
             @Override
             public void onResponseReceived(Team team) {
-                Log.d(TAG, "location send to database: " + team.getLocatie().getLat() + team.getLocatie().getLong());
+                //Log.d(TAG, "location send to database: " + team.getLocatie().getLat() + team.getLocatie().getLong());
             }
 
             @Override

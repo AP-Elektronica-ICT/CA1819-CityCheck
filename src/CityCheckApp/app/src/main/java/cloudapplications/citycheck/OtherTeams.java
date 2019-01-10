@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cloudapplications.citycheck.APIService.NetworkManager;
@@ -27,6 +28,7 @@ import cloudapplications.citycheck.Models.Team;
 public class OtherTeams {
 
     public SparseArray<SparseArray<Locatie>> Traces;
+    private SparseArray<List<Polyline>> polylines;
     private NetworkManager service = NetworkManager.getInstance();
     private int gameId;
     private GoogleMap kaart;
@@ -41,6 +43,7 @@ public class OtherTeams {
         this.teamNaam=teamnaam;
         markers = new SparseArray<Marker>();
         Traces = new SparseArray<SparseArray<Locatie>>();
+        polylines = new SparseArray<List<Polyline>>();
     }
 
 
@@ -85,6 +88,21 @@ public class OtherTeams {
         });
     }
 
+    public void deleteTraces(){
+        for(int i = 0; i < polylines.size(); i++) {
+            int key = polylines.keyAt(i);
+            // get the object by the key.
+            List<Polyline> list = polylines.get(key);
+            for(Polyline line: list){
+                //lijn van map verwijderen
+                line.remove();
+            }
+            //lijnen uit array verwijderen
+            list.clear();
+        }
+
+    }
+
     private BitmapDescriptor getMarkerIcon(int color) {
         float[] hsv = new float[3];
         Color.colorToHSV(color, hsv);
@@ -116,12 +134,17 @@ public class OtherTeams {
                         Log.d("Teams","new trace: " + Traces.get(team.getId()).size());
                         //er moeten minstens 2 elementen zijn om een trace te kunnen tekenen
                         if(i> 0) {
-                            Polyline teamPad = kaart.addPolyline(new PolylineOptions()
+                            if(polylines.get(team.getId()) == null){
+                                polylines.append(team.getId(), new ArrayList<Polyline>() {
+                                });
+                                Log.d("Teams", polylines.indexOfKey(team.getId()) + "");
+                            }
+                            polylines.get(team.getId()).add(kaart.addPolyline(new PolylineOptions()
                                     .add(
                                             new LatLng(team.getTeamTrace().get(i - 1).getLocatie().getLat(), team.getTeamTrace().get(i - 1).getLocatie().getLong()),
                                             new LatLng(team.getTeamTrace().get(i).getLocatie().getLat(), team.getTeamTrace().get(i).getLocatie().getLong()))
                                     .color(team.getKleur())
-                                    .width(7f));
+                                    .width(7f)));
                         }
                 }
 

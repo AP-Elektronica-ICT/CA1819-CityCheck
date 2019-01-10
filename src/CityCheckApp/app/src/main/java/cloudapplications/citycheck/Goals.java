@@ -106,7 +106,6 @@ public class Goals {
                         // .position(loc)
                         .position(new LatLng(locatie.getDoel().getLocatie().getLat(), locatie.getDoel().getLocatie().getLong()))
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.coin_small))
-                        .snippet("50")
         ));
     }
 

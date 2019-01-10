@@ -34,6 +34,7 @@ import cloudapplications.citycheck.Goals;
 import cloudapplications.citycheck.IntersectCalculator;
 import cloudapplications.citycheck.Models.Antwoord;
 import cloudapplications.citycheck.Models.DoelLocation;
+import cloudapplications.citycheck.Models.GameDoel;
 import cloudapplications.citycheck.Models.Locatie;
 import cloudapplications.citycheck.Models.StringReturn;
 import cloudapplications.citycheck.Models.Team;
@@ -75,6 +76,11 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private int progress;
 
 
+    //Afstand
+    float[] afstandResult;
+    float treshHoldAfstand = 50; //(meter)
+
+
     // Callbacks
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +100,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         scoreTextView = findViewById(R.id.text_view_points);
         score = 0;
         setScore(30);
+
+        //AfstandTreshold
+        treshHoldAfstand = 50; //(meter)
 
         //Claiming naar false
         isClaiming = false;
@@ -192,66 +201,40 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             Locatie loc1 = goals.currentGoals.get(0).getDoel().getLocatie();
             Locatie loc2 = goals.currentGoals.get(1).getDoel().getLocatie();
             Locatie loc3 = goals.currentGoals.get(2).getDoel().getLocatie();
+            Locatie[] locs = {loc1,loc2,loc3};
 
             //Mijn huidige locatie ophalen
             int tempTraceSize = myTeam.Traces.size();
             double tempLat = myTeam.Traces.get(tempTraceSize - 1).getLat();
             double tempLong = myTeam.Traces.get(tempTraceSize - 1).getLong();
 
-            //Kijken of er een hit is
-            float[] afstandResult;
-            float treshHoldAfstand = 50; //(meter)
-
-
-            //Locatie 1 check
-            //Afstand berekenen tussen de doellocatie en de huidige locatie in meters
-            afstandResult = new float[1];
-            Location.distanceBetween(loc1.getLat(),loc1.getLong(),tempLat,tempLong, afstandResult);
-            if(afstandResult[0] < treshHoldAfstand){
-                //GameDoelID en doellocID ophalen
-                int GD = goals.currentGoals.get(0).getId();
-                int LC = goals.currentGoals.get(0).getDoel().getId();
-
-                //Locatie claim triggeren
-                claimLocatie(GD,LC);
-                //Claimen instellen zolang we bezig zijn met claimen
-                isClaiming = true;
+            //Kijken of er een hit is met een locatie
+            int tempIndex = 0;
+            for (Locatie loc : locs) {
+                berekenAfstand(loc, tempLat, tempLong, goals.currentGoals.get(tempIndex));
+                tempIndex++;
             }
 
-
-            //Locatie 2 check
-            //Afstand berekenen tussen de doellocatie en de huidige locatie in meters
-            afstandResult = new float[1];
-            Location.distanceBetween(loc2.getLat(),loc2.getLong(),tempLat,tempLong, afstandResult);
-            if(afstandResult[0] < treshHoldAfstand){
-                //GameDoelID en doellocID ophalen
-                int GD = goals.currentGoals.get(1).getId();
-                int LC = goals.currentGoals.get(1).getDoel().getId();
-
-                //Locatie claim triggeren
-                claimLocatie(GD,LC);
-                //Claimen instellen zolang we bezig zijn met claimen
-                isClaiming = true;
-            }
-
-
-            //Locatie 3 check
-            //Afstand berekenen tussen de doellocatie en de huidige locatie in meters
-            afstandResult = new float[1];
-            Location.distanceBetween(loc3.getLat(),loc3.getLong(),tempLat,tempLong, afstandResult);
-            if(afstandResult[0] < treshHoldAfstand){
-                //GameDoelID en doellocID ophalen
-                int GD = goals.currentGoals.get(2).getId();
-                int LC = goals.currentGoals.get(2).getDoel().getId();
-
-                //Locatie claim triggeren
-                claimLocatie(GD,LC);
-                //Claimen instellen zolang we bezig zijn met claimen
-                isClaiming = true;
-            }
 
         }
 
+    }
+
+
+    private void berekenAfstand(Locatie doelLoc,double tempLat, double tempLong, GameDoel goal){
+        afstandResult = new float[1];
+        Location.distanceBetween(doelLoc.getLat(),doelLoc.getLong(),tempLat,tempLong, afstandResult);
+        if(afstandResult[0] < treshHoldAfstand && !goal.getClaimed()){
+            //GameDoelID en doellocID ophalen
+            int GD = goal.getId();
+            int LC = goal.getDoel().getId();
+
+            //Locatie claim triggeren
+            claimLocatie(GD,LC);
+            goal.setClaimed(true);
+            //Claimen instellen zolang we bezig zijn met claimen
+            isClaiming = true;
+        }
     }
 
     private void setMultiChoice(final String[] antwoorden, int CorrectIndex, String vraag) {

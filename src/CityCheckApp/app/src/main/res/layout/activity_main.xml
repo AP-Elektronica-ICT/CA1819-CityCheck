@@ -13,7 +13,7 @@
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Create game"
+        android:text="@string/create_game"
         android:textColor="@color/white"
         android:textSize="15sp" />
 
@@ -22,7 +22,7 @@
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Join game"
+        android:text="@string/join_game"
         android:textColor="@color/white"
         android:textSize="15sp" />
 

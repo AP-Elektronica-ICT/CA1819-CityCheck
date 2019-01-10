@@ -28,8 +28,6 @@ import cloudapplications.citycheck.R;
 
 public class JoinGameActivity extends AppCompatActivity {
 
-    private Button pickColorButton;
-    private Button joinGameButton;
     private int currentColor = 0xffffffff;
 
     private TextView teamNameTextView;
@@ -50,11 +48,11 @@ public class JoinGameActivity extends AppCompatActivity {
 
         service = NetworkManager.getInstance();
 
-        pickColorButton = findViewById(R.id.button_pick_color);
+        Button pickColorButton = findViewById(R.id.button_pick_color);
         teamNameTextView = findViewById(R.id.text_view_team_name);
         teamNameEditText = findViewById(R.id.edit_text_team_name);
         gameCodeEditText = findViewById(R.id.edit_text_game_code);
-        joinGameButton = findViewById(R.id.button_join_game);
+        Button joinGameButton = findViewById(R.id.button_join_game);
 
         teamNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -75,7 +73,7 @@ public class JoinGameActivity extends AppCompatActivity {
 
         gameCreator = !Objects.equals(Objects.requireNonNull(getIntent().getExtras()).getString("gameCode"), "-1");
         if (gameCreator) {
-            gamecode = Integer.parseInt(getIntent().getExtras().getString("gameCode"));
+            gamecode = Integer.parseInt(Objects.requireNonNull(getIntent().getExtras().getString("gameCode")));
             gameCodeEditText.setText(Integer.toString(gamecode));
             gameCodeEditText.setFocusable(false);
             gameCodeEditText.setEnabled(false);

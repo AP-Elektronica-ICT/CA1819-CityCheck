@@ -20,7 +20,6 @@ import cloudapplications.citycheck.R;
 public class CreateGameActivity extends AppCompatActivity {
 
     private int gameTime;
-    private Button timeButton;
     private TextView timeTextView;
     private NetworkManager service;
 
@@ -32,7 +31,7 @@ public class CreateGameActivity extends AppCompatActivity {
         service = NetworkManager.getInstance();
 
         Button createGameButton = findViewById(R.id.button_create_game);
-        timeButton = findViewById(R.id.button_time_pick);
+        Button timeButton = findViewById(R.id.button_time_pick);
         timeTextView = findViewById(R.id.text_view_time);
         gameTime = 1;
         timeTextView.setText(Integer.toString(gameTime));
@@ -82,19 +81,13 @@ public class CreateGameActivity extends AppCompatActivity {
         np.setMaxValue(3);
         np.setMinValue(1);
         np.setWrapSelectorWheel(false);
-        np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker numberPicker, int old, int newTijd) {
-                // Toast.makeText(getApplicationContext(), "Time: "+Integer.toString(newTijd), Toast.LENGTH_SHORT).show();
-            }
-        });
 
         b1.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
                 // De gekozen tijd ophalen
                 gameTime = np.getValue();
-                // Toast.makeText(getApplicationContext(), "Gekozen tijdsduur: "+Integer.toString(gameTime), Toast.LENGTH_LONG).show();
                 timeTextView.setText(Integer.toString(gameTime));
                 // Dialog sluiten
                 d.dismiss();

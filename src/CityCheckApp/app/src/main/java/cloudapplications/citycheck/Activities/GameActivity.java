@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -123,6 +124,15 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         scoreTextView = findViewById(R.id.text_view_points);
         score = 0;
         setScore(30);
+
+        ImageView pointsImageView = findViewById(R.id.image_view_points);
+        pointsImageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                endGame();
+                return false;
+            }
+        });
     }
 
     @Override

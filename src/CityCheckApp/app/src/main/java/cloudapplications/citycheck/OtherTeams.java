@@ -88,7 +88,7 @@ public class OtherTeams {
         });
     }
 
-    public void deleteTraces(){
+    public void clearTraces(){
         for(int i = 0; i < polylines.size(); i++) {
             int key = polylines.keyAt(i);
             // get the object by the key.

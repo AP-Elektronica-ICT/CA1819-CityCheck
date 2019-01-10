@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:layout_marginStart="50dp"
-        android:text="Create game"
+        android:text="@string/create_game"
         android:textColor="@color/white"
         android:textSize="30sp" />
 
@@ -40,7 +40,7 @@
             android:layout_marginStart="50dp"
             android:layout_marginEnd="10dp"
             android:gravity="center"
-            android:text="Game time (in hours):"
+            android:text="@string/game_time_string"
             android:textColor="@color/white"
             android:textSize="20sp" />
 
@@ -49,11 +49,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/yellowAntw"
-            android:text="picker"
-            tools:targetApi="lollipop" />
+            android:text="@string/picker"
+            tools:ignore="UnusedAttribute" />
 
     </LinearLayout>
-
 
     <TextView
         android:id="@+id/text_view_time"
@@ -61,10 +60,10 @@
         android:layout_height="50dp"
         android:layout_marginTop="20dp"
         android:layout_weight="0"
-        android:text="1"
         android:textAlignment="center"
         android:textColor="@color/white"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        tools:ignore="InefficientWeight" />
 
     <Button
         android:id="@+id/button_create_game"
@@ -72,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:backgroundTint="@color/yellowAntw"
-        android:text="Create"
-        tools:targetApi="lollipop" />
+        android:text="@string/create"
+        tools:ignore="UnusedAttribute" />
 
 </LinearLayout>

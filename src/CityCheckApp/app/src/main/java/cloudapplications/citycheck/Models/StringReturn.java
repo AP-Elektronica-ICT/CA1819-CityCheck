@@ -9,12 +9,11 @@ public class StringReturn {
     @Expose
     private String returnWaarde;
 
-
-    public void setWaarde(String waarde){
-        returnWaarde = waarde;
+    public String getWaarde() {
+        return returnWaarde;
     }
 
-    public String getWaarde(){
-        return returnWaarde;
+    public void setWaarde(String waarde) {
+        returnWaarde = waarde;
     }
 }

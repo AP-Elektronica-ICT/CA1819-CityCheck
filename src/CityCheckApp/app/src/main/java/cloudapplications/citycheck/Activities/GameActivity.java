@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -123,6 +124,15 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         scoreTextView = findViewById(R.id.text_view_points);
         score = 0;
         setScore(30);
+
+        ImageView pointsImageView = findViewById(R.id.image_view_points);
+        pointsImageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                endGame();
+                return false;
+            }
+        });
     }
 
     @Override
@@ -399,7 +409,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     int hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
                     timerTextView.setText("Time remaining: " + hours + ":" + minutes + ":" + seconds);
                     everythingThatNeedsToHappenEvery3s(finalGameTimeInMillis - millisUntilFinished);
-                    getNewGoalsAfterInterval(finalGameTimeInMillis - millisUntilFinished);
+                    getNewGoalsAfterInterval((finalGameTimeInMillis - millisUntilFinished), 60);
                     progress++;
                     timerProgressBar.setProgress(progress * 100 / (finalGameTimeInMillis / 1000));
                 }
@@ -430,22 +440,24 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void calculateIntersect() {
-        if (myTeam.Traces.size() > 4) {
+        if (myTeam.Traces.size() > 2) {
             NetworkManager.getInstance().getAllTeamTraces(gamecode, new NetworkResponseListener<List<Team>>() {
                 @Override
                 public void onResponseReceived(List<Team> teams) {
-                    Locatie start = myTeam.Traces.get(myTeam.Traces.size() - 2);
-                    Locatie einde = myTeam.Traces.get(myTeam.Traces.size() - 1);
+                    if(myTeam.Traces.size() > 2) {
+                        Locatie start = myTeam.Traces.get(myTeam.Traces.size() - 2);
+                        Locatie einde = myTeam.Traces.get(myTeam.Traces.size() - 1);
 
-                    for (Team team : teams) {
-                        if (!team.getTeamNaam().equals(teamNaam)) {
-                            Log.d("intersect", "size: " + team.getTeamTrace().size());
-                            for (int i = 0; i < team.getTeamTrace().size(); i++) {
-                                if ((i + 1) < team.getTeamTrace().size()) {
-                                    if (calc.doLineSegmentsIntersect(start, einde, team.getTeamTrace().get(i).getLocatie(), team.getTeamTrace().get(i + 1).getLocatie())) {
-                                        Log.d("intersect", team.getTeamNaam() + " kruist");
-                                        setScore(-5);
-                                        Toast.makeText(GameActivity.this, "Oh oohw you crossed another team's path, bye bye 5 points", Toast.LENGTH_SHORT).show();
+                        for (Team team : teams) {
+                            if (!team.getTeamNaam().equals(teamNaam)) {
+                                Log.d("intersect", "size: " + team.getTeamTrace().size());
+                                for (int i = 0; i < team.getTeamTrace().size(); i++) {
+                                    if ((i + 1) < team.getTeamTrace().size()) {
+                                        if (calc.doLineSegmentsIntersect(start, einde, team.getTeamTrace().get(i).getLocatie(), team.getTeamTrace().get(i + 1).getLocatie())) {
+                                            Log.d("intersect", team.getTeamNaam() + " kruist");
+                                            setScore(-5);
+                                            Toast.makeText(GameActivity.this, "Oh oohw you crossed another team's path, bye bye 5 points", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                 }
                             }
@@ -461,12 +473,15 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void getNewGoalsAfterInterval(Long verstrekenTijd) {
+    private void getNewGoalsAfterInterval(Long verstrekenTijd, int interval) {
         int tijd = (int) (verstrekenTijd / 1000);
 
-        // Nieuwe locaties elke 1 minuut om te testen, interval meegeven in seconden
-        goals.getNewGoals(tijd, 60);
-
+        if (tijd < interval || tijd % interval == 0) {
+            // Nieuwe locaties elke 1 minuut om te testen, interval meegeven in seconden
+            goals.getNewGoals(tijd, interval);
+            myTeam.clearTraces();
+            //otherTeams.clearTraces();
+        }
     }
 
     @Override

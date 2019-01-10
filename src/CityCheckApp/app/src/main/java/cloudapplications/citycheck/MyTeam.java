@@ -103,7 +103,7 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
 
     private void drawPath() {
         // Elke keer het traject tussen de laatste locatie en de huidige locatie als polyline tekenen
-        if (Traces.size() > 4) { // 4 intervals wachten voor het tekenen van een lijn om zo collision aan de start te vermijden
+        if (Traces.size() > 1) { // er moeten minstens 2 locaties in de traces zitten om een trace te kunnen tekenen
             Polyline polyline1 = map.addPolyline(new PolylineOptions()
                     .add(
                             new LatLng(Traces.get(Traces.size() - 2).getLat(), Traces.get(Traces.size() - 2).getLong()),
@@ -128,17 +128,21 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
     }
 
 
-    public void handleNewLocation(Locatie location) {
+    public void handleNewLocation(Locatie location, int time) {
         // Test data
         // location= new LatLng((r.nextDouble()*(51.2500 - 50.1800) + 50.1800),(r.nextDouble()* (4.8025 - 4.0000) + 4.0000));
 
         Log.d(TAG, "handle new location: " + location.getLat() + ", " + location.getLong());
-        Traces.add(new Locatie(location.getLat(), location.getLong()));
-        //Log.d(TAG, Integer.toString(Traces.size()));
         placeMarker(location);
-        drawPath();
+        //tijd om het spel te starten, pas na 1 minuut zal een trace achtergelaten worden
+        if(time>59){
+            Log.d(TAG, "pad tekenen: " + time);
+            Traces.add(new Locatie(location.getLat(), location.getLong()));
+            //Log.d(TAG, Integer.toString(Traces.size()));
+            drawPath();
+            sendLocationToDatabase(location);
+        }
 
-        sendLocationToDatabase(location);
     }
 
     // Callbacks

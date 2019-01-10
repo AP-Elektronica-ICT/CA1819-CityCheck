@@ -108,18 +108,21 @@ public class OtherTeams {
 
     private void drawPath(Team team) {
         if(team.getTeamTrace() != null && team.getTeamTrace().size() > 4){
-            // Pas een pad tekenen na 4 intervals
-            for(int i=4; i<team.getTeamTrace().size(); i++){
+            // pad tekenen
+            for(int i=0; i<team.getTeamTrace().size(); i++){
                 //Remote en lokaal vergelijken of het pad al getekend is en enkel bijtekenen wat er nog niet was
                 if(Traces.get(team.getId()).get(team.getTeamTrace().get(i).getId()) == null){
                     Traces.get(team.getId()).append(team.getTeamTrace().get(i).getId(),team.getTeamTrace().get(i).getLocatie());
                         Log.d("Teams","new trace: " + Traces.get(team.getId()).size());
-                        Polyline teamPad = kaart.addPolyline(new PolylineOptions()
-                                .add(
-                                        new LatLng(team.getTeamTrace().get(i-1).getLocatie().getLat(), team.getTeamTrace().get(i-1).getLocatie().getLong()),
-                                        new LatLng(team.getTeamTrace().get(i).getLocatie().getLat(), team.getTeamTrace().get(i).getLocatie().getLong()))
-                                .color(team.getKleur())
-                                .width(7f));
+                        //er moeten minstens 2 elementen zijn om een trace te kunnen tekenen
+                        if(i> 0) {
+                            Polyline teamPad = kaart.addPolyline(new PolylineOptions()
+                                    .add(
+                                            new LatLng(team.getTeamTrace().get(i - 1).getLocatie().getLat(), team.getTeamTrace().get(i - 1).getLocatie().getLong()),
+                                            new LatLng(team.getTeamTrace().get(i).getLocatie().getLat(), team.getTeamTrace().get(i).getLocatie().getLong()))
+                                    .color(team.getKleur())
+                                    .width(7f));
+                        }
                 }
 
             }

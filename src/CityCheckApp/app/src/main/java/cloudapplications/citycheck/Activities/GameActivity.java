@@ -183,11 +183,11 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void everythingThatNeedsToHappenEvery3s(Long time) {
-        int TimeCounter = (int) (time / 1000);
-        if (TimeCounter % 3 == 0) {
+    private void everythingThatNeedsToHappenEvery3s(long verstrekentijd) {
+        int tijd = (int) (verstrekentijd / 1000);
+        if (tijd % 3 == 0) {
             if (myTeam.newLocation != null) {
-                myTeam.handleNewLocation(new Locatie(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude()));
+                myTeam.handleNewLocation(new Locatie(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude()), tijd);
                 calculateIntersect();
                 LatLng positie = new LatLng(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude());
                 kaart.moveCamera(CameraUpdateFactory.newLatLng(positie));
@@ -410,7 +410,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     int minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
                     int hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
                     timerTextView.setText("Time remaining: " + hours + ":" + minutes + ":" + seconds);
-                    everythingThatNeedsToHappenEvery3s(millisUntilFinished);
+                    everythingThatNeedsToHappenEvery3s(finalGameTimeInMillis - millisUntilFinished);
                     getNewGoalsAfterInterval(finalGameTimeInMillis - millisUntilFinished);
                     progress++;
                     timerProgressBar.setProgress(progress * 100 / (finalGameTimeInMillis / 1000));

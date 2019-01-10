@@ -14,7 +14,7 @@
         android:layout_gravity="start"
         android:layout_marginStart="50dp"
         android:layout_marginBottom="10dp"
-        android:text="Start game"
+        android:text="@string/start_game"
         android:textColor="@color/white"
         android:textSize="20sp" />
 
@@ -29,7 +29,7 @@
             android:layout_gravity="start"
             android:layout_marginStart="50dp"
             android:layout_marginBottom="10dp"
-            android:text="Chosen game time: "
+            android:text="@string/chosen_game_time"
             android:textColor="@color/white"
             android:textSize="23sp" />
 
@@ -47,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Your game code:"
+        android:text="@string/your_game_code"
         android:textColor="@color/white"
         android:textSize="30sp" />
 
@@ -65,7 +65,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:backgroundTint="@color/yellowAntw"
-        android:text="Start game" />
+        android:text="@string/start_game"
+        tools:ignore="UnusedAttribute" />
 
     <TextView
         android:id="@+id/text_view_teams"
@@ -74,7 +75,7 @@
         android:layout_gravity="start"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:text="Teams:"
+        android:text="@string/teams_list"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:visibility="gone" />

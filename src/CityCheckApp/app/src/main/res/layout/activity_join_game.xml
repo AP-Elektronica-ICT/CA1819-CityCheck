@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/LYT_JoingGameLayout"
     android:layout_width="match_parent"
@@ -22,18 +21,17 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
-            android:text="Your Name"
+            android:text="@string/default_team_name"
             android:textColor="@color/white"
-            android:textSize="50dp" />
+            android:textSize="50sp" />
     </LinearLayout>
-
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="5dp"
-        android:text="Create team"
+        android:text="@string/create_team"
         android:textColor="@color/white"
         android:textSize="30sp" />
 
@@ -52,6 +50,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="50dp"
         android:layout_marginBottom="25dp"
+        android:baselineAligned="false"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -64,7 +63,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Team name:"
+                android:text="@string/team_name"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                tools:ignore="NestedWeights" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/team_color"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 
@@ -72,15 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Team color:"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Game code:"
+                android:text="@string/game_code"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -98,7 +98,8 @@
                 android:layout_weight="1"
                 android:inputType="textCapSentences"
                 android:maxLength="10"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                tools:ignore="Autofill,LabelFor,NestedWeights" />
 
             <Button
                 android:id="@+id/button_pick_color"
@@ -106,7 +107,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/yellowAntw"
-                android:text="Pick Color" />
+                android:text="@string/pick_color"
+                tools:ignore="UnusedAttribute" />
 
             <EditText
                 android:id="@+id/edit_text_game_code"
@@ -115,7 +117,8 @@
                 android:layout_weight="1"
                 android:inputType="number"
                 android:maxLength="4"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                tools:ignore="Autofill,LabelFor" />
         </LinearLayout>
     </LinearLayout>
 
@@ -126,6 +129,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:backgroundTint="@color/yellowAntw"
-        android:text="Join" />
+        android:text="@string/join"
+        tools:ignore="UnusedAttribute" />
 
 </LinearLayout>

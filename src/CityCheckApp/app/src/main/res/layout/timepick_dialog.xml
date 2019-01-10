@@ -22,8 +22,8 @@
         android:layout_marginTop="40dp"
         android:layout_toEndOf="@+id/number_picker"
         android:backgroundTint="@color/yellowAntw"
-        android:text="Cancel"
-        tools:targetApi="lollipop" />
+        android:text="@string/cancel"
+        tools:ignore="UnusedAttribute" />
 
     <Button
         android:id="@+id/button_time_set"
@@ -34,7 +34,7 @@
         android:layout_marginEnd="16dp"
         android:layout_toStartOf="@+id/number_picker"
         android:backgroundTint="@color/yellowAntw"
-        android:text="Pick"
-        tools:targetApi="lollipop" />
+        android:text="@string/pick"
+        tools:ignore="UnusedAttribute" />
 
 </RelativeLayout>

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 import cloudapplications.citycheck.APIService.NetworkManager;
 import cloudapplications.citycheck.APIService.NetworkResponseListener;
-import cloudapplications.citycheck.Models.DoelLocation;
 import cloudapplications.citycheck.Models.Game;
 import cloudapplications.citycheck.Models.GameDoel;
 
@@ -50,19 +49,12 @@ public class Goals {
 
                     //Huidige doelen instellen
                     currentGoals = new ArrayList<GameDoel>();
-                    for (int i = interval; i<interval+3;i++){
-                        currentGoals.add(goals.get(i));
-                    }
-                    /*
-                    Log.d("mynewlocs", currentGoals.get(0).getDoel().getTitel());
-                    Log.d("mynewlocs", currentGoals.get(1).getDoel().getTitel());
-                    Log.d("mynewlocs", currentGoals.get(2).getDoel().getTitel());
-                    */
-
-
-                    //add 3 new location markers
                     for(int i=(interval*3); i < ((interval*3)+3); i++){
+
                         if(i< goals.size()){
+                            currentGoals.add(goals.get(i));
+                            Log.d(TAG, "new locations: " +goals.get(i).getDoel().getTitel());
+                            //add 3 new location markers
                            placeMarker(i);
                         }
 
@@ -76,6 +68,10 @@ public class Goals {
             }
 
         }
+
+    }
+
+    public void removeClaimedLocations(){
 
     }
 
@@ -104,7 +100,7 @@ public class Goals {
 
     private void placeMarker(int i){
         //LatLng loc = new LatLng((r.nextDouble()*(51.2500 - 50.1800) + 50.1800),(r.nextDouble()* (4.8025 - 4.0000) + 4.0000));
-        Log.d(TAG, "add new locatio: " +goals.get(i).getDoel().getTitel());
+        Log.d(TAG, "add new location marker: " +goals.get(i).getDoel().getTitel());
         GameDoel locatie = goals.get(i);
         markers.append(locatie.getId(), map.addMarker(
                 new MarkerOptions()

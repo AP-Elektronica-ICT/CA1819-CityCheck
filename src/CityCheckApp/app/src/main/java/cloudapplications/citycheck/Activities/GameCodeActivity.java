@@ -42,6 +42,7 @@ public class GameCodeActivity extends AppCompatActivity {
 
     ArrayList<Team> teamsList = new ArrayList<>();
     ListView teamsListView;
+    TextView teamsTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class GameCodeActivity extends AppCompatActivity {
         Button startGameButton = findViewById(R.id.button_start_game);
         TextView codeTextView = findViewById(R.id.text_view_code);
         TextView timeTextView = findViewById(R.id.text_view_time);
+        teamsTextView = findViewById(R.id.text_view_teams);
         teamsListView = findViewById(R.id.teams_list_view);
 
         currentGameCode = getIntent().getExtras().getString("gameCode");
@@ -98,6 +100,7 @@ public class GameCodeActivity extends AppCompatActivity {
                             team.setPunten(-1);
                             teamsList.add(team);
                         } else {
+                            teamsTextView.setVisibility(View.VISIBLE);
                             for (int i = 0; i < game.getTeams().size(); i++) {
                                 Team team = game.getTeams().get(i);
                                 team.setPunten(-1);

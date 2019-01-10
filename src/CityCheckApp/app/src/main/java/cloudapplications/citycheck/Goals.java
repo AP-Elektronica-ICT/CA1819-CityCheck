@@ -61,6 +61,10 @@ public class Goals {
 
     }
 
+    public void removeCaimedLocations(){
+        //booleans in local goals gelijk zetten met remote
+    }
+
     private void getGoals() {
         service.getCurrentGame(gameId, new NetworkResponseListener<Game>() {
             @Override

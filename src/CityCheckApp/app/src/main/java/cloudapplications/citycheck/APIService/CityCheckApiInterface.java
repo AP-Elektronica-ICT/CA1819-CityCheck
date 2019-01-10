@@ -3,6 +3,7 @@ package cloudapplications.citycheck.APIService;
 import java.util.List;
 
 import cloudapplications.citycheck.Models.Game;
+import cloudapplications.citycheck.Models.GameDoel;
 import cloudapplications.citycheck.Models.Locatie;
 import cloudapplications.citycheck.Models.StringReturn;
 import cloudapplications.citycheck.Models.Team;
@@ -45,6 +46,9 @@ public interface CityCheckApiInterface {
     @GET("teams/{id}/trace")
     Call<List<Team>> getAllTeamTraces(@Path("id") int id);
 
+    @GET("teamtraces/{id}/clear")
+    Call<Boolean> deleteTraces(@Path("id") int id);
+
     @GET("teams/{id}/{teamname}/myscore")
     Call<Integer> getScoreTeam(@Path("id") int id, @Path("teamname") String teamname);
 
@@ -57,4 +61,7 @@ public interface CityCheckApiInterface {
 
     @POST("claimDoelLoc/{id}/{locid}")
     Call<StringReturn> claimDoelLocatie(@Path("id") int id, @Path("locid") int locid);
+
+    @GET("checkClaims/{id}")
+    Call<List<GameDoel>> checkClaims(@Path("id") int id);
 }

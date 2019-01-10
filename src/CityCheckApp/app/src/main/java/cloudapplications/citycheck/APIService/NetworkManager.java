@@ -3,6 +3,7 @@ package cloudapplications.citycheck.APIService;
 import java.util.List;
 
 import cloudapplications.citycheck.Models.Game;
+import cloudapplications.citycheck.Models.GameDoel;
 import cloudapplications.citycheck.Models.Locatie;
 import cloudapplications.citycheck.Models.StringReturn;
 import cloudapplications.citycheck.Models.Team;
@@ -75,6 +76,10 @@ public class NetworkManager {
         api.getAllTeamTraces(gameId).enqueue(new NetworkResponse<>(listener));
     }
 
+    public void deleteTeamtraces(int gameId, NetworkResponseListener listener){
+        api.deleteTraces(gameId).enqueue(new NetworkResponse<Boolean>(listener));
+    }
+
     public void setTeamScore(int gameId, String teamNaam, int score, NetworkResponseListener<Integer> listener) {
         api.setTeamScore(gameId, teamNaam, score).enqueue(new NetworkResponse<>(listener));
     }
@@ -90,5 +95,9 @@ public class NetworkManager {
 
     public void claimDoelLocatie(int gameId, int locId, NetworkResponseListener<StringReturn> listener) {
         api.claimDoelLocatie(gameId, locId).enqueue(new NetworkResponse<>(listener));
+    }
+
+    public void checkClaimed(int gameId, NetworkResponseListener listener){
+        api.checkClaims(gameId).enqueue(new NetworkResponse<List<GameDoel>>(listener));
     }
 }

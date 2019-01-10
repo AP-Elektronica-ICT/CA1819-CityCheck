@@ -114,7 +114,6 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
         }
         //lijnen uit array verwijderen
         polylines.clear();
-        //call om traces in database te clearen
     }
 
     // Private helpermethoden

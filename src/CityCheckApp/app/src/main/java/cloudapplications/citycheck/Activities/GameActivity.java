@@ -479,8 +479,19 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         if (tijd < interval || tijd % interval == 0) {
             // Nieuwe locaties elke 1 minuut om te testen, interval meegeven in seconden
             goals.getNewGoals(tijd, interval);
-            myTeam.clearTraces();
-            //otherTeams.clearTraces();
+            service.deleteTeamtraces(gamecode, new NetworkResponseListener() {
+                @Override
+                public void onResponseReceived(Object o) {
+                    myTeam.clearTraces();
+                    otherTeams.clearTraces();
+                }
+
+                @Override
+                public void onError() {
+                    Log.d("game", "Something went wrong while trying to clear the traces");
+                }
+            });
+
         }
     }
 

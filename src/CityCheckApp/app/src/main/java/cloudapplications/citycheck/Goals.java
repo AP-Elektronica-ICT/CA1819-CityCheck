@@ -21,32 +21,31 @@ public class Goals {
     private int gameId;
     private ArrayList<GameDoel> goals;
     public ArrayList<GameDoel> currentGoals;
-    private String TAG= "goals";
+    private String TAG = "Goals";
     private GoogleMap map;
     private SparseArray<Marker> markers;
     //private  Random r;
 
-    public Goals(int gameId, GoogleMap kaart ){
-        this.gameId=gameId;
+    public Goals(int gameId, GoogleMap kaart) {
+        this.gameId = gameId;
         this.map = kaart;
 
         //r = new Random();
-        markers = new SparseArray<Marker>();
+        markers = new SparseArray<>();
         service = NetworkManager.getInstance();
         getGoals();
     }
 
-    public void getNewGoals(int Time, int Interval){
-        if(Time<Interval || Time % Interval == 0){
+    public void getNewGoals(int Time, int Interval) {
+        if (Time < Interval || Time % Interval == 0) {
 
-            //bepalen welke locaties getoond moeten worden adhv de verstreken tijd
-            int interval = (Time/Interval);
-            Log.d(TAG, "interval nummer " + interval);
+            // Bepalen welke locaties getoond moeten worden adhv de verstreken tijd
+            int interval = (Time / Interval);
+            Log.d(TAG, "Interval nummer " + interval);
 
-            if(goals != null){
-                if(!(interval == 0 && markers.size() > 0)){
+            if (goals != null) {
+                if (!(interval == 0 && markers.size() > 0)) {
                     removePreviousMarkers();
-
                     //Huidige doelen instellen
                     currentGoals = new ArrayList<GameDoel>();
                     for(int i=(interval*3); i < ((interval*3)+3); i++){
@@ -57,19 +56,16 @@ public class Goals {
                             //add 3 new location markers
                            placeMarker(i);
                         }
-
                     }
                 }
 
-            }
-            else{
+            } else {
                 Log.d(TAG, "There are no goals to show. New request");
                 getGoals();
             }
-
         }
-
     }
+
 
     public void removeClaimedLocations(){
 
@@ -79,16 +75,15 @@ public class Goals {
         service.getCurrentGame(gameId, new NetworkResponseListener<Game>() {
             @Override
             public void onResponseReceived(Game game) {
-                //Log.d(TAG, ""+ Arrays.toString(game.getGameDoelen().toArray()));
+                // Log.d(TAG, ""+ Arrays.toString(game.getGameDoelen().toArray()));
                 goals = game.getGameDoelen();
-                Log.d(TAG, "size: " + goals.size());
+                Log.d(TAG, "Size: " + goals.size());
 
-                //Huidige doelen instellen
-                currentGoals = new ArrayList<GameDoel>();
-                for (int i = 0; i<3;i++){
+                // Huidige doelen instellen
+                currentGoals = new ArrayList<>();
+                for (int i = 0; i < 3; i++) {
                     currentGoals.add(goals.get(i));
                 }
-
             }
 
             @Override
@@ -105,28 +100,28 @@ public class Goals {
         markers.append(locatie.getId(), map.addMarker(
                 new MarkerOptions()
                         .title(locatie.getDoel().getTitel())
-                        //.position(loc)
+                        // .position(loc)
                         .position(new LatLng(locatie.getDoel().getLocatie().getLat(), locatie.getDoel().getLocatie().getLong()))
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.coin_small))
                         .snippet("50")
         ));
     }
 
-    private void removePreviousMarkers(){
-        //delete previous marker locations
-        if(markers.size() > 0){
-            Log.d(TAG, "size markers to delete: "+markers.size());
-            //eerst size opslaan want die veranderd als je een element delete uit de array
+    private void removePreviousMarkers() {
+        // Vorige marker locaties verwijderen
+        if (markers.size() > 0) {
+            Log.d(TAG, "Size markers to delete: " + markers.size());
+            // Eerst size opslaan want die veranderd als je een element delete uit de array
             int size = markers.size();
-            for(int i = 0; i < size; i++){
-                Log.d(TAG, "marker to delete: "+i);
+            for (int i = 0; i < size; i++) {
+                Log.d(TAG, "Marker to delete: " + i);
                 int key = markers.keyAt(i);
-                //marker van kaart verwijderen
+                // Marker van kaart verwijderen
                 markers.get(key).remove();
             }
         }
-        //voor de zekerheid array volledig clearen
+
+        // Voor de zekerheid array volledig clearen
         markers.clear();
     }
-
 }

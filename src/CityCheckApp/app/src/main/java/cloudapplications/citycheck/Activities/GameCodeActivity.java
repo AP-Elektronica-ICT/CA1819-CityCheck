@@ -1,10 +1,10 @@
 package cloudapplications.citycheck.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -42,7 +42,9 @@ public class GameCodeActivity extends AppCompatActivity {
 
     ArrayList<Team> teamsList = new ArrayList<>();
     ListView teamsListView;
+    TextView teamsTextView;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,18 +55,14 @@ public class GameCodeActivity extends AppCompatActivity {
         Button startGameButton = findViewById(R.id.button_start_game);
         TextView codeTextView = findViewById(R.id.text_view_code);
         TextView timeTextView = findViewById(R.id.text_view_time);
+        teamsTextView = findViewById(R.id.text_view_teams);
         teamsListView = findViewById(R.id.teams_list_view);
 
-        currentGameCode = getIntent().getExtras().getString("gameCode");
+        currentGameCode = Objects.requireNonNull(getIntent().getExtras()).getString("gameCode");
         currentGameTime = getIntent().getExtras().getString("gameTime");
 
         codeTextView.setText(currentGameCode);
-
-        // 10 seconden om de EndGameActivity te testen
-        if (currentGameTime.equals("4"))
-            timeTextView.setText("10 seconds");
-        else
-            timeTextView.setText(currentGameTime + " hours");
+        timeTextView.setText(currentGameTime + " hours");
 
         // If the game creator came to this view then he has the right to start the game
         if (!getIntent().getExtras().getBoolean("gameCreator"))
@@ -103,6 +101,7 @@ public class GameCodeActivity extends AppCompatActivity {
                             team.setPunten(-1);
                             teamsList.add(team);
                         } else {
+                            teamsTextView.setVisibility(View.VISIBLE);
                             for (int i = 0; i < game.getTeams().size(); i++) {
                                 Team team = game.getTeams().get(i);
                                 team.setPunten(-1);
@@ -127,7 +126,7 @@ public class GameCodeActivity extends AppCompatActivity {
         Intent i = new Intent(GameCodeActivity.this, GameActivity.class);
         i.putExtra("gameTime", currentGameTime);
         i.putExtra("gameCode", currentGameCode);
-        i.putExtra("teamNaam", getIntent().getExtras().getString("teamNaam"));
+        i.putExtra("teamNaam", Objects.requireNonNull(getIntent().getExtras()).getString("teamNaam"));
         i.putExtra("millisStarted", String.valueOf(millisStarted));
 
         if (getIntent().getExtras().getBoolean("gameCreator"))

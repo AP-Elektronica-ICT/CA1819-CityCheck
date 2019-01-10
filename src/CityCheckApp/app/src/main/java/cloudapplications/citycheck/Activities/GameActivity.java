@@ -188,7 +188,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         //Controleren op doellocatie triggers om te kunnen claimen
 
         //Huidige locaties van de doelen ophalen
-        if(goals.currentGoals != null && myTeam.Traces.size() > 0 && !isClaiming) {
+        if (goals.currentGoals != null && myTeam.Traces.size() > 0 && !isClaiming) {
             Locatie loc1 = goals.currentGoals.get(0).getDoel().getLocatie();
             Locatie loc2 = goals.currentGoals.get(1).getDoel().getLocatie();
             Locatie loc3 = goals.currentGoals.get(2).getDoel().getLocatie();
@@ -206,14 +206,14 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             //Locatie 1 check
             //Afstand berekenen tussen de doellocatie en de huidige locatie in meters
             afstandResult = new float[1];
-            Location.distanceBetween(loc1.getLat(),loc1.getLong(),tempLat,tempLong, afstandResult);
-            if(afstandResult[0] < treshHoldAfstand){
+            Location.distanceBetween(loc1.getLat(), loc1.getLong(), tempLat, tempLong, afstandResult);
+            if (afstandResult[0] < treshHoldAfstand) {
                 //GameDoelID en doellocID ophalen
                 int GD = goals.currentGoals.get(0).getId();
                 int LC = goals.currentGoals.get(0).getDoel().getId();
 
                 //Locatie claim triggeren
-                claimLocatie(GD,LC);
+                claimLocatie(GD, LC);
                 //Claimen instellen zolang we bezig zijn met claimen
                 isClaiming = true;
             }
@@ -222,14 +222,14 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             //Locatie 2 check
             //Afstand berekenen tussen de doellocatie en de huidige locatie in meters
             afstandResult = new float[1];
-            Location.distanceBetween(loc2.getLat(),loc2.getLong(),tempLat,tempLong, afstandResult);
-            if(afstandResult[0] < treshHoldAfstand){
+            Location.distanceBetween(loc2.getLat(), loc2.getLong(), tempLat, tempLong, afstandResult);
+            if (afstandResult[0] < treshHoldAfstand) {
                 //GameDoelID en doellocID ophalen
                 int GD = goals.currentGoals.get(1).getId();
                 int LC = goals.currentGoals.get(1).getDoel().getId();
 
                 //Locatie claim triggeren
-                claimLocatie(GD,LC);
+                claimLocatie(GD, LC);
                 //Claimen instellen zolang we bezig zijn met claimen
                 isClaiming = true;
             }
@@ -238,14 +238,14 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             //Locatie 3 check
             //Afstand berekenen tussen de doellocatie en de huidige locatie in meters
             afstandResult = new float[1];
-            Location.distanceBetween(loc3.getLat(),loc3.getLong(),tempLat,tempLong, afstandResult);
-            if(afstandResult[0] < treshHoldAfstand){
+            Location.distanceBetween(loc3.getLat(), loc3.getLong(), tempLat, tempLong, afstandResult);
+            if (afstandResult[0] < treshHoldAfstand) {
                 //GameDoelID en doellocID ophalen
                 int GD = goals.currentGoals.get(2).getId();
                 int LC = goals.currentGoals.get(2).getDoel().getId();
 
                 //Locatie claim triggeren
-                claimLocatie(GD,LC);
+                claimLocatie(GD, LC);
                 //Claimen instellen zolang we bezig zijn met claimen
                 isClaiming = true;
             }
@@ -327,27 +327,27 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    public void claimLocatie(final int locId, final int doellocID){
-    //locid => gamelocaties ID, doellocID => id van de daadwerkelijke doellocatie
+    public void claimLocatie(final int locId, final int doellocID) {
+        //locid => gamelocaties ID, doellocID => id van de daadwerkelijke doellocatie
 
         //Een team een locatie laten claimen als ze op deze plek zijn.
-            service.claimDoelLocatie(gamecode, locId, new NetworkResponseListener<StringReturn>() {
-                @Override
-                public void onResponseReceived(StringReturn rtrn) {
-                    //response verwerken
-                    try {
+        service.claimDoelLocatie(gamecode, locId, new NetworkResponseListener<StringReturn>() {
+            @Override
+            public void onResponseReceived(StringReturn rtrn) {
+                //response verwerken
+                try {
                     String waarde = rtrn.getWaarde();
                     Toast.makeText(GameActivity.this, waarde, Toast.LENGTH_SHORT).show();
-                    } catch (Throwable err){
-                        Toast.makeText(GameActivity.this, "Error while trying to claim the location", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onError() {
+                } catch (Throwable err) {
                     Toast.makeText(GameActivity.this, "Error while trying to claim the location", Toast.LENGTH_SHORT).show();
                 }
-            });
+            }
+
+            @Override
+            public void onError() {
+                Toast.makeText(GameActivity.this, "Error while trying to claim the location", Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
         //Dialog tonen met de vraag claim of bonus vraag
@@ -377,10 +377,10 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                                 //3 Antwoorden bewaren
                                 ArrayList<Antwoord> allAnswers = newVraag.getAntwoorden();
                                 antwoorden = new String[3];
-                                for (int i=0;i<3;i++){
+                                for (int i = 0; i < 3; i++) {
                                     antwoorden[i] = allAnswers.get(i).getAntwoordzin();
-                                    if(allAnswers.get(i).isCorrectBool()){
-                                        correctAntwoordIndex =  i;
+                                    if (allAnswers.get(i).isCorrectBool()) {
+                                        correctAntwoordIndex = i;
                                     }
                                 }
 
@@ -406,18 +406,12 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Vraag tonen
         setMultiChoice(antwoorden, correctAntwoordIndex, vraag);
-
     }
 
     private void gameTimer() {
         String chosenGameTime = getIntent().getExtras().getString("gameTime");
         long millisStarted = Long.parseLong(Objects.requireNonNull(getIntent().getExtras().getString("millisStarted")));
         int gameTimeInMillis = Integer.parseInt(Objects.requireNonNull(chosenGameTime)) * 3600000;
-
-        // Game die 10 seconden duurt om de EndGameActivity te testen
-        if (chosenGameTime.equals("4")) {
-            gameTimeInMillis = 10000;
-        }
 
         // Het verschil tussen de tijd van nu en de tijd van wanneer de game is gestart
         long differenceFromMillisStarted = System.currentTimeMillis() - millisStarted;

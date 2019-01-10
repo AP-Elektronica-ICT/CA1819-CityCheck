@@ -79,7 +79,7 @@ public class CreateGameActivity extends AppCompatActivity {
         Button b1 = d.findViewById(R.id.button_time_set);
         Button b2 = d.findViewById(R.id.button_time_cancel);
         final NumberPicker np = d.findViewById(R.id.number_picker);
-        np.setMaxValue(4);
+        np.setMaxValue(3);
         np.setMinValue(1);
         np.setWrapSelectorWheel(false);
         np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {

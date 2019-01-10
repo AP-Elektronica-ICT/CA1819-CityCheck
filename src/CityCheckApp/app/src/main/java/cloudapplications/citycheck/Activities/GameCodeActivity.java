@@ -59,12 +59,7 @@ public class GameCodeActivity extends AppCompatActivity {
         currentGameTime = getIntent().getExtras().getString("gameTime");
 
         codeTextView.setText(currentGameCode);
-
-        // 10 seconden om de EndGameActivity te testen
-        if (currentGameTime.equals("4"))
-            timeTextView.setText("10 seconds");
-        else
-            timeTextView.setText(currentGameTime + " hours");
+        timeTextView.setText(currentGameTime + " hours");
 
         // If the game creator came to this view then he has the right to start the game
         if (!getIntent().getExtras().getBoolean("gameCreator"))

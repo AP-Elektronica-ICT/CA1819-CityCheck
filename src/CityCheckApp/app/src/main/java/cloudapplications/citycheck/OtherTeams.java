@@ -107,7 +107,7 @@ public class OtherTeams {
     }
 
     private void drawPath(Team team) {
-        if(team.getTeamTrace() != null && team.getTeamTrace().size() > 4){
+        if(team.getTeamTrace() != null && team.getTeamTrace().size() > 1){
             // pad tekenen
             for(int i=0; i<team.getTeamTrace().size(); i++){
                 //Remote en lokaal vergelijken of het pad al getekend is en enkel bijtekenen wat er nog niet was

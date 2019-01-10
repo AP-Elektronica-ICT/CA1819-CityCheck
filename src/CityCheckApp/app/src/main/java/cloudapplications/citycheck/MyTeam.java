@@ -47,6 +47,7 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private Activity activity;
     public List<Locatie> Traces;
+    private List<Polyline> polylines;
     Random r;
     NetworkManager service;
     int GameCode;
@@ -57,6 +58,7 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
         activity = activityIn;
         map = kaart;
         Traces = new ArrayList<>();
+        polylines = new ArrayList<Polyline>();
         r = new Random();
         GameCode = gameCode;
         TeamNaam = teamNaam;
@@ -87,6 +89,32 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
         }
     }
 
+    public void handleNewLocation(Locatie location, int time) {
+        // Test data
+        // location= new LatLng((r.nextDouble()*(51.2500 - 50.1800) + 50.1800),(r.nextDouble()* (4.8025 - 4.0000) + 4.0000));
+
+        Log.d(TAG, "handle new location: " + location.getLat() + ", " + location.getLong());
+        placeMarker(location);
+        //tijd om het spel te starten, pas na 1 minuut zal een trace achtergelaten worden
+        if(time>59){
+            Log.d(TAG, "pad tekenen: " + time);
+            Traces.add(new Locatie(location.getLat(), location.getLong()));
+            //Log.d(TAG, Integer.toString(Traces.size()));
+            drawPath();
+            sendLocationToDatabase(location);
+        }
+
+    }
+
+    public void clearTraces(){
+        Traces.clear();
+        for(Polyline line: polylines){
+            line.remove();
+        }
+        polylines.clear();
+        //call om traces in database te clearen
+    }
+
     // Private helpermethoden
     private void placeMarker(Locatie location) {
         Log.d(TAG, "marker on my position");
@@ -104,11 +132,12 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
     private void drawPath() {
         // Elke keer het traject tussen de laatste locatie en de huidige locatie als polyline tekenen
         if (Traces.size() > 1) { // er moeten minstens 2 locaties in de traces zitten om een trace te kunnen tekenen
-            Polyline polyline1 = map.addPolyline(new PolylineOptions()
+
+            polylines.add(map.addPolyline(new PolylineOptions()
                     .add(
                             new LatLng(Traces.get(Traces.size() - 2).getLat(), Traces.get(Traces.size() - 2).getLong()),
                             new LatLng(Traces.get(Traces.size() - 1).getLat(), Traces.get(Traces.size() - 1).getLong()))
-                    .width(7f));
+                    .width(7f)));
         }
     }
 
@@ -127,23 +156,6 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
         });
     }
 
-
-    public void handleNewLocation(Locatie location, int time) {
-        // Test data
-        // location= new LatLng((r.nextDouble()*(51.2500 - 50.1800) + 50.1800),(r.nextDouble()* (4.8025 - 4.0000) + 4.0000));
-
-        Log.d(TAG, "handle new location: " + location.getLat() + ", " + location.getLong());
-        placeMarker(location);
-        //tijd om het spel te starten, pas na 1 minuut zal een trace achtergelaten worden
-        if(time>59){
-            Log.d(TAG, "pad tekenen: " + time);
-            Traces.add(new Locatie(location.getLat(), location.getLong()));
-            //Log.d(TAG, Integer.toString(Traces.size()));
-            drawPath();
-            sendLocationToDatabase(location);
-        }
-
-    }
 
     // Callbacks
     @Override

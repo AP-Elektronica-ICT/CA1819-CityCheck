@@ -37,7 +37,7 @@ public class Goals {
     }
 
     public void getNewGoals(int Time, int Interval) {
-
+        if (Time < Interval || Time % Interval == 0) {
             // Bepalen welke locaties getoond moeten worden adhv de verstreken tijd
             int interval = (Time / Interval);
             Log.d(TAG, "Interval nummer " + interval);
@@ -58,7 +58,7 @@ public class Goals {
                 Log.d(TAG, "There are no goals to show. New request");
                 getGoals();
             }
-
+        }
     }
 
     public void removeCaimedLocations(){

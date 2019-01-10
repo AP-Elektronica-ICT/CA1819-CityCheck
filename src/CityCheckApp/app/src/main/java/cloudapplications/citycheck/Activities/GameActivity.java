@@ -192,7 +192,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 myTeam.handleNewLocation(new Locatie(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude()), tijd);
                 calculateIntersect();
                 LatLng positie = new LatLng(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude());
-                kaart.moveCamera(CameraUpdateFactory.newLatLng(positie));
+                //kaart.moveCamera(CameraUpdateFactory.newLatLng(positie));
             }
             otherTeams.getTeamsOnMap();
         }
@@ -409,7 +409,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                     int hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
                     timerTextView.setText("Time remaining: " + hours + ":" + minutes + ":" + seconds);
                     everythingThatNeedsToHappenEvery3s(finalGameTimeInMillis - millisUntilFinished);
-                    getNewGoalsAfterInterval((finalGameTimeInMillis - millisUntilFinished), 60);
+                    getNewGoalsAfterInterval((finalGameTimeInMillis - millisUntilFinished), 900);
                     progress++;
                     timerProgressBar.setProgress(progress * 100 / (finalGameTimeInMillis / 1000));
                 }
@@ -441,7 +441,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void calculateIntersect() {
         if (myTeam.Traces.size() > 2) {
-            NetworkManager.getInstance().getAllTeamTraces(gamecode, new NetworkResponseListener<List<Team>>() {
+            service.getAllTeamTraces(gamecode, new NetworkResponseListener<List<Team>>() {
                 @Override
                 public void onResponseReceived(List<Team> teams) {
                     if(myTeam.Traces.size() > 2) {
@@ -476,22 +476,25 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private void getNewGoalsAfterInterval(Long verstrekenTijd, int interval) {
         int tijd = (int) (verstrekenTijd / 1000);
 
-        if (tijd < interval || tijd % interval == 0) {
-            // Nieuwe locaties elke 1 minuut om te testen, interval meegeven in seconden
-            goals.getNewGoals(tijd, interval);
-            service.deleteTeamtraces(gamecode, new NetworkResponseListener() {
+        // interval meegeven in seconden
+        goals.getNewGoals(tijd, interval);
+
+        //traces op map clearen bij elk interval
+        if (tijd % interval == 0) {
+
+            service.deleteTeamtraces(gamecode, new NetworkResponseListener<Boolean>() {
                 @Override
-                public void onResponseReceived(Object o) {
+                public void onResponseReceived(Boolean cleared) {
+                    Log.d("clearTraces", "cleared: " +cleared);
                     myTeam.clearTraces();
                     otherTeams.clearTraces();
                 }
 
                 @Override
                 public void onError() {
-                    Log.d("game", "Something went wrong while trying to clear the traces");
+
                 }
             });
-
         }
     }
 

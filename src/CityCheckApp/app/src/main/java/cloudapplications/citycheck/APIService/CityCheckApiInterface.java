@@ -46,7 +46,7 @@ public interface CityCheckApiInterface {
     @GET("teams/{id}/trace")
     Call<List<Team>> getAllTeamTraces(@Path("id") int id);
 
-    @GET("teamtraces/{id}/clear")
+    @DELETE("teamtraces/{id}/clear")
     Call<Boolean> deleteTraces(@Path("id") int id);
 
     @GET("teams/{id}/{teamname}/myscore")

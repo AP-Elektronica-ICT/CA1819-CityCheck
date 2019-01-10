@@ -76,7 +76,7 @@ public class NetworkManager {
         api.getAllTeamTraces(gameId).enqueue(new NetworkResponse<>(listener));
     }
 
-    public void deleteTeamtraces(int gameId, NetworkResponseListener listener){
+    public void deleteTeamtraces(int gameId, NetworkResponseListener<Boolean> listener){
         api.deleteTraces(gameId).enqueue(new NetworkResponse<Boolean>(listener));
     }
 

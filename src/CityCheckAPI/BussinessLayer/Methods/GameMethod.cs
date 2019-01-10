@@ -52,18 +52,20 @@ namespace BussinessLayer.Methods
 
             int aantalTeZoekenLocs = newGame.TijdsDuur * 6; //6x10minuten per tijdsduur uren.
             Random rndLocInd = new Random();
+
+
             for (int i = 0; i < aantalTeZoekenLocs; i++)
             {
-                int newIndex1;
-                int newIndex2;
-                int newIndex3;
+                int newIndex1 = 0;
+                int newIndex2 = 0;
+                int newIndex3 = 0;
                 do
                 {
                     //Steeds 3 verschillende locaties
                     newIndex1 = rndLocInd.Next(0, totaalLocs);
                     newIndex2 = rndLocInd.Next(0, totaalLocs);
                     newIndex3 = rndLocInd.Next(0, totaalLocs);
-                } while (newIndex1 == newIndex2 || newIndex1 == newIndex3 || newIndex2 == newIndex3);
+                } while (newIndex1 == newIndex2 || newIndex1 == newIndex3 || newIndex2 == newIndex3 || newIndex3 == newIndex1);
                 
                 doelen.Add(alleLocs[newIndex1]);
                 doelen.Add(alleLocs[newIndex2]);

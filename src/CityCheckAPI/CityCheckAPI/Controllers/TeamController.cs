@@ -196,6 +196,27 @@ public class TeamController : Controller
     }
 
 
+
+    //alle traces van de teams clearen
+    [HttpDelete]
+    [Route("teamtraces/{id}/clear")]
+    public IActionResult clearTeamTraces(int id)
+    {
+        //id is de gamecode
+        var delTraces = teamMethods.clearTeamTraces(id);
+        string retrn = "Deleted";
+        StringReturn strrtrn = new StringReturn() { returnWaarde = retrn };
+
+        if (!delTraces)
+            return NotFound();
+        else
+        {
+            return Ok(delTraces);
+        }
+
+    }
+
+
 }
 
 

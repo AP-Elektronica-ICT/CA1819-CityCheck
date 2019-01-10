@@ -241,6 +241,31 @@ namespace BussinessLayer.Methods
 
 
 
+        public bool clearTeamTraces(int id)
+        {
+            //id is de gamecode
+            Game game = context.Games.Include(r => r.Teams).ThenInclude(tr=> tr.TeamTraces).ThenInclude(trce => trce.trace).Where(d => d.GameCode == id).Single<Game>();
+
+            List<Team> teams = game.Teams;
+            foreach (Team tm in teams)
+            {
+                tm.TeamTraces = new List<TeamTrace>();
+            }
+
+            context.SaveChanges();
+
+            if (game != null)
+                return true;
+            else
+            {
+                return false;
+            }
+
+        }
+
+
+
+
 
 
     }

@@ -51,7 +51,7 @@ public interface CityCheckApiInterface {
     @POST("teams/{id}/{teamname}/setmyscore/{newscore}")
     Call<Integer> setTeamScore(@Path("id") int id, @Path("teamname") String teamname, @Path("newscore") int newscore);
 
-    //Doellocatiecalls
+    // Doellocatie calls
     @GET("locquest/{id}")
     Call<Vraag> getDoelLocatieVraag(@Path("id") int id);
 

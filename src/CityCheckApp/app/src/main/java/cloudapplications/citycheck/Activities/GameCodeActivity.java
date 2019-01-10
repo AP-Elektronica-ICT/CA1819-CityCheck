@@ -1,10 +1,10 @@
 package cloudapplications.citycheck.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -44,6 +44,7 @@ public class GameCodeActivity extends AppCompatActivity {
     ListView teamsListView;
     TextView teamsTextView;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +58,7 @@ public class GameCodeActivity extends AppCompatActivity {
         teamsTextView = findViewById(R.id.text_view_teams);
         teamsListView = findViewById(R.id.teams_list_view);
 
-        currentGameCode = getIntent().getExtras().getString("gameCode");
+        currentGameCode = Objects.requireNonNull(getIntent().getExtras()).getString("gameCode");
         currentGameTime = getIntent().getExtras().getString("gameTime");
 
         codeTextView.setText(currentGameCode);
@@ -125,7 +126,7 @@ public class GameCodeActivity extends AppCompatActivity {
         Intent i = new Intent(GameCodeActivity.this, GameActivity.class);
         i.putExtra("gameTime", currentGameTime);
         i.putExtra("gameCode", currentGameCode);
-        i.putExtra("teamNaam", getIntent().getExtras().getString("teamNaam"));
+        i.putExtra("teamNaam", Objects.requireNonNull(getIntent().getExtras()).getString("teamNaam"));
         i.putExtra("millisStarted", String.valueOf(millisStarted));
 
         if (getIntent().getExtras().getBoolean("gameCreator"))

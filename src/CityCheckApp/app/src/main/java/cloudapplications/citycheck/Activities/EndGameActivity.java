@@ -34,7 +34,7 @@ public class EndGameActivity extends AppCompatActivity {
         service = NetworkManager.getInstance();
 
         endListView = findViewById(R.id.end_list_view);
-        gameCode = getIntent().getExtras().getString("gameCode");
+        gameCode = Objects.requireNonNull(getIntent().getExtras()).getString("gameCode");
         getTeams();
     }
 
@@ -79,7 +79,7 @@ public class EndGameActivity extends AppCompatActivity {
 
             @Override
             public void onError() {
-//                Toast.makeText(EndGameActivity.this, "Error while trying to delete the game", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(EndGameActivity.this, "Error while trying to delete the game", Toast.LENGTH_SHORT).show();
             }
         });
     }

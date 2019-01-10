@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
@@ -43,9 +44,9 @@ import cloudapplications.citycheck.OtherTeams;
 import cloudapplications.citycheck.R;
 
 
-public class GameActivity extends FragmentActivity implements OnMapReadyCallback /*,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status>*/ {
+public class GameActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    //Kaart vars
+    // Kaart vars
     private GoogleMap kaart;
     private MyTeam myTeam;
     private OtherTeams otherTeams;
@@ -60,7 +61,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     // Gamescore
     private TextView scoreTextView;
     private int score;
-    private TextView teamNameTextView;
 
     // Vragen beantwoorden
     String[] antwoorden;
@@ -69,7 +69,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     int gekozenAntwoordIndex;
     boolean isClaiming;
 
-    //timer vars
+    // Timer vars
     private TextView timerTextView;
     private ProgressBar timerProgressBar;
     private int progress;
@@ -83,18 +83,18 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        Objects.requireNonNull(mapFragment).getMapAsync(this);
 
         calc = new IntersectCalculator();
         service = NetworkManager.getInstance();
 
-        gamecode = Integer.parseInt(getIntent().getExtras().getString("gameCode"));
+        gamecode = Integer.parseInt(Objects.requireNonNull(Objects.requireNonNull(getIntent().getExtras()).getString("gameCode")));
 
-        //Claiming naar false
+        // Claiming naar false
         isClaiming = false;
 
         // Teamnaam txt view
-        teamNameTextView = findViewById(R.id.text_view_team_name);
+        TextView teamNameTextView = findViewById(R.id.text_view_team_name);
 
         timerTextView = findViewById(R.id.text_view_timer);
         timerProgressBar = findViewById(R.id.progress_bar_timer);
@@ -129,8 +129,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         kaart = googleMap;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
             Toast.makeText(this, "You need to enable permissions to display location !", Toast.LENGTH_SHORT).show();
         }
 
@@ -142,19 +141,18 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng Antwerpen = new LatLng(51.2194, 4.4025);
         kaart.moveCamera(CameraUpdateFactory.newLatLngZoom(Antwerpen, 15));
 
-        //locaties van andere teams
+        // Locaties van andere teams
         otherTeams = new OtherTeams(gamecode, teamNaam, kaart, GameActivity.this);
         otherTeams.getTeamsOnMap();
 
-        //alles ivm doellocaties
+        // Alles ivm doellocaties
         goals = new Goals(gamecode, kaart);
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == 1) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            } else {
+            if (grantResults.length != 1 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "You can't play without location permissions", Toast.LENGTH_LONG).show();
             }
         }
@@ -171,7 +169,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void everythingThatNeedsToHappenEvery3s(Long time) {
-
         int TimeCounter = (int) (time / 1000);
         if (TimeCounter % 3 == 0) {
             if (myTeam.newLocation != null) {
@@ -183,81 +180,77 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             otherTeams.getTeamsOnMap();
         }
 
+        // Controleren op doellocatie triggers om te kunnen claimen
 
-        //Controleren op doellocatie triggers om te kunnen claimen
-
-        //Huidige locaties van de doelen ophalen
+        // Huidige locaties van de doelen ophalen
         if (goals.currentGoals != null && myTeam.Traces.size() > 0 && !isClaiming) {
             Locatie loc1 = goals.currentGoals.get(0).getDoel().getLocatie();
             Locatie loc2 = goals.currentGoals.get(1).getDoel().getLocatie();
             Locatie loc3 = goals.currentGoals.get(2).getDoel().getLocatie();
 
-            //Mijn huidige locatie ophalen
+            // Mijn huidige locatie ophalen
             int tempTraceSize = myTeam.Traces.size();
             double tempLat = myTeam.Traces.get(tempTraceSize - 1).getLat();
             double tempLong = myTeam.Traces.get(tempTraceSize - 1).getLong();
 
-            //Kijken of er een hit is
+            // Kijken of er een hit is
             float[] afstandResult;
             float treshHoldAfstand = 50; //(meter)
 
 
-            //Locatie 1 check
-            //Afstand berekenen tussen de doellocatie en de huidige locatie in meters
+            // Locatie 1 check
+            // Afstand berekenen tussen de doellocatie en de huidige locatie in meters
             afstandResult = new float[1];
             Location.distanceBetween(loc1.getLat(), loc1.getLong(), tempLat, tempLong, afstandResult);
             if (afstandResult[0] < treshHoldAfstand) {
-                //GameDoelID en doellocID ophalen
+                // GameDoelID en doellocID ophalen
                 int GD = goals.currentGoals.get(0).getId();
                 int LC = goals.currentGoals.get(0).getDoel().getId();
 
-                //Locatie claim triggeren
+                // Locatie claim triggeren
                 claimLocatie(GD, LC);
-                //Claimen instellen zolang we bezig zijn met claimen
+                // Claimen instellen zolang we bezig zijn met claimen
                 isClaiming = true;
             }
 
 
-            //Locatie 2 check
-            //Afstand berekenen tussen de doellocatie en de huidige locatie in meters
+            // Locatie 2 check
+            // Afstand berekenen tussen de doellocatie en de huidige locatie in meters
             afstandResult = new float[1];
             Location.distanceBetween(loc2.getLat(), loc2.getLong(), tempLat, tempLong, afstandResult);
             if (afstandResult[0] < treshHoldAfstand) {
-                //GameDoelID en doellocID ophalen
+                // GameDoelID en doellocID ophalen
                 int GD = goals.currentGoals.get(1).getId();
                 int LC = goals.currentGoals.get(1).getDoel().getId();
 
-                //Locatie claim triggeren
+                // Locatie claim triggeren
                 claimLocatie(GD, LC);
-                //Claimen instellen zolang we bezig zijn met claimen
+                // Claimen instellen zolang we bezig zijn met claimen
                 isClaiming = true;
             }
 
-
-            //Locatie 3 check
-            //Afstand berekenen tussen de doellocatie en de huidige locatie in meters
+            // Locatie 3 check
+            // Afstand berekenen tussen de doellocatie en de huidige locatie in meters
             afstandResult = new float[1];
             Location.distanceBetween(loc3.getLat(), loc3.getLong(), tempLat, tempLong, afstandResult);
             if (afstandResult[0] < treshHoldAfstand) {
-                //GameDoelID en doellocID ophalen
+                // GameDoelID en doellocID ophalen
                 int GD = goals.currentGoals.get(2).getId();
                 int LC = goals.currentGoals.get(2).getDoel().getId();
 
-                //Locatie claim triggeren
+                // Locatie claim triggeren
                 claimLocatie(GD, LC);
-                //Claimen instellen zolang we bezig zijn met claimen
+                // Claimen instellen zolang we bezig zijn met claimen
                 isClaiming = true;
             }
-
         }
-
     }
 
     private void setMultiChoice(final String[] antwoorden, int CorrectIndex, String vraag) {
         // Alertdialog aanmaken
         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
 
-        //Single choice dialog met de antwoorden
+        // Single choice dialog met de antwoorden
         builder.setSingleChoiceItems(antwoorden, -1, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -267,7 +260,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 gekozenAntwoordIndex = i;
             }
         });
-
 
         // Specify the dialog is not cancelable
         builder.setCancelable(true);
@@ -327,9 +319,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     public void claimLocatie(final int locId, final int doellocID) {
-        //locid => gamelocaties ID, doellocID => id van de daadwerkelijke doellocatie
+        // locid => gamelocaties ID, doellocID => id van de daadwerkelijke doellocatie
 
-        //Een team een locatie laten claimen als ze op deze plek zijn.
+        // Een team een locatie laten claimen als ze op deze plek zijn.
         service.claimDoelLocatie(gamecode, locId, new NetworkResponseListener<StringReturn>() {
             @Override
             public void onResponseReceived(StringReturn rtrn) {
@@ -348,31 +340,28 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-
-        //Dialog tonen met de vraag claim of bonus vraag
+        // Dialog tonen met de vraag claim of bonus vraag
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Claimen of bonus vraag(risico) oplossen?")
-                //niet cancel-baar
+                // Niet cancel-baar
                 .setCancelable(false)
                 .setPositiveButton("Claim", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        //de location alleen claimen zonder bonusvraag
+                        // De location alleen claimen zonder bonusvraag
                         setScore(10);
                         isClaiming = false;
                     }
                 })
                 .setNegativeButton("Bonus vraag", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
-                        //Random vraag bij deze locatie ophalen uit de backend
+                        // Random vraag bij deze locatie ophalen uit de backend
                         service.getDoelLocatieVraag(doellocID, new NetworkResponseListener<Vraag>() {
                             @Override
                             public void onResponseReceived(Vraag newVraag) {
-                                //response verwerken
+                                // Response verwerken
 
-                                //Vraagtitel bewaren
-                                String vra = newVraag.getVraagZin();
-                                vraag = vra;
+                                // Vraagtitel bewaren
+                                vraag = newVraag.getVraagZin();
                                 //3 Antwoorden bewaren
                                 ArrayList<Antwoord> allAnswers = newVraag.getAntwoorden();
                                 antwoorden = new String[3];
@@ -386,7 +375,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                                 //Vraag stellen
                                 askQuestion();
                             }
-
                             @Override
                             public void onError() {
                                 Toast.makeText(GameActivity.this, "Error while trying to get the question", Toast.LENGTH_SHORT).show();
@@ -397,7 +385,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 });
         AlertDialog alert = builder.create();
         alert.show();
-
     }
 
     private void askQuestion() {
@@ -408,7 +395,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void gameTimer() {
-        String chosenGameTime = getIntent().getExtras().getString("gameTime");
+        String chosenGameTime = Objects.requireNonNull(getIntent().getExtras()).getString("gameTime");
         long millisStarted = Long.parseLong(Objects.requireNonNull(getIntent().getExtras().getString("millisStarted")));
         int gameTimeInMillis = Integer.parseInt(Objects.requireNonNull(chosenGameTime)) * 3600000;
 
@@ -478,8 +465,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                                         Log.d("intersect", team.getTeamNaam() + " kruist");
                                         setScore(-5);
                                         Toast.makeText(GameActivity.this, "Oh oohw you crossed another team's path, bye bye 5 points", Toast.LENGTH_SHORT).show();
-                                    } //else
-                                    //Log.d("intersect", team.getTeamNaam()+ " kruist niet");
+                                    }
                                 }
                             }
                         }
@@ -497,7 +483,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private void getNewGoalsAfterInterval(Long verstrekenTijd) {
         int tijd = (int) (verstrekenTijd / 1000);
 
-        //nieuwe locaties elke 1 minuut om te testen, interval meegeven in seconden
+        // Nieuwe locaties elke 1 minuut om te testen, interval meegeven in seconden
         goals.getNewGoals(tijd, 60);
 
     }

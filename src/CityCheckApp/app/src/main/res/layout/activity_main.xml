@@ -9,7 +9,6 @@
     android:orientation="vertical"
     tools:context=".Activities.MainActivity">
 
-
     <Button
         android:id="@+id/button_create_game_window"
         style="?android:attr/borderlessButtonStyle"
@@ -29,12 +28,12 @@
         android:textColor="@color/white"
         android:textSize="15sp" />
 
-
     <ImageView
-        android:id="@+id/btnHelp"
+        android:id="@+id/image_view_help"
         android:layout_marginTop="50dp"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        app:srcCompat="@drawable/questionmark" />
+        app:srcCompat="@drawable/questionmark"
+        android:contentDescription="@string/question_mark_symbol" />
 
 </LinearLayout>

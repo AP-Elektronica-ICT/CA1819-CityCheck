@@ -20,8 +20,7 @@ import cloudapplications.citycheck.R;
 
 public class MainActivity extends AppCompatActivity {
 
-
-    ImageView help;
+    ImageView helpImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,24 +33,27 @@ public class MainActivity extends AppCompatActivity {
         createGameWindowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(view.getContext(), CreateGameActivity.class);
-                startActivity(i);
+                if (statusCheck()) {
+                    Intent i = new Intent(view.getContext(), CreateGameActivity.class);
+                    startActivity(i);
+                }
             }
         });
 
         joinGameWindowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(view.getContext(), JoinGameActivity.class);
-                i.putExtra("gameCode", "-1");
-                startActivity(i);
+                if (statusCheck()) {
+                    Intent i = new Intent(view.getContext(), JoinGameActivity.class);
+                    i.putExtra("gameCode", "-1");
+                    startActivity(i);
+                }
             }
         });
 
-
-        //Help btn setten
-        help = (ImageView) findViewById(R.id.btnHelp);
-        help.setOnClickListener(new View.OnClickListener() {
+        // Help button setten
+        helpImageView = findViewById(R.id.image_view_help);
+        helpImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(view.getContext(), HelpActivity.class);
@@ -63,21 +65,22 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        statusCheck();
-    }
-
-    public void statusCheck() {
+    public boolean statusCheck() {
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         assert manager != null;
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             buildAlertMessageNoGps();
+            return false;
+        }
 
-        if (!isStoragePermissionGranted())
+
+        if (!isStoragePermissionGranted()) {
             Toast.makeText(this, "You have to grant storage permissions to play the game.", Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        return true;
     }
 
     private void buildAlertMessageNoGps() {

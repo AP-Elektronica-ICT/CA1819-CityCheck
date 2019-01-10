@@ -33,5 +33,6 @@
     <string name="cancel">Cancel</string>
     <string name="pick">Pick</string>
     <string name="default_team_name">Team name</string>
->>>>>>> ccdc2d4f87ee2cf67007ebf5c8965e218767a854
+    <string name="question_mark_symbol">Question mark symbol</string>
+    >>>>>>> ccdc2d4f87ee2cf67007ebf5c8965e218767a854
 </resources>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,6 +9,7 @@
     android:orientation="vertical"
     tools:context=".Activities.MainActivity">
 
+
     <Button
         android:id="@+id/button_create_game_window"
         style="?android:attr/borderlessButtonStyle"
@@ -15,6 +17,7 @@
         android:layout_height="wrap_content"
         android:text="Create game"
         android:textColor="@color/white"
+        android:layout_marginTop="100dp"
         android:textSize="15sp" />
 
     <Button
@@ -25,5 +28,13 @@
         android:text="Join game"
         android:textColor="@color/white"
         android:textSize="15sp" />
+
+
+    <ImageView
+        android:id="@+id/btnHelp"
+        android:layout_marginTop="50dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:srcCompat="@drawable/questionmark" />
 
 </LinearLayout>

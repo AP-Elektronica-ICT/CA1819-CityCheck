@@ -3,4 +3,9 @@
     <string name="create_game_description">Once \"create\" is clicked you will receive a game code. All teams must enter this code to join the game.</string>
     <string name="title_activity_game">GameMap</string>
     <string name="database_ip">84.197.96.121</string>
+
+
+
+    <string name="uitlegopstart">De opstart van het spel is zeer simpel. Je stelt onderling een team samen waarbij telkens 1 gebruiker de app gebruikt op zijn mobiele toestel. Let er op dat hierop de mobile data alsook de gps sensor geactiveerd zijn. Het eerste team van het spel zal op het startscherm de create game optie selecteren. Hierop zal men de tijdsduur kunnen selecteren en een spel aanmaken. Daarna kan je een team aanmaken door een naam in te vullen en een kleur te kiezen. Op het loby scherm zal een gamecode zichtbaar zijn, de resterende teams kunnen via de join game functie dit spel betreden en op dezelfde manier een team aanmaken. ALs dit klaar is kan de spel eigenaar het spel starten!</string>
+    <string name="uitlegdoel">Op het spel zullen steeds 3 doelen getoond worden , deze zijn zichtbaar via een muntje op de kaart. Het is de bedoeling om naar deze locaties te gaan en deze te claimen door de claim optie of door een vraag te beantwoorden. Deze vraag hangt wel samen met een risico. Als je kiest voor een claim zal je 10 punten krijgen, kies je voor de bonus vraag en je beantwoord deze correct. Dan zal je 20 punten krijgen! Maar is deze foutief, dan krijg je er slechts 5. Tijdens het spel zal elk team in unieke kleur een pd achterlaten op hun route. Het is de bedoeling andere teams te blokkeren, als iemand uw pad zal kruisen verliest dat team 5 punten.</string>
 </resources>

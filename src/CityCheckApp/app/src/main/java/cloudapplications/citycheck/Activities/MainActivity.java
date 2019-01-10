@@ -13,11 +13,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import cloudapplications.citycheck.R;
 
 public class MainActivity extends AppCompatActivity {
+
+
+    ImageView help;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent i = new Intent(view.getContext(), JoinGameActivity.class);
                 i.putExtra("gameCode", "-1");
+                startActivity(i);
+            }
+        });
+
+
+        //Help btn setten
+        help = (ImageView) findViewById(R.id.btnHelp);
+        help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(view.getContext(), HelpActivity.class);
                 startActivity(i);
             }
         });

@@ -75,8 +75,8 @@ public class NetworkManager {
         api.getAllTeamTraces(gameId).enqueue(new NetworkResponse<List<Team>>(listener));
     }
 
-    public void setTeamScore(int gameId, String teamNaam, int score, NetworkResponseListener<Boolean> listener) {
-        api.setTeamScore(gameId, teamNaam, score).enqueue(new NetworkResponse<Boolean>(listener));
+    public void setTeamScore(int gameId, String teamNaam, int score, NetworkResponseListener<Integer> listener) {
+        api.setTeamScore(gameId, teamNaam, score).enqueue(new NetworkResponse<Integer>(listener));
     }
 
     public void getScoreTeam(int gameId, String teamNaam, NetworkResponseListener<Integer> listener) {

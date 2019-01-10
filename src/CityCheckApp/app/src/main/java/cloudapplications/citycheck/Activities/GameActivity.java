@@ -90,11 +90,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
         gamecode = Integer.parseInt(getIntent().getExtras().getString("gameCode"));
 
-        // Score
-        scoreTextView = findViewById(R.id.text_view_points);
-        score = 0;
-        setScore(30);
-
         //Claiming naar false
         isClaiming = false;
 
@@ -117,6 +112,10 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        // Score
+        scoreTextView = findViewById(R.id.text_view_points);
+        score = 0;
+        setScore(30);
     }
 
     @Override
@@ -313,9 +312,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         score += newScore;
         scoreTextView.setText(String.valueOf(score));
 
-        service.setTeamScore(gamecode, teamNaam, score, new NetworkResponseListener<Boolean>() {
+        service.setTeamScore(gamecode, teamNaam, score, new NetworkResponseListener<Integer>() {
             @Override
-            public void onResponseReceived(Boolean aBoolean) {
+            public void onResponseReceived(Integer score) {
                 // Score ok
             }
 

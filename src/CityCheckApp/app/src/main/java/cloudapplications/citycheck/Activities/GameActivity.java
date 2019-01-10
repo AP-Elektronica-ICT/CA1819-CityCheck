@@ -75,11 +75,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private ProgressBar timerProgressBar;
     private int progress;
 
-
-    //Afstand
+    // Afstand
     float[] afstandResult;
     float treshHoldAfstand = 50; //(meter)
-
 
     // Callbacks
     @Override
@@ -96,16 +94,10 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
         gamecode = Integer.parseInt(Objects.requireNonNull(Objects.requireNonNull(getIntent().getExtras()).getString("gameCode")));
 
-
-        // Score
-        scoreTextView = findViewById(R.id.text_view_points);
-        score = 0;
-        setScore(30);
-
-        //AfstandTreshold
+        // AfstandTreshold
         treshHoldAfstand = 50; //(meter)
 
-        //Claiming naar false
+        // Claiming naar false
         isClaiming = false;
 
         // Teamnaam txt view
@@ -202,39 +194,34 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             Locatie loc1 = goals.currentGoals.get(0).getDoel().getLocatie();
             Locatie loc2 = goals.currentGoals.get(1).getDoel().getLocatie();
             Locatie loc3 = goals.currentGoals.get(2).getDoel().getLocatie();
-            Locatie[] locs = {loc1,loc2,loc3};
+            Locatie[] locs = {loc1, loc2, loc3};
 
             // Mijn huidige locatie ophalen
             int tempTraceSize = myTeam.Traces.size();
             double tempLat = myTeam.Traces.get(tempTraceSize - 1).getLat();
             double tempLong = myTeam.Traces.get(tempTraceSize - 1).getLong();
 
-
-            //Kijken of er een hit is met een locatie
+            // Kijken of er een hit is met een locatie
             int tempIndex = 0;
             for (Locatie loc : locs) {
                 berekenAfstand(loc, tempLat, tempLong, goals.currentGoals.get(tempIndex));
                 tempIndex++;
             }
-
-
         }
-
     }
 
-
-    private void berekenAfstand(Locatie doelLoc,double tempLat, double tempLong, GameDoel goal){
+    private void berekenAfstand(Locatie doelLoc, double tempLat, double tempLong, GameDoel goal) {
         afstandResult = new float[1];
-        Location.distanceBetween(doelLoc.getLat(),doelLoc.getLong(),tempLat,tempLong, afstandResult);
-        if(afstandResult[0] < treshHoldAfstand && !goal.getClaimed()){
-            //GameDoelID en doellocID ophalen
+        Location.distanceBetween(doelLoc.getLat(), doelLoc.getLong(), tempLat, tempLong, afstandResult);
+        if (afstandResult[0] < treshHoldAfstand && !goal.getClaimed()) {
+            // GameDoelID en doellocID ophalen
             int GD = goal.getId();
             int LC = goal.getDoel().getId();
 
-            //Locatie claim triggeren
-            claimLocatie(GD,LC);
+            // Locatie claim triggeren
+            claimLocatie(GD, LC);
             goal.setClaimed(true);
-            //Claimen instellen zolang we bezig zijn met claimen
+            // Claimen instellen zolang we bezig zijn met claimen
             isClaiming = true;
         }
     }
@@ -368,6 +355,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                                 //Vraag stellen
                                 askQuestion();
                             }
+
                             @Override
                             public void onError() {
                                 Toast.makeText(GameActivity.this, "Error while trying to get the question", Toast.LENGTH_SHORT).show();

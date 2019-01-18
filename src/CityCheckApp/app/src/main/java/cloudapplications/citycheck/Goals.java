@@ -3,7 +3,6 @@ package cloudapplications.citycheck;
 import android.app.Activity;
 import android.util.Log;
 import android.util.SparseArray;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -45,7 +44,7 @@ public class Goals {
         if (Time < Interval || Time % Interval == 0) {
             // Bepalen welke locaties getoond moeten worden adhv de verstreken tijd
             int interval = (Time / Interval);
-            Log.d(TAG, "Interval nummer " + interval);
+            //Log.d(TAG, "Interval nummer " + interval);
 
             if (goals != null) {
                 if (!(interval == 0 && markers.size() > 0)) {
@@ -60,7 +59,7 @@ public class Goals {
                         }
                     }
                 }
-                Log.d(TAG, "currentgoals: " + currentGoals.size());
+                //Log.d(TAG, "currentgoals: " + currentGoals.size());
 
             } else {
                 Log.d(TAG, "There are no goals to show. New request");
@@ -89,11 +88,12 @@ public class Goals {
                     }
                     //booleans in current goals gelijk zetten met remote
                     if(goals.get(index).getClaimed() != doel.getClaimed()){
-                        if(goals.get(index).getId() == doel.getId())
-                            Log.d(TAG, goals.get(index).getId() + ":"+ goals.get(index).getClaimed() + " en " + doel.getId() + ":" + doel.getClaimed());
+                        if(goals.get(index).getId() == doel.getId()){
+                            //Log.d(TAG, goals.get(index).getId() + ":"+ goals.get(index).getClaimed() + " en " + doel.getId() + ":" + doel.getClaimed());
                             goals.get(index).setClaimed(doel.getClaimed());
-                        Toast.makeText(activity, goals.get(index).getDoel().getTitel() + " is claimed", Toast.LENGTH_SHORT).show();
-                    }
+                            //Toast.makeText(activity, goals.get(index).getDoel().getTitel() + " is claimed", Toast.LENGTH_SHORT).show();
+                        }
+}
                     for(GameDoel current: currentGoals){
                         if(current.getId() == doel.getId()){
                             //Log.d(TAG, current.getId() + ":"+ current.getClaimed() + " en " + doel.getId() + ":" + doel.getClaimed());

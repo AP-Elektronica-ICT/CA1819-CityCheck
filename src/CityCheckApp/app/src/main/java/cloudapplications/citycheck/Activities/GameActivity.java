@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -75,6 +76,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView timerTextView;
     private ProgressBar timerProgressBar;
     private int progress;
+
+    //screen time out
+    int defTimeOut=0;
 
     // Afstand
     float[] afstandResult;
@@ -396,7 +400,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Hoe lang dat de timer moet doorlopen
         long timerMillis = gameTimeInMillis - differenceFromMillisStarted;
-
+        defTimeOut = Settings.System.getInt(getContentResolver(),Settings.System.SCREEN_OFF_TIMEOUT, 0);
+        android.provider.Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, (int)timerMillis);
         // De progress begint op de juiste plek, dus niet altijd vanaf 0
         progress = (int) ((gameTimeInMillis - timerMillis) / 1000);
 
@@ -427,6 +432,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void endGame() {
+        Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, defTimeOut);
+
         Intent i = new Intent(GameActivity.this, EndGameActivity.class);
         if (myTeam != null)
             myTeam.stopConnection();

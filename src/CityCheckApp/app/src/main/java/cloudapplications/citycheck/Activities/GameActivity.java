@@ -163,7 +163,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         otherTeams.getTeamsOnMap();
 
         // Alles ivm doellocaties
-        goals = new Goals(gamecode, kaart);
+        goals = new Goals(gamecode, kaart, GameActivity.this);
     }
 
     @Override
@@ -188,6 +188,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private void everythingThatNeedsToHappenEvery3s(long verstrekentijd) {
         int tijd = (int) (verstrekentijd / 1000);
         if (tijd % 3 == 0) {
+            goals.removeCaimedLocations();
             if (myTeam.newLocation != null) {
                 myTeam.handleNewLocation(new Locatie(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude()), tijd);
                 calculateIntersect();

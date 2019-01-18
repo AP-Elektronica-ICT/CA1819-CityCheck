@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.Settings;
@@ -84,6 +85,12 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     float[] afstandResult;
     float treshHoldAfstand = 50; //(meter)
 
+    // Geluiden
+    MediaPlayer mpTrace;
+    MediaPlayer mpClaimed;
+    MediaPlayer mpBonusCorrect;
+    MediaPlayer mpBonusWrong;
+
     // Callbacks
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +135,12 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         scoreTextView = findViewById(R.id.text_view_points);
         score = 0;
         setScore(30);
+
+        // Geluiden
+        mpTrace = MediaPlayer.create(this, R.raw.trace_crossed);
+        mpClaimed = MediaPlayer.create(this, R.raw.claimed);
+        mpBonusCorrect = MediaPlayer.create(this, R.raw.bonus_correct);
+        mpBonusWrong = MediaPlayer.create(this, R.raw.bonus_wrong);
 
         ImageView pointsImageView = findViewById(R.id.image_view_points);
         pointsImageView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -282,6 +295,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private void checkAnswer(int gekozenInd, int correctInd) {
         // Klopt de gekozen index met het correcte antwoord index
         if (gekozenInd == correctInd) {
+            mpBonusCorrect.start();
             Toast.makeText(GameActivity.this, "Correct!", Toast.LENGTH_LONG).show();
 
             // X aantal punten toevoegen bij de gebruiker
@@ -289,6 +303,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             setScore(20);
             isClaiming = false;
         } else {
+            mpBonusWrong.start();
             Toast.makeText(GameActivity.this, "Helaas!", Toast.LENGTH_LONG).show();
             setScore(5);
             isClaiming = false;
@@ -314,6 +329,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     public void claimLocatie(final int locId, final int doellocID) {
+        mpClaimed.start();
         // locid => gamelocaties ID, doellocID => id van de daadwerkelijke doellocatie
 
         // Een team een locatie laten claimen als ze op deze plek zijn.
@@ -342,6 +358,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 .setCancelable(false)
                 .setPositiveButton("Claim", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        mpBonusCorrect.start();
                         // De location alleen claimen zonder bonusvraag
                         setScore(10);
                         isClaiming = false;
@@ -468,6 +485,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                                 for (int i = 0; i < team.getTeamTrace().size(); i++) {
                                     if ((i + 1) < team.getTeamTrace().size()) {
                                         if (calc.doLineSegmentsIntersect(start, einde, team.getTeamTrace().get(i).getLocatie(), team.getTeamTrace().get(i + 1).getLocatie())) {
+                                            mpTrace.start();
                                             Log.d("intersect", team.getTeamNaam() + " kruist");
                                             setScore(-5);
                                             Toast.makeText(GameActivity.this, "Oh oohw you crossed another team's path, bye bye 5 points", Toast.LENGTH_SHORT).show();

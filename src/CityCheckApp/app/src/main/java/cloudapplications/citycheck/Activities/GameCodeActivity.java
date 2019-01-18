@@ -2,6 +2,7 @@ package cloudapplications.citycheck.Activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -53,6 +54,7 @@ public class GameCodeActivity extends AppCompatActivity {
         service = NetworkManager.getInstance();
 
         Button startGameButton = findViewById(R.id.button_start_game);
+        final MediaPlayer mp = MediaPlayer.create(this, R.raw.button);
         TextView codeTextView = findViewById(R.id.text_view_code);
         TextView timeTextView = findViewById(R.id.text_view_time);
         teamsTextView = findViewById(R.id.text_view_teams);
@@ -71,6 +73,7 @@ public class GameCodeActivity extends AppCompatActivity {
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mp.start();
                 creatorStartGame();
             }
         });

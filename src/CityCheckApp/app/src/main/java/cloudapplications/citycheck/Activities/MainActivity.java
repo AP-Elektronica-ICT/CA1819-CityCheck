@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -30,11 +31,13 @@ public class MainActivity extends AppCompatActivity {
 
         Button createGameWindowButton = findViewById(R.id.button_create_game_window);
         Button joinGameWindowButton = findViewById(R.id.button_join_game_window);
+        final MediaPlayer mp = MediaPlayer.create(this, R.raw.button);
 
         createGameWindowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (statusCheck()) {
+                    mp.start();
                     Intent i = new Intent(view.getContext(), CreateGameActivity.class);
                     startActivity(i);
                 }
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (statusCheck()) {
+                    mp.start();
                     Intent i = new Intent(view.getContext(), JoinGameActivity.class);
                     i.putExtra("gameCode", "-1");
                     startActivity(i);
@@ -57,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         helpImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mp.start();
                 Intent i = new Intent(view.getContext(), HelpActivity.class);
                 startActivity(i);
             }

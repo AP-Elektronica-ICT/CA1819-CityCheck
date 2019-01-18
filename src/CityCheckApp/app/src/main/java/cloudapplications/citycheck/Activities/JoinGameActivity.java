@@ -2,6 +2,7 @@ package cloudapplications.citycheck.Activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -49,6 +50,7 @@ public class JoinGameActivity extends AppCompatActivity {
         service = NetworkManager.getInstance();
 
         Button pickColorButton = findViewById(R.id.button_pick_color);
+        final MediaPlayer mp = MediaPlayer.create(this, R.raw.button);
         teamNameTextView = findViewById(R.id.text_view_team_name);
         teamNameEditText = findViewById(R.id.edit_text_team_name);
         gameCodeEditText = findViewById(R.id.edit_text_game_code);
@@ -82,6 +84,7 @@ public class JoinGameActivity extends AppCompatActivity {
         pickColorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mp.start();
                 // Kleurkiezer weergeven
                 ColorPickerDialogBuilder
                         .with(JoinGameActivity.this)
@@ -114,6 +117,7 @@ public class JoinGameActivity extends AppCompatActivity {
         joinGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mp.start();
                 name = teamNameEditText.getText().toString();
                 if (name.matches("")) {
                     Toast.makeText(JoinGameActivity.this, "You must enter a team name", Toast.LENGTH_SHORT).show();

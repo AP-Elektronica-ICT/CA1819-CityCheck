@@ -69,49 +69,49 @@ public class Goals {
     }
 
     public void removeCaimedLocations(){
+        if(goals != null) {
+            //getGoals();
+            service.checkClaimed(gameId, new NetworkResponseListener<List<GameDoel>>() {
+                @Override
+                public void onResponseReceived(List<GameDoel> claimedList) {
+                    int index = 0;
+                    for (GameDoel doel: claimedList) {
+                        if(doel.getClaimed()){
+                            if(markers.get(doel.getId()) != null){
+                                markers.get(doel.getId()).remove();
+                                Log.d(TAG, "doelmarkers op de kaart removed: " + markers.size());
+                                markers.delete(doel.getId());
+                                Log.d(TAG, "doelmarkers in array removed: " + markers.size());
 
-        //getGoals();
-        service.checkClaimed(gameId, new NetworkResponseListener<List<GameDoel>>() {
-            @Override
-            public void onResponseReceived(List<GameDoel> claimedList) {
-                int index = 0;
-                for (GameDoel doel: claimedList) {
-                    if(doel.getClaimed()){
-                        if(markers.get(doel.getId()) != null){
-                            markers.get(doel.getId()).remove();
-                            Log.d(TAG, "doelmarkers op de kaart removed: " + markers.size());
-                            markers.delete(doel.getId());
-                            Log.d(TAG, "doelmarkers in array removed: " + markers.size());
+                            }
 
                         }
+                        //booleans in current goals gelijk zetten met remote
+                        if(goals.get(index).getClaimed() != doel.getClaimed()){
+                            if(goals.get(index).getId() == doel.getId()){
+                                //Log.d(TAG, goals.get(index).getId() + ":"+ goals.get(index).getClaimed() + " en " + doel.getId() + ":" + doel.getClaimed());
+                                goals.get(index).setClaimed(doel.getClaimed());
+                                //Toast.makeText(activity, goals.get(index).getDoel().getTitel() + " is claimed", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        for(GameDoel current: currentGoals){
+                            if(current.getId() == doel.getId()){
+                                //Log.d(TAG, current.getId() + ":"+ current.getClaimed() + " en " + doel.getId() + ":" + doel.getClaimed());
+                                current.setClaimed(doel.getClaimed());
+                                //Log.d(TAG, current.getId() + ":"+ current.getClaimed() + " en " + doel.getId() + ":" + doel.getClaimed());
+                            }
+                        }
 
+                        index++;
                     }
-                    //booleans in current goals gelijk zetten met remote
-                    if(goals.get(index).getClaimed() != doel.getClaimed()){
-                        if(goals.get(index).getId() == doel.getId()){
-                            //Log.d(TAG, goals.get(index).getId() + ":"+ goals.get(index).getClaimed() + " en " + doel.getId() + ":" + doel.getClaimed());
-                            goals.get(index).setClaimed(doel.getClaimed());
-                            //Toast.makeText(activity, goals.get(index).getDoel().getTitel() + " is claimed", Toast.LENGTH_SHORT).show();
-                        }
-}
-                    for(GameDoel current: currentGoals){
-                        if(current.getId() == doel.getId()){
-                            //Log.d(TAG, current.getId() + ":"+ current.getClaimed() + " en " + doel.getId() + ":" + doel.getClaimed());
-                            current.setClaimed(doel.getClaimed());
-                            //Log.d(TAG, current.getId() + ":"+ current.getClaimed() + " en " + doel.getId() + ":" + doel.getClaimed());
-                        }
-                    }
-
-                    index++;
                 }
-            }
 
-            @Override
-            public void onError() {
+                @Override
+                public void onError() {
 
-            }
-        });
-
+                }
+            });
+        }
     }
 
     private void getGoals() {

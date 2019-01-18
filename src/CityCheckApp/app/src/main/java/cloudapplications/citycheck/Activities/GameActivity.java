@@ -90,6 +90,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     MediaPlayer mpClaimed;
     MediaPlayer mpBonusCorrect;
     MediaPlayer mpBonusWrong;
+    MediaPlayer mpGameStarted;
 
     // Callbacks
     @Override
@@ -141,6 +142,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         mpClaimed = MediaPlayer.create(this, R.raw.claimed);
         mpBonusCorrect = MediaPlayer.create(this, R.raw.bonus_correct);
         mpBonusWrong = MediaPlayer.create(this, R.raw.bonus_wrong);
+        mpGameStarted = MediaPlayer.create(this, R.raw.game_started);
+
+        mpGameStarted.start();
 
         ImageView pointsImageView = findViewById(R.id.image_view_points);
         pointsImageView.setOnLongClickListener(new View.OnLongClickListener() {

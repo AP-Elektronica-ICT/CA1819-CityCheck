@@ -400,8 +400,13 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Hoe lang dat de timer moet doorlopen
         long timerMillis = gameTimeInMillis - differenceFromMillisStarted;
-        defTimeOut = Settings.System.getInt(getContentResolver(),Settings.System.SCREEN_OFF_TIMEOUT, 0);
-        android.provider.Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, (int)timerMillis);
+
+        //screen time out
+        if(Settings.System.canWrite(this)){
+            defTimeOut = Settings.System.getInt(getContentResolver(),Settings.System.SCREEN_OFF_TIMEOUT, 0);
+            android.provider.Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, (int)timerMillis);
+        }
+
         // De progress begint op de juiste plek, dus niet altijd vanaf 0
         progress = (int) ((gameTimeInMillis - timerMillis) / 1000);
 
@@ -432,8 +437,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void endGame() {
-        Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, defTimeOut);
-
+        if(Settings.System.canWrite(this)) {
+            Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, defTimeOut);
+        }
         Intent i = new Intent(GameActivity.this, EndGameActivity.class);
         if (myTeam != null)
             myTeam.stopConnection();

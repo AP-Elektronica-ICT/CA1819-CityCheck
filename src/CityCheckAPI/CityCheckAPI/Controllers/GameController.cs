@@ -47,6 +47,20 @@ public class GameController : Controller
 
 
 
+    //new DEMO game
+    [HttpPost]
+    [Route("newdemo")]
+    public IActionResult createDemoGame([FromBody] Game newGame)
+    {
+
+        var returnValue = gameMethods.createDemoGame(newGame);
+        if (returnValue != null)
+            return Created("Created:", returnValue);
+        else
+            return NotFound();
+    }
+
+
     //get all games
     [HttpGet]
     [Route("allgames")]

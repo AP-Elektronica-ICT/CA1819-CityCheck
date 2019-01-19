@@ -140,6 +140,8 @@ public class Goals {
         // LatLng loc = new LatLng((r.nextDouble()*(51.2500 - 50.1800) + 50.1800),(r.nextDouble()* (4.8025 - 4.0000) + 4.0000));
         Log.d(TAG, "Add new location: " + goals.get(i).getDoel().getTitel());
         GameDoel locatie = goals.get(i);
+        Log.d(TAG, "" + locatie.getDoel().getLocatie().getLat() + "; " + locatie.getDoel().getLocatie().getLong());
+
         markers.append(locatie.getId(), map.addMarker(
                 new MarkerOptions()
                         .title(locatie.getDoel().getTitel())

@@ -166,10 +166,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         kaart = googleMap;
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-            Toast.makeText(this, "You need to enable permissions to display location !", Toast.LENGTH_SHORT).show();
-        }
 
         // Alles ivm locatie van het eigen team
         myTeam = new MyTeam(this, kaart, gamecode, teamNaam);
@@ -187,14 +183,6 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         goals = new Goals(gamecode, kaart, GameActivity.this);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == 1) {
-            if (grantResults.length != 1 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "You can't play without location permissions", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
 
     // Private helper methoden
     private void showDoelLocaties(List<DoelLocation> newDoelLocaties) {

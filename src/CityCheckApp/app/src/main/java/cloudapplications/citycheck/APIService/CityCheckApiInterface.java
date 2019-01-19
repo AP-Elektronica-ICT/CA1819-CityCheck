@@ -21,6 +21,9 @@ public interface CityCheckApiInterface {
     @POST("newgame")
     Call<Game> createNewGame(@Body Game newGame);
 
+    @POST("newdemo")
+    Call<Game> createDemoGame(@Body Game newGame);
+
     @GET("allgames")
     Call<List<Game>> getAllGames();
 

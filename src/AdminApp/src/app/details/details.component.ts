@@ -10,7 +10,7 @@ import { Antwoord, Vraag } from '../classes/Vragen';
 })
 export class DetailsComponent implements OnInit {
 
-  private location:ILocRoot;
+  public location:ILocRoot;
 
   //invulvelden locatie
   public titel:string = "";

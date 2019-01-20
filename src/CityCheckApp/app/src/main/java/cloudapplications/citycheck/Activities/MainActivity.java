@@ -22,15 +22,18 @@ import cloudapplications.citycheck.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    ImageView helpImageView;
+    private ImageView helpImageView;
+
+    private Button createGameWindowButton;
+    private Button joinGameWindowButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button createGameWindowButton = findViewById(R.id.button_create_game_window);
-        Button joinGameWindowButton = findViewById(R.id.button_join_game_window);
+        createGameWindowButton = findViewById(R.id.button_create_game_window);
+        joinGameWindowButton = findViewById(R.id.button_join_game_window);
         final MediaPlayer mp = MediaPlayer.create(this, R.raw.button);
 
         createGameWindowButton.setOnClickListener(new View.OnClickListener() {
@@ -69,31 +72,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Vraag GPS toestemming
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-    }
-
-    public boolean statusCheck() {
-        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        assert manager != null;
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            buildAlertMessageNoGps();
-            return false;
-        }
-
-
-        if (!isStoragePermissionGranted()) {
-            Toast.makeText(this, "You have to grant storage permissions to play the game.", Toast.LENGTH_LONG).show();
-            return false;
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if(!Settings.System.canWrite(this)){
-                buildAlertMessageWriteSettings();
-                return false;
-            }
-
-        }
-        return true;
     }
 
     private void buildAlertMessageNoGps() {
@@ -136,5 +114,30 @@ public class MainActivity extends AppCompatActivity {
             // Toestemming automatisch in orde op SDK < 23
             return true;
         }
+    }
+
+    public boolean statusCheck() {
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        assert manager != null;
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            buildAlertMessageNoGps();
+            return false;
+        }
+
+
+        if (!isStoragePermissionGranted()) {
+            Toast.makeText(this, "You have to grant storage permissions to play the game.", Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!Settings.System.canWrite(this)){
+                buildAlertMessageWriteSettings();
+                return false;
+            }
+
+        }
+        return true;
     }
 }

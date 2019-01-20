@@ -28,6 +28,7 @@ import cloudapplications.citycheck.Models.Team;
 public class OtherTeams {
 
     public SparseArray<SparseArray<Locatie>> Traces;
+
     private SparseArray<List<Polyline>> polylines;
     private NetworkManager service = NetworkManager.getInstance();
     private int gameId;
@@ -46,8 +47,8 @@ public class OtherTeams {
         polylines = new SparseArray<List<Polyline>>();
     }
 
-
-    public void getTeamsOnMap() {
+    //public methoden
+    public void GetTeamsOnMap() {
         service.getAllTeamTraces(gameId, new NetworkResponseListener<List<Team>>() {
             @Override
             public void onResponseReceived(final List<Team> teams) {
@@ -88,7 +89,7 @@ public class OtherTeams {
         });
     }
 
-    public void clearTraces(){
+    public void ClearTraces(){
         for(int i = 0; i < polylines.size(); i++) {
             int key = polylines.keyAt(i);
             // get the object by the key.
@@ -103,6 +104,7 @@ public class OtherTeams {
 
     }
 
+    //private helper methoden
     private BitmapDescriptor getMarkerIcon(int color) {
         float[] hsv = new float[3];
         Color.colorToHSV(color, hsv);

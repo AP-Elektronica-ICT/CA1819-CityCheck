@@ -21,14 +21,16 @@ import cloudapplications.citycheck.Models.GameDoel;
 public class Goals {
     private NetworkManager service;
     private int gameId;
+    private String TAG = "Goals";
+
     private ArrayList<GameDoel> goals;
     public ArrayList<GameDoel> currentGoals;
-    private String TAG = "Goals";
-    private GoogleMap map;
     private SparseArray<Marker> markers;
-    private Activity activity;
-    //private  Random r;
 
+    private GoogleMap map;
+    private Activity activity;
+
+    //public methoden
     public Goals(int gameId, GoogleMap kaart, Activity activityIn) {
         this.gameId = gameId;
         this.map = kaart;
@@ -40,7 +42,7 @@ public class Goals {
         getGoals();
     }
 
-    public void getNewGoals(int Time, int Interval) {
+    public void GetNewGoals(int Time, int Interval) {
         if (Time < Interval || Time % Interval == 0) {
             // Bepalen welke locaties getoond moeten worden adhv de verstreken tijd
             int interval = (Time / Interval);
@@ -68,7 +70,7 @@ public class Goals {
         }
     }
 
-    public void removeCaimedLocations(){
+    public void RemoveCaimedLocations(){
         if(goals != null) {
             //getGoals();
             service.checkClaimed(gameId, new NetworkResponseListener<List<GameDoel>>() {
@@ -114,6 +116,7 @@ public class Goals {
         }
     }
 
+    //private methoden
     private void getGoals() {
         service.getCurrentGame(gameId, new NetworkResponseListener<Game>() {
             @Override

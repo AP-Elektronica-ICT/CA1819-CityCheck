@@ -1,22 +1,17 @@
 package cloudapplications.citycheck.Activities;
 
-import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -26,9 +21,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +32,6 @@ import cloudapplications.citycheck.APIService.NetworkResponseListener;
 import cloudapplications.citycheck.Goals;
 import cloudapplications.citycheck.IntersectCalculator;
 import cloudapplications.citycheck.Models.Antwoord;
-import cloudapplications.citycheck.Models.DoelLocation;
 import cloudapplications.citycheck.Models.GameDoel;
 import cloudapplications.citycheck.Models.Locatie;
 import cloudapplications.citycheck.Models.StringReturn;
@@ -61,20 +53,19 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private IntersectCalculator calc;
     private FloatingActionButton myLocation;
 
-    // Variabelen om teams op te halen uit database
+    // Variabelen om teams
+    private TextView teamNameTextView;
+    private TextView scoreTextView;
     private String teamNaam;
     private int gamecode;
-
-    // Gamescore
-    private TextView scoreTextView;
     private int score;
 
     // Vragen beantwoorden
-    String[] antwoorden;
-    String vraag;
-    int correctAntwoordIndex;
-    int gekozenAntwoordIndex;
-    boolean isClaiming;
+    private String[] antwoorden;
+    private String vraag;
+    private int correctAntwoordIndex;
+    private int gekozenAntwoordIndex;
+    private boolean isClaiming;
 
     // Timer vars
     private TextView timerTextView;
@@ -82,18 +73,18 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private int progress;
 
     //screen time out
-    int defTimeOut=0;
+    private int defTimeOut=0;
 
     // Afstand
-    float[] afstandResult;
-    float treshHoldAfstand = 50; //(meter)
+    private float[] afstandResult;
+    private float treshHoldAfstand = 50; //(meter)
 
     // Geluiden
-    MediaPlayer mpTrace;
-    MediaPlayer mpClaimed;
-    MediaPlayer mpBonusCorrect;
-    MediaPlayer mpBonusWrong;
-    MediaPlayer mpGameStarted;
+    private MediaPlayer mpTrace;
+    private MediaPlayer mpClaimed;
+    private MediaPlayer mpBonusCorrect;
+    private MediaPlayer mpBonusWrong;
+    private MediaPlayer mpGameStarted;
 
     // Callbacks
     @Override
@@ -119,16 +110,14 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         //myLocation
         myLocation = findViewById(R.id.myLoc);
 
-        // Teamnaam txt view
-        TextView teamNameTextView = findViewById(R.id.text_view_team_name);
-
+        //txt views
+        teamNameTextView = findViewById(R.id.text_view_team_name);
         timerTextView = findViewById(R.id.text_view_timer);
         timerProgressBar = findViewById(R.id.progress_bar_timer);
         teamNaam = getIntent().getExtras().getString("teamNaam");
-        gameTimer();
-
-        // Teamnaam tonen op het game scherm
         teamNameTextView.setText(teamNaam);
+
+        gameTimer();
 
         // Een vraag stellen als ik op de naam klik (Dit is tijdelijk om een vraag toch te kunnen tonen)
         teamNameTextView.setOnClickListener(new View.OnClickListener() {
@@ -177,7 +166,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onResume() {
         super.onResume();
         if (myTeam != null)
-            myTeam.startConnection();
+            myTeam.StartConnection();
     }
 
     @Override
@@ -186,7 +175,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         kaart.getUiSettings().setMapToolbarEnabled(false);
         // Alles ivm locatie van het eigen team
         myTeam = new MyTeam(this, kaart, gamecode, teamNaam);
-        myTeam.startConnection();
+        myTeam.StartConnection();
 
         // Move the camera to Antwerp
         LatLng Antwerpen = new LatLng(51.2194, 4.4025);
@@ -194,14 +183,17 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Locaties van andere teams
         otherTeams = new OtherTeams(gamecode, teamNaam, kaart, GameActivity.this);
-        otherTeams.getTeamsOnMap();
+        otherTeams.GetTeamsOnMap();
 
         // Alles ivm doellocaties
         goals = new Goals(gamecode, kaart, GameActivity.this);
     }
 
-
+    @Override
+    public void onBackPressed() {
+    }
     // Private helper methoden
+/*
     private void showDoelLocaties(List<DoelLocation> newDoelLocaties) {
         // Place a marker on the locations
         for (int i = 0; i < newDoelLocaties.size(); i++) {
@@ -210,17 +202,18 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             kaart.addMarker(new MarkerOptions().position(Locatie).title("Naam locatie").snippet("500").icon(BitmapDescriptorFactory.fromResource(R.drawable.coin_small)));
         }
     }
+*/
 
     private void everythingThatNeedsToHappenEvery3s(long verstrekentijd) {
         int tijd = (int) (verstrekentijd / 1000);
         if (tijd % 3 == 0) {
-            goals.removeCaimedLocations();
+            goals.RemoveCaimedLocations();
             if (myTeam.newLocation != null) {
-                myTeam.handleNewLocation(new Locatie(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude()), tijd);
+                myTeam.HandleNewLocation(new Locatie(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude()), tijd);
                 calculateIntersect();
 
             }
-            otherTeams.getTeamsOnMap();
+            otherTeams.GetTeamsOnMap();
         }
 
         // Controleren op doellocatie triggers om te kunnen claimen
@@ -335,8 +328,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-
-    public void claimLocatie(final int locId, final int doellocID) {
+    private void claimLocatie(final int locId, final int doellocID) {
         mpClaimed.start();
         // locid => gamelocaties ID, doellocID => id van de daadwerkelijke doellocatie
 
@@ -467,7 +459,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         }
         Intent i = new Intent(GameActivity.this, EndGameActivity.class);
         if (myTeam != null)
-            myTeam.stopConnection();
+            myTeam.StopConnection();
 
         if (Objects.requireNonNull(getIntent().getExtras()).getBoolean("gameCreator"))
             i.putExtra("gameCreator", true);
@@ -517,7 +509,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         int tijd = (int) (verstrekenTijd / 1000);
 
         // interval meegeven in seconden
-        goals.getNewGoals(tijd, interval);
+        goals.GetNewGoals(tijd, interval);
 
         //traces op map clearen bij elk interval
         if (tijd % interval == 0) {
@@ -526,8 +518,8 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 @Override
                 public void onResponseReceived(Boolean cleared) {
                     Log.d("clearTraces", "cleared: " +cleared);
-                    myTeam.clearTraces();
-                    otherTeams.clearTraces();
+                    myTeam.ClearTraces();
+                    otherTeams.ClearTraces();
                 }
 
                 @Override
@@ -538,7 +530,4 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    @Override
-    public void onBackPressed() {
-    }
 }

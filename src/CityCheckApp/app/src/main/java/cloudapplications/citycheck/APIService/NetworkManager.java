@@ -51,7 +51,6 @@ public class NetworkManager {
         api.createNewGame(game).enqueue(new NetworkResponse<>(listener));
     }
 
-
     public void createDemoGame(Game game, NetworkResponseListener<Game> listener) {
         api.createDemoGame(game).enqueue(new NetworkResponse<>(listener));
     }

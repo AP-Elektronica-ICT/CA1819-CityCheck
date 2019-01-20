@@ -42,7 +42,8 @@ public class JoinGameActivity extends AppCompatActivity {
     private boolean gameCreator;
     private NetworkManager service;
 
-    Button joinGameButton;
+    private Button joinGameButton;
+    private Button pickColorButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +52,7 @@ public class JoinGameActivity extends AppCompatActivity {
 
         service = NetworkManager.getInstance();
 
-        Button pickColorButton = findViewById(R.id.button_pick_color);
+        pickColorButton = findViewById(R.id.button_pick_color);
         final MediaPlayer mp = MediaPlayer.create(this, R.raw.button);
         teamNameTextView = findViewById(R.id.text_view_team_name);
         teamNameEditText = findViewById(R.id.edit_text_team_name);

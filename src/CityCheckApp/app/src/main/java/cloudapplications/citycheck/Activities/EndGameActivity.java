@@ -22,10 +22,10 @@ import cloudapplications.citycheck.TeamsAdapter;
 
 public class EndGameActivity extends AppCompatActivity {
 
-    ListView endListView;
-    ArrayList<Team> teamsList = new ArrayList<>();
+    private ListView endListView;
+    private ArrayList<Team> teamsList = new ArrayList<>();
     private String gameCode;
-    NetworkManager service;
+    private NetworkManager service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +38,7 @@ public class EndGameActivity extends AppCompatActivity {
         mp.start();
 
         endListView = findViewById(R.id.end_list_view);
+
         gameCode = Objects.requireNonNull(getIntent().getExtras()).getString("gameCode");
         getTeams();
     }

@@ -37,21 +37,23 @@ import cloudapplications.citycheck.Models.Locatie;
 import cloudapplications.citycheck.Models.Team;
 
 public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
-    private GoogleApiClient myGoogleApiClient;
-    private LocationRequest myLocationRequest;
-    public Location newLocation;
-    private GoogleMap map;
-    private Marker Me;
+
     private static final String TAG = MyTeam.class.getSimpleName();
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+
+    private NetworkManager service;
+    private GoogleApiClient myGoogleApiClient;
+    private LocationRequest myLocationRequest;
+    private GoogleMap map;
+    private Marker Me;
     private Activity activity;
-    public List<Locatie> Traces;
     private List<Polyline> polylines;
-    Random r;
-    NetworkManager service;
-    int GameCode;
-    String TeamNaam;
+    private int GameCode;
+    private String TeamNaam;
+
+    public Location newLocation;
+    public List<Locatie> Traces;
 
     // Public methoden
     public MyTeam(Activity activityIn, GoogleMap kaart, int gameCode, String teamNaam) {
@@ -59,7 +61,6 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
         map = kaart;
         Traces = new ArrayList<>();
         polylines = new ArrayList<Polyline>();
-        r = new Random();
         GameCode = gameCode;
         TeamNaam = teamNaam;
         myGoogleApiClient = new GoogleApiClient.Builder(activity.getBaseContext())
@@ -74,14 +75,14 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
                 .setFastestInterval(3 * 1000); // 3 second, in milliseconds
     }
 
-    public void startConnection() {
+    public void StartConnection() {
         if (!myGoogleApiClient.isConnected()) {
             myGoogleApiClient.connect();
             Log.d(TAG, "connect to google api client");
         }
     }
 
-    public void stopConnection() {
+    public void StopConnection() {
         if (myGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(myGoogleApiClient, this);
             myGoogleApiClient.disconnect();
@@ -89,7 +90,7 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
         }
     }
 
-    public void handleNewLocation(Locatie location, int time) {
+    public void HandleNewLocation(Locatie location, int time) {
         // Test data
         // location= new LatLng((r.nextDouble()*(51.2500 - 50.1800) + 50.1800),(r.nextDouble()* (4.8025 - 4.0000) + 4.0000));
 
@@ -106,7 +107,7 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
 
     }
 
-    public void clearTraces(){
+    public void ClearTraces(){
         Traces.clear();
         for(Polyline line: polylines){
             //lijn van map verwijderen
@@ -114,6 +115,48 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
         }
         //lijnen uit array verwijderen
         polylines.clear();
+    }
+
+    public boolean CheckLocationPermission() {
+        Log.d(TAG, "check if permissions are granted");
+        if (ContextCompat.checkSelfPermission(activity,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                new AlertDialog.Builder(activity)
+                        .setTitle("Permission to access location")
+                        .setMessage("Access to your location is needed to play the game.")
+                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(activity,
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        MY_PERMISSIONS_REQUEST_LOCATION);
+                            }
+                        })
+                        .create()
+                        .show();
+
+
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(activity,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+            return false;
+        } else {
+            Log.d(TAG, "permissions granted in check permissions");
+            return true;
+        }
     }
 
     // Private helpermethoden
@@ -163,7 +206,7 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
     public void onConnected(Bundle bundle) {
         Log.i(TAG, "Location services connected.");
 
-        if(checkLocationPermission()){
+        if(CheckLocationPermission()){
             Log.d(TAG, "permissions ok, start location updates");
             LocationServices.FusedLocationApi.requestLocationUpdates(myGoogleApiClient, myLocationRequest, this);
 
@@ -186,48 +229,6 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
         newLocation = location;
     }
 
-    public boolean checkLocationPermission() {
-        Log.d(TAG, "check if permissions are granted");
-        if (ContextCompat.checkSelfPermission(activity,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-                new AlertDialog.Builder(activity)
-                        .setTitle("Permission to access location")
-                        .setMessage("Access to your location is needed to play the game.")
-                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(activity,
-                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                        MY_PERMISSIONS_REQUEST_LOCATION);
-                            }
-                        })
-                        .create()
-                        .show();
-
-
-            } else {
-                // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(activity,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION);
-            }
-            return false;
-        } else {
-            Log.d(TAG, "permissions granted in check permissions");
-            return true;
-        }
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -243,7 +244,7 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
                             == PackageManager.PERMISSION_GRANTED) {
 
                         //Request location updates:
-                        startConnection();
+                        StartConnection();
                         Log.d(TAG, "permissions granted after asking again");
                     }
 

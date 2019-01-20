@@ -23,20 +23,24 @@ public class CreateGameActivity extends AppCompatActivity {
     private int gameTime;
     private TextView timeTextView;
     private NetworkManager service;
-    MediaPlayer mp;
-    Button createGameButton;
+    private MediaPlayer mp;
+    private Button createGameButton;
+    private Button timeButton;
 
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_game);
+
         service = NetworkManager.getInstance();
 
         createGameButton = findViewById(R.id.button_create_game);
-        Button timeButton = findViewById(R.id.button_time_pick);
-        mp = MediaPlayer.create(this, R.raw.button);
+        timeButton = findViewById(R.id.button_time_pick);
         timeTextView = findViewById(R.id.text_view_time);
+
+        mp = MediaPlayer.create(this, R.raw.button);
+
         gameTime = 1;
         timeTextView.setText(Integer.toString(gameTime));
 

@@ -10,11 +10,13 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -57,6 +59,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     private Goals goals;
     private NetworkManager service;
     private IntersectCalculator calc;
+    private FloatingActionButton myLocation;
 
     // Variabelen om teams op te halen uit database
     private String teamNaam;
@@ -113,6 +116,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         // Claiming naar false
         isClaiming = false;
 
+        //myLocation
+        myLocation = findViewById(R.id.myLoc);
+
         // Teamnaam txt view
         TextView teamNameTextView = findViewById(R.id.text_view_team_name);
 
@@ -129,6 +135,17 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 claimLocatie(1, 1);
+            }
+        });
+
+        myLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(myTeam.newLocation != null){
+                    LatLng positie = new LatLng(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude());
+                    kaart.moveCamera(CameraUpdateFactory.newLatLng(positie));
+                }
+
             }
         });
 
@@ -166,7 +183,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         kaart = googleMap;
-
+        kaart.getUiSettings().setMapToolbarEnabled(false);
         // Alles ivm locatie van het eigen team
         myTeam = new MyTeam(this, kaart, gamecode, teamNaam);
         myTeam.startConnection();
@@ -201,8 +218,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             if (myTeam.newLocation != null) {
                 myTeam.handleNewLocation(new Locatie(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude()), tijd);
                 calculateIntersect();
-                LatLng positie = new LatLng(myTeam.newLocation.getLatitude(), myTeam.newLocation.getLongitude());
-                //kaart.moveCamera(CameraUpdateFactory.newLatLng(positie));
+
             }
             otherTeams.getTeamsOnMap();
         }

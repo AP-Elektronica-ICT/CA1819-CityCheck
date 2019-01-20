@@ -114,7 +114,36 @@ namespace Model
                 context.DoelLocaties.Add(doel);
                 context.SaveChanges();
 
-            //if
+
+                //demo stuff
+                doel = new DoelLocatie();
+                loc = new Locatie();
+                doel.Titel = "Demo1";
+                loc.Lat = 51.2202678;
+                loc.Long = 4.399327;
+                doel.locatie = loc;
+                context.DoelLocaties.Add(doel);
+                context.SaveChanges();
+
+                doel = new DoelLocatie();
+                loc = new Locatie();
+                doel.Titel = "Demo2";
+                loc.Lat = 51.2202678;
+                loc.Long = 4.399327;
+                doel.locatie = loc;
+                context.DoelLocaties.Add(doel);
+                context.SaveChanges();
+
+                doel = new DoelLocatie();
+                loc = new Locatie();
+                doel.Titel = "Demo3";
+                loc.Lat = 51.2202678;
+                loc.Long = 4.399327;
+                doel.locatie = loc;
+                context.DoelLocaties.Add(doel);
+                context.SaveChanges();
+
+                //if
             }
 
 

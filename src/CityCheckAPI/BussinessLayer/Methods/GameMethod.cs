@@ -127,28 +127,28 @@ namespace BussinessLayer.Methods
 
             //Lijst van doelen opstellen voor de volledige game length
             int gameLength = newGame.TijdsDuur;
-            for (int i = 0; i < gameLength; i++)
-            {
+
                 //Per uur 6x 3 doellacties toevoegen
-                for (int j = 0; j < 6; j++)
+                for (int j = 0; j < 6*gameLength; j++)
                 {
                     doelen.Add(doel1);
                     doelen.Add(doel2);
                     doelen.Add(doel3);
                 }
-            }
 
-            //lijst van doellocaties toevoegen aan de gameDoelen van de huidige game.
             newGame.GameDoelen = new List<GameDoelen>();
-            foreach (DoelLocatie doelL in doelen)
-            {
-                GameDoelen tempDoel = new GameDoelen { Doel = doelL, Claimed = false };
-                newGame.GameDoelen.Add(tempDoel);
-            }
-
-            //doellocaties toevoegen aan de game
             context.Games.Add(newGame);
             context.SaveChanges();
+
+            //lijst van doellocaties toevoegen aan de gameDoelen van de huidige game.
+            foreach (DoelLocatie doelL in doelen)
+            {
+                GameDoelen tempDoel = new GameDoelen {Doel = doelL, Claimed = false };
+                newGame.GameDoelen.Add(tempDoel);
+                context.SaveChanges();
+            }
+
+
             return newGame;
 
         }

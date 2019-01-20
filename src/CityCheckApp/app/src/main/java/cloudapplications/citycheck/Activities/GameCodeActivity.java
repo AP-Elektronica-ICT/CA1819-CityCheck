@@ -2,6 +2,7 @@ package cloudapplications.citycheck.Activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,14 +24,15 @@ import cloudapplications.citycheck.TeamsAdapter;
 
 public class GameCodeActivity extends AppCompatActivity {
 
-    String currentGameCode;
-    String currentGameTime;
+    private String currentGameCode;
+    private String currentGameTime;
 
-    long millisStarted;
+    private long millisStarted;
 
-    Boolean gotTeams;
-    NetworkManager service;
-    ArrayList<Team> prevTeams = new ArrayList<>();
+    private Boolean gotTeams;
+    private NetworkManager service;
+    private ArrayList<Team> prevTeams = new ArrayList<>();
+    private ArrayList<Team> teamsList = new ArrayList<>();
 
     private Handler handler = new Handler();
     private Runnable runnable = new Runnable() {
@@ -40,10 +42,14 @@ public class GameCodeActivity extends AppCompatActivity {
         }
     };
 
-    ArrayList<Team> teamsList = new ArrayList<>();
-    ListView teamsListView;
-    TextView teamsTextView;
+    private TextView codeTextView;
+    private TextView timeTextView;
+    private ListView teamsListView;
+    private TextView teamsTextView;
 
+    private Button startGameButton;
+
+    //callbacks
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +58,10 @@ public class GameCodeActivity extends AppCompatActivity {
 
         service = NetworkManager.getInstance();
 
-        Button startGameButton = findViewById(R.id.button_start_game);
-        TextView codeTextView = findViewById(R.id.text_view_code);
-        TextView timeTextView = findViewById(R.id.text_view_time);
+        startGameButton = findViewById(R.id.button_start_game);
+        final MediaPlayer mp = MediaPlayer.create(this, R.raw.button);
+        codeTextView = findViewById(R.id.text_view_code);
+        timeTextView = findViewById(R.id.text_view_time);
         teamsTextView = findViewById(R.id.text_view_teams);
         teamsListView = findViewById(R.id.teams_list_view);
 
@@ -71,6 +78,8 @@ public class GameCodeActivity extends AppCompatActivity {
         startGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mp.start();
+                startGameButton.setEnabled(false);
                 creatorStartGame();
             }
         });
@@ -85,6 +94,11 @@ public class GameCodeActivity extends AppCompatActivity {
         handler.removeCallbacksAndMessages(null);
     }
 
+    @Override
+    public void onBackPressed() {
+    }
+
+    //private methodes
     private void getTeams() {
         handler.postDelayed(runnable, 3000);
         service.getCurrentGame(Integer.parseInt(currentGameCode), new NetworkResponseListener<Game>() {
@@ -148,11 +162,9 @@ public class GameCodeActivity extends AppCompatActivity {
             @Override
             public void onError() {
                 Toast.makeText(GameCodeActivity.this, "Error while trying to start the game", Toast.LENGTH_SHORT).show();
+                startGameButton.setEnabled(true);
             }
         });
     }
 
-    @Override
-    public void onBackPressed() {
-    }
 }

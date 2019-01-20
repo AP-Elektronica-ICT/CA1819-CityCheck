@@ -3,4 +3,36 @@
     <string name="create_game_description">Once \"create\" is clicked you will receive a game code. All teams must enter this code to join the game.</string>
     <string name="title_activity_game">GameMap</string>
     <string name="database_ip">84.197.96.121</string>
+
+
+
+    <string name="uitlegopstart">De opstart van het spel is zeer simpel. Je stelt onderling een team samen waarbij telkens 1 gebruiker de app gebruikt op zijn mobiele toestel. Let er op dat hierop de mobile data alsook de gps sensor geactiveerd zijn. Het eerste team van het spel zal op het startscherm de create game optie selecteren. Hierop zal men de tijdsduur kunnen selecteren en een spel aanmaken. Daarna kan je een team aanmaken door een naam in te vullen en een kleur te kiezen. Op het loby scherm zal een gamecode zichtbaar zijn, de resterende teams kunnen via de join game functie dit spel betreden en op dezelfde manier een team aanmaken. ALs dit klaar is kan de spel eigenaar het spel starten!</string>
+    <string name="uitlegdoel">Op het spel zullen steeds 3 doelen getoond worden , deze zijn zichtbaar via een muntje op de kaart. Het is de bedoeling om naar deze locaties te gaan en deze te claimen door de claim optie of door een vraag te beantwoorden. Deze vraag hangt wel samen met een risico. Als je kiest voor een claim zal je 10 punten krijgen, kies je voor de bonus vraag en je beantwoord deze correct. Dan zal je 20 punten krijgen! Maar is deze foutief, dan krijg je er slechts 5. Tijdens het spel zal elk team in unieke kleur een pd achterlaten op hun route. Het is de bedoeling andere teams te blokkeren, als iemand uw pad zal kruisen verliest dat team 5 punten.</string>
+
+
+
+    <string name="create_game">Create game</string>
+    <string name="game_time_string">Game time (in hours):</string>
+    <string name="picker">Picker</string>
+    <string name="create">Create</string>
+    <string name="end_game">End game</string>
+    <string name="teams">Teams</string>
+    <string name="score">Score</string>
+    <string name="points_description">Symbol for the points</string>
+    <string name="start_game">Start game</string>
+    <string name="chosen_game_time">Chosen game time:</string>
+    <string name="your_game_code">Your game code:</string>
+    <string name="teams_list">Teams:</string>
+    <string name="create_team">Create team</string>
+    <string name="team_name">Team name:</string>
+    <string name="team_color">Team color:</string>
+    <string name="game_code">Game code:</string>
+    <string name="pick_color">Pick Color</string>
+    <string name="join">Join</string>
+    <string name="join_game">Join game</string>
+    <string name="cancel">Cancel</string>
+    <string name="pick">Pick</string>
+    <string name="default_team_name">Team name</string>
+    <string name="question_mark_symbol">Question mark symbol</string>
+    >>>>>>> ccdc2d4f87ee2cf67007ebf5c8965e218767a854
 </resources>

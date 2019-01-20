@@ -3,6 +3,7 @@ package cloudapplications.citycheck.APIService;
 import java.util.List;
 
 import cloudapplications.citycheck.Models.Game;
+import cloudapplications.citycheck.Models.GameDoel;
 import cloudapplications.citycheck.Models.Locatie;
 import cloudapplications.citycheck.Models.StringReturn;
 import cloudapplications.citycheck.Models.Team;
@@ -19,6 +20,9 @@ public interface CityCheckApiInterface {
     // Game calls
     @POST("newgame")
     Call<Game> createNewGame(@Body Game newGame);
+
+    @POST("newdemo")
+    Call<Game> createDemoGame(@Body Game newGame);
 
     @GET("allgames")
     Call<List<Game>> getAllGames();
@@ -45,16 +49,22 @@ public interface CityCheckApiInterface {
     @GET("teams/{id}/trace")
     Call<List<Team>> getAllTeamTraces(@Path("id") int id);
 
+    @DELETE("teamtraces/{id}/clear")
+    Call<Boolean> deleteTraces(@Path("id") int id);
+
     @GET("teams/{id}/{teamname}/myscore")
     Call<Integer> getScoreTeam(@Path("id") int id, @Path("teamname") String teamname);
 
     @POST("teams/{id}/{teamname}/setmyscore/{newscore}")
     Call<Integer> setTeamScore(@Path("id") int id, @Path("teamname") String teamname, @Path("newscore") int newscore);
 
-    //Doellocatiecalls
+    // Doellocatie calls
     @GET("locquest/{id}")
     Call<Vraag> getDoelLocatieVraag(@Path("id") int id);
 
     @POST("claimDoelLoc/{id}/{locid}")
     Call<StringReturn> claimDoelLocatie(@Path("id") int id, @Path("locid") int locid);
+
+    @GET("checkClaims/{id}")
+    Call<List<GameDoel>> checkClaims(@Path("id") int id);
 }

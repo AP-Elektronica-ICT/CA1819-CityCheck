@@ -2,6 +2,7 @@ package cloudapplications.citycheck.Activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -41,6 +42,9 @@ public class JoinGameActivity extends AppCompatActivity {
     private boolean gameCreator;
     private NetworkManager service;
 
+    private Button joinGameButton;
+    private Button pickColorButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,11 +52,12 @@ public class JoinGameActivity extends AppCompatActivity {
 
         service = NetworkManager.getInstance();
 
-        Button pickColorButton = findViewById(R.id.button_pick_color);
+        pickColorButton = findViewById(R.id.button_pick_color);
+        final MediaPlayer mp = MediaPlayer.create(this, R.raw.button);
         teamNameTextView = findViewById(R.id.text_view_team_name);
         teamNameEditText = findViewById(R.id.edit_text_team_name);
         gameCodeEditText = findViewById(R.id.edit_text_game_code);
-        Button joinGameButton = findViewById(R.id.button_join_game);
+        joinGameButton = findViewById(R.id.button_join_game);
 
         teamNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -82,6 +87,7 @@ public class JoinGameActivity extends AppCompatActivity {
         pickColorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mp.start();
                 // Kleurkiezer weergeven
                 ColorPickerDialogBuilder
                         .with(JoinGameActivity.this)
@@ -114,11 +120,13 @@ public class JoinGameActivity extends AppCompatActivity {
         joinGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mp.start();
                 name = teamNameEditText.getText().toString();
                 if (name.matches("")) {
                     Toast.makeText(JoinGameActivity.this, "You must enter a team name", Toast.LENGTH_SHORT).show();
                 } else {
                     if (gameCodeEditText.getText().toString().matches("\\d{4}")) {
+                        joinGameButton.setEnabled(false);
                         gamecode = Integer.parseInt(gameCodeEditText.getText().toString());
                         color = currentColor;
                         Log.d("JoinGameActivity", "team: " + name + " color: " + color + " gamecode: " + gamecode);
@@ -141,6 +149,7 @@ public class JoinGameActivity extends AppCompatActivity {
             @Override
             public void onError() {
                 Toast.makeText(JoinGameActivity.this, "Error while trying to join the game", Toast.LENGTH_SHORT).show();
+                joinGameButton.setEnabled(true);
             }
         });
     }
@@ -162,13 +171,16 @@ public class JoinGameActivity extends AppCompatActivity {
                     i.putExtra("gameTime", gameTime);
                     i.putExtra("teamNaam", name);
                     startActivity(i);
-                } else
+                } else {
                     Toast.makeText(JoinGameActivity.this, "The game doesn't exist", Toast.LENGTH_SHORT).show();
+                    joinGameButton.setEnabled(true);
+                }
             }
 
             @Override
             public void onError() {
                 Toast.makeText(JoinGameActivity.this, "Error while trying to start the game", Toast.LENGTH_SHORT).show();
+                joinGameButton.setEnabled(true);
             }
         });
     }

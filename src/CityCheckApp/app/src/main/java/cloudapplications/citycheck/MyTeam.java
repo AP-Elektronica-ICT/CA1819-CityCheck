@@ -37,27 +37,30 @@ import cloudapplications.citycheck.Models.Locatie;
 import cloudapplications.citycheck.Models.Team;
 
 public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
-    private GoogleApiClient myGoogleApiClient;
-    private LocationRequest myLocationRequest;
-    public Location newLocation;
-    private GoogleMap map;
-    private Marker Me;
+
     private static final String TAG = MyTeam.class.getSimpleName();
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+
+    private NetworkManager service;
+    private GoogleApiClient myGoogleApiClient;
+    private LocationRequest myLocationRequest;
+    private GoogleMap map;
+    private Marker Me;
     private Activity activity;
+    private List<Polyline> polylines;
+    private int GameCode;
+    private String TeamNaam;
+
+    public Location newLocation;
     public List<Locatie> Traces;
-    Random r;
-    NetworkManager service;
-    int GameCode;
-    String TeamNaam;
 
     // Public methoden
     public MyTeam(Activity activityIn, GoogleMap kaart, int gameCode, String teamNaam) {
         activity = activityIn;
         map = kaart;
         Traces = new ArrayList<>();
-        r = new Random();
+        polylines = new ArrayList<Polyline>();
         GameCode = gameCode;
         TeamNaam = teamNaam;
         myGoogleApiClient = new GoogleApiClient.Builder(activity.getBaseContext())
@@ -72,14 +75,14 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
                 .setFastestInterval(3 * 1000); // 3 second, in milliseconds
     }
 
-    public void startConnection() {
+    public void StartConnection() {
         if (!myGoogleApiClient.isConnected()) {
             myGoogleApiClient.connect();
             Log.d(TAG, "connect to google api client");
         }
     }
 
-    public void stopConnection() {
+    public void StopConnection() {
         if (myGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(myGoogleApiClient, this);
             myGoogleApiClient.disconnect();
@@ -87,48 +90,7 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
         }
     }
 
-    // Private helpermethoden
-    private void placeMarker(Locatie location) {
-        Log.d(TAG, "marker on my position");
-        LatLng loc = new LatLng(location.getLat(), location.getLong());
-        if (Me == null) {
-            Me = map.addMarker(new MarkerOptions()
-                    .position(loc)
-                    .title("Me")
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.carrot)));
-        } else {
-            Me.setPosition(loc);
-        }
-    }
-
-    private void drawPath() {
-        // Elke keer het traject tussen de laatste locatie en de huidige locatie als polyline tekenen
-        if (Traces.size() > 1) { // er moeten minstens 2 locaties in de traces zitten om een trace te kunnen tekenen
-            Polyline polyline1 = map.addPolyline(new PolylineOptions()
-                    .add(
-                            new LatLng(Traces.get(Traces.size() - 2).getLat(), Traces.get(Traces.size() - 2).getLong()),
-                            new LatLng(Traces.get(Traces.size() - 1).getLat(), Traces.get(Traces.size() - 1).getLong()))
-                    .width(7f));
-        }
-    }
-
-    private void sendLocationToDatabase(Locatie location) {
-        service = NetworkManager.getInstance();
-        service.postHuidigeLocatie(GameCode, TeamNaam, location, new NetworkResponseListener<Team>() {
-            @Override
-            public void onResponseReceived(Team team) {
-                Log.d(TAG, "location send to database: " + team.getLocatie().getLat() + team.getLocatie().getLong());
-            }
-
-            @Override
-            public void onError() {
-                Log.d(TAG, "error in sending location to database");
-            }
-        });
-    }
-
-
-    public void handleNewLocation(Locatie location, int time) {
+    public void HandleNewLocation(Locatie location, int time) {
         // Test data
         // location= new LatLng((r.nextDouble()*(51.2500 - 50.1800) + 50.1800),(r.nextDouble()* (4.8025 - 4.0000) + 4.0000));
 
@@ -145,35 +107,17 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
 
     }
 
-    // Callbacks
-    @Override
-    public void onConnected(Bundle bundle) {
-        Log.i(TAG, "Location services connected.");
-
-        if(checkLocationPermission()){
-            Log.d(TAG, "permissions ok, start location updates");
-            LocationServices.FusedLocationApi.requestLocationUpdates(myGoogleApiClient, myLocationRequest, this);
-
+    public void ClearTraces(){
+        Traces.clear();
+        for(Polyline line: polylines){
+            //lijn van map verwijderen
+            line.remove();
         }
+        //lijnen uit array verwijderen
+        polylines.clear();
     }
 
-    @Override
-    public void onConnectionSuspended(int i) {
-        Log.i(TAG, "Location services suspended. Please reconnect.");
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, "connection failed");
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        Log.d(TAG, "onlocationchanged" + location.toString());
-        newLocation = location;
-    }
-
-    public boolean checkLocationPermission() {
+    public boolean CheckLocationPermission() {
         Log.d(TAG, "check if permissions are granted");
         if (ContextCompat.checkSelfPermission(activity,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -215,6 +159,76 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
         }
     }
 
+    // Private helpermethoden
+    private void placeMarker(Locatie location) {
+        Log.d(TAG, "marker on my position");
+        LatLng loc = new LatLng(location.getLat(), location.getLong());
+        if (Me == null) {
+            Me = map.addMarker(new MarkerOptions()
+                    .position(loc)
+                    .title("Me")
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.carrot)));
+        } else {
+            Me.setPosition(loc);
+        }
+    }
+
+    private void drawPath() {
+        // Elke keer het traject tussen de laatste locatie en de huidige locatie als polyline tekenen
+        if (Traces.size() > 1) { // er moeten minstens 2 locaties in de traces zitten om een trace te kunnen tekenen
+
+            polylines.add(map.addPolyline(new PolylineOptions()
+                    .add(
+                            new LatLng(Traces.get(Traces.size() - 2).getLat(), Traces.get(Traces.size() - 2).getLong()),
+                            new LatLng(Traces.get(Traces.size() - 1).getLat(), Traces.get(Traces.size() - 1).getLong()))
+                    .width(7f)));
+        }
+    }
+
+    private void sendLocationToDatabase(Locatie location) {
+        service = NetworkManager.getInstance();
+        service.postHuidigeLocatie(GameCode, TeamNaam, location, new NetworkResponseListener<Team>() {
+            @Override
+            public void onResponseReceived(Team team) {
+                //Log.d(TAG, "location send to database: " + team.getLocatie().getLat() + team.getLocatie().getLong());
+            }
+
+            @Override
+            public void onError() {
+                Log.d(TAG, "error in sending location to database");
+            }
+        });
+    }
+
+
+    // Callbacks
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.i(TAG, "Location services connected.");
+
+        if(CheckLocationPermission()){
+            Log.d(TAG, "permissions ok, start location updates");
+            LocationServices.FusedLocationApi.requestLocationUpdates(myGoogleApiClient, myLocationRequest, this);
+
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.i(TAG, "Location services suspended. Please reconnect.");
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.d(TAG, "connection failed");
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d(TAG, "onlocationchanged" + location.toString());
+        newLocation = location;
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -230,7 +244,7 @@ public class MyTeam extends Activity implements GoogleApiClient.ConnectionCallba
                             == PackageManager.PERMISSION_GRANTED) {
 
                         //Request location updates:
-                        startConnection();
+                        StartConnection();
                         Log.d(TAG, "permissions granted after asking again");
                     }
 

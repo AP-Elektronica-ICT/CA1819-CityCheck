@@ -3,6 +3,7 @@ package cloudapplications.citycheck.Activities;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,17 +23,24 @@ public class CreateGameActivity extends AppCompatActivity {
     private int gameTime;
     private TextView timeTextView;
     private NetworkManager service;
+    private MediaPlayer mp;
+    private Button createGameButton;
+    private Button timeButton;
 
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_game);
+
         service = NetworkManager.getInstance();
 
-        Button createGameButton = findViewById(R.id.button_create_game);
-        Button timeButton = findViewById(R.id.button_time_pick);
+        createGameButton = findViewById(R.id.button_create_game);
+        timeButton = findViewById(R.id.button_time_pick);
         timeTextView = findViewById(R.id.text_view_time);
+
+        mp = MediaPlayer.create(this, R.raw.button);
+
         gameTime = 1;
         timeTextView.setText(Integer.toString(gameTime));
 
@@ -40,6 +48,7 @@ public class CreateGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // We gaan een tijd selecteren
+                mp.start();
                 timePick();
             }
         });
@@ -47,6 +56,8 @@ public class CreateGameActivity extends AppCompatActivity {
         createGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mp.start();
+                createGameButton.setEnabled(false);
                 createNewGame();
             }
         });
@@ -67,6 +78,7 @@ public class CreateGameActivity extends AppCompatActivity {
             @Override
             public void onError() {
                 Toast.makeText(CreateGameActivity.this, "Error while trying to create a new game", Toast.LENGTH_SHORT).show();
+                createGameButton.setEnabled(true);
             }
         });
     }
@@ -86,6 +98,7 @@ public class CreateGameActivity extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
+                mp.start();
                 // De gekozen tijd ophalen
                 gameTime = np.getValue();
                 timeTextView.setText(Integer.toString(gameTime));
@@ -97,6 +110,7 @@ public class CreateGameActivity extends AppCompatActivity {
         b2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mp.start();
                 // Annuleren
                 d.dismiss();
             }

@@ -102,7 +102,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
         gamecode = Integer.parseInt(Objects.requireNonNull(Objects.requireNonNull(getIntent().getExtras()).getString("gameCode")));
 
         // AfstandTreshold
-        treshHoldAfstand = 50; //(meter)
+        treshHoldAfstand = 15; //(meter)
 
         // Claiming naar false
         isClaiming = false;
@@ -252,6 +252,9 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
             goal.setClaimed(true);
             // Claimen instellen zolang we bezig zijn met claimen
             isClaiming = true;
+
+            //Claim medelen via toast
+            Toast.makeText(GameActivity.this, "Locatie Geclaimed: " + goal.getDoel().getTitel(), Toast.LENGTH_LONG).show();
         }
     }
 

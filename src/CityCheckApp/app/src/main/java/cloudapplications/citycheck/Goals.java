@@ -96,13 +96,16 @@ public class Goals {
                                 //Toast.makeText(activity, goals.get(index).getDoel().getTitel() + " is claimed", Toast.LENGTH_SHORT).show();
                             }
                         }
-                        for(GameDoel current: currentGoals){
-                            if(current.getId() == doel.getId()){
-                                //Log.d(TAG, current.getId() + ":"+ current.getClaimed() + " en " + doel.getId() + ":" + doel.getClaimed());
-                                current.setClaimed(doel.getClaimed());
-                                //Log.d(TAG, current.getId() + ":"+ current.getClaimed() + " en " + doel.getId() + ":" + doel.getClaimed());
+                        if(currentGoals != null){
+                            for(GameDoel current: currentGoals){
+                                if(current.getId() == doel.getId()){
+                                    //Log.d(TAG, current.getId() + ":"+ current.getClaimed() + " en " + doel.getId() + ":" + doel.getClaimed());
+                                    current.setClaimed(doel.getClaimed());
+                                    //Log.d(TAG, current.getId() + ":"+ current.getClaimed() + " en " + doel.getId() + ":" + doel.getClaimed());
+                                }
                             }
                         }
+
 
                         index++;
                     }

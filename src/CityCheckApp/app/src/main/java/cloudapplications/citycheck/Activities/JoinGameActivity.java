@@ -42,6 +42,8 @@ public class JoinGameActivity extends AppCompatActivity {
     private boolean gameCreator;
     private NetworkManager service;
 
+    Button joinGameButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +56,7 @@ public class JoinGameActivity extends AppCompatActivity {
         teamNameTextView = findViewById(R.id.text_view_team_name);
         teamNameEditText = findViewById(R.id.edit_text_team_name);
         gameCodeEditText = findViewById(R.id.edit_text_game_code);
-        Button joinGameButton = findViewById(R.id.button_join_game);
+        joinGameButton = findViewById(R.id.button_join_game);
 
         teamNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -123,6 +125,7 @@ public class JoinGameActivity extends AppCompatActivity {
                     Toast.makeText(JoinGameActivity.this, "You must enter a team name", Toast.LENGTH_SHORT).show();
                 } else {
                     if (gameCodeEditText.getText().toString().matches("\\d{4}")) {
+                        joinGameButton.setEnabled(false);
                         gamecode = Integer.parseInt(gameCodeEditText.getText().toString());
                         color = currentColor;
                         Log.d("JoinGameActivity", "team: " + name + " color: " + color + " gamecode: " + gamecode);
@@ -145,6 +148,7 @@ public class JoinGameActivity extends AppCompatActivity {
             @Override
             public void onError() {
                 Toast.makeText(JoinGameActivity.this, "Error while trying to join the game", Toast.LENGTH_SHORT).show();
+                joinGameButton.setEnabled(true);
             }
         });
     }
@@ -166,13 +170,16 @@ public class JoinGameActivity extends AppCompatActivity {
                     i.putExtra("gameTime", gameTime);
                     i.putExtra("teamNaam", name);
                     startActivity(i);
-                } else
+                } else {
                     Toast.makeText(JoinGameActivity.this, "The game doesn't exist", Toast.LENGTH_SHORT).show();
+                    joinGameButton.setEnabled(true);
+                }
             }
 
             @Override
             public void onError() {
                 Toast.makeText(JoinGameActivity.this, "Error while trying to start the game", Toast.LENGTH_SHORT).show();
+                joinGameButton.setEnabled(true);
             }
         });
     }

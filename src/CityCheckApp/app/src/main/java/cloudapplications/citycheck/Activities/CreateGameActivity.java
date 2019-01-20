@@ -24,6 +24,7 @@ public class CreateGameActivity extends AppCompatActivity {
     private TextView timeTextView;
     private NetworkManager service;
     MediaPlayer mp;
+    Button createGameButton;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -32,7 +33,7 @@ public class CreateGameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_game);
         service = NetworkManager.getInstance();
 
-        Button createGameButton = findViewById(R.id.button_create_game);
+        createGameButton = findViewById(R.id.button_create_game);
         Button timeButton = findViewById(R.id.button_time_pick);
         mp = MediaPlayer.create(this, R.raw.button);
         timeTextView = findViewById(R.id.text_view_time);
@@ -52,6 +53,7 @@ public class CreateGameActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mp.start();
+                createGameButton.setEnabled(false);
                 createNewGame();
             }
         });
@@ -72,6 +74,7 @@ public class CreateGameActivity extends AppCompatActivity {
             @Override
             public void onError() {
                 Toast.makeText(CreateGameActivity.this, "Error while trying to create a new game", Toast.LENGTH_SHORT).show();
+                createGameButton.setEnabled(true);
             }
         });
     }

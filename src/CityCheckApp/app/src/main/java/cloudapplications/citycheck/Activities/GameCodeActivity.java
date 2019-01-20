@@ -45,6 +45,8 @@ public class GameCodeActivity extends AppCompatActivity {
     ListView teamsListView;
     TextView teamsTextView;
 
+    Button startGameButton;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +55,7 @@ public class GameCodeActivity extends AppCompatActivity {
 
         service = NetworkManager.getInstance();
 
-        Button startGameButton = findViewById(R.id.button_start_game);
+        startGameButton = findViewById(R.id.button_start_game);
         final MediaPlayer mp = MediaPlayer.create(this, R.raw.button);
         TextView codeTextView = findViewById(R.id.text_view_code);
         TextView timeTextView = findViewById(R.id.text_view_time);
@@ -74,6 +76,7 @@ public class GameCodeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mp.start();
+                startGameButton.setEnabled(false);
                 creatorStartGame();
             }
         });
@@ -151,6 +154,7 @@ public class GameCodeActivity extends AppCompatActivity {
             @Override
             public void onError() {
                 Toast.makeText(GameCodeActivity.this, "Error while trying to start the game", Toast.LENGTH_SHORT).show();
+                startGameButton.setEnabled(true);
             }
         });
     }

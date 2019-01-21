@@ -376,19 +376,25 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                                 // Response verwerken
 
                                 // Vraagtitel bewaren
-                                vraag = newVraag.getVraagZin();
-                                //3 Antwoorden bewaren
-                                ArrayList<Antwoord> allAnswers = newVraag.getAntwoorden();
-                                antwoorden = new String[3];
-                                for (int i = 0; i < 3; i++) {
-                                    antwoorden[i] = allAnswers.get(i).getAntwoordzin();
-                                    if (allAnswers.get(i).isCorrectBool()) {
-                                        correctAntwoordIndex = i;
+                                if(newVraag == null){
+                                    Toast.makeText(GameActivity.this, "Er is geen vraag hier", Toast.LENGTH_SHORT).show();
+                                }
+                                else{
+                                    vraag = newVraag.getVraagZin();
+                                    //3 Antwoorden bewaren
+                                    ArrayList<Antwoord> allAnswers = newVraag.getAntwoorden();
+                                    antwoorden = new String[3];
+                                    for (int i = 0; i < 3; i++) {
+                                        antwoorden[i] = allAnswers.get(i).getAntwoordzin();
+                                        if (allAnswers.get(i).isCorrectBool()) {
+                                            correctAntwoordIndex = i;
+                                        }
                                     }
+
+                                    //Vraag stellen
+                                    askQuestion();
                                 }
 
-                                //Vraag stellen
-                                askQuestion();
                             }
 
                             @Override

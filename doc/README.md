@@ -1,38 +1,31 @@
-# City Check analyse
+# Documentatie CityCheck
 
-## Beschrijving
+## City Check - analyse & Sprint 01
+
 
 ### Spelers
 * 2+ teams
 * 1 of meer personen per team
 
 ### Tijdsduur
-* 3 uur (kan veranderen)
+* 1-4 uur
 
 ### Doel
 * Meest mogelijke punten verzamelen
 * Andere teams saboteren
 * Meest strategische route proberen uit te werken
+* Doellocaties claimen
 
 ### Werking van spel
-* Start op dezelfde locatie met x aantal punten
+* Start op dezelfde locatie met 30 punten
 * Vanaf bepaalde afstand van elkaar de game start
 * Vanaf dat punt wordt het traject gevolgd op een "Snake"-achtige manier (GPS en netwerk functionaliteit moeten enabled zijn)
-* Meerdere random locaties worden gegeven door de app bij start, relevant aan omgeving en trekpleisters (3 of meer, premium en normale locaties om competitie te ondersteunen) en updaten over tijd naarmate de wedstrijd vordert
+* 3 random locaties worden gegeven door de app bij start, relevant aan omgeving en trekpleisters en updaten over tijd naarmate de wedstrijd vordert
 
 #### Puntensysteem
-* Per bezochte locatie wordt een bepaalde hoeveelheid punten toegekend (afhankelijk van de status van de locatie, premium of normale locatie)
-* Kruisen de trajecten elkaar op enig punt, dan wordt een bepaalde hoeveelheid punten afgetrokken van het team dat het traject kruist
-* Andere extra spelelementen die de score beïnvloeden kunnen later worden toegevoegd
+* Per geclaimde locatie wordt er beloon met punten. 10 voor een claim zonder bonusvraag, 20 bij een correcte bonus vraag, maar slechts 5 als de risico bonusvraag op een locatie foutief is!
+* Kruisen de trajecten elkaar op enig punt, dan worden er 5 punten afgetrokken van het team dat het traject kruist
 
-### Uitbreidingen:
-* Trivia vraag over de locatie
-	* Juiste antwoord = extra punten voor de team
-* Spectator/moderator toegang verschaffen voor veiliger verloop van spel en volgen van groepen
-* Recording van game
-* Tower defense elementen (nog steeds in concept & optioneel)
-	* Blokades (doorbreken groot verlies van punten)
-	* Static zone (AOE voor verlies punten)
 
 ## User stories
 [Zie Jira voor uitgewerkte versie.](https://jira.ap.be/secure/RapidBoard.jspa?rapidView=230&projectKey=CA18CC&view=planning.nodetail)
@@ -95,6 +88,8 @@ Op het moment dat een game wordt gestart krijgen alle spelers de map te zien met
 * Inwerking Google Maps API in de app
 * Map instellen op een overzicht van het speeldomein (Antwerpen) (border)
 
+# Algemene Documentatie
+
 ## Mockups
 Beginscherm voor en na het aanmaken van het spel:
 
@@ -117,18 +112,40 @@ Einde spel:
 
 ![](img/mockups/end_game.jpg)
 
+
+
 ## Architectuur
 
 ### Front-End
 * Native android APP
 	* XML,JAVA,GSON/JSON,...
 * Google maps API
-* Open data antwerpen (API)
+* Angular admin app
 * Sensor aanspraak (GPS) (binnen Android Java)
+* Retrofit API client
 
 ### Back-End
-* ASP.NET Core 2.0 framework
-* AZURE (hosting)
+* ASP.NET Core 2.1 framework (incl entity framework)
+* Raspberry pi hosting (incl port forwarding)
+* MySql Server
 
 ### Data model
 ![](img/datamodel/ModelPic.png)
+
+
+### Architectuur
+
+
+### Deployment
+
+
+### Code Guidelines
+
+
+### Team Collaboration
+
+
+
+
+---
+City Check

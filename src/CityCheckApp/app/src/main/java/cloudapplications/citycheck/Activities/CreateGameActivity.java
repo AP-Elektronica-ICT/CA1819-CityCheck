@@ -64,7 +64,7 @@ public class CreateGameActivity extends AppCompatActivity {
     }
 
     private void createNewGame() {
-        service.createNewGame(new Game(gameTime), new NetworkResponseListener<Game>() {
+        service.createDemoGame(new Game(gameTime), new NetworkResponseListener<Game>() {
             @Override
             public void onResponseReceived(Game game) {
                 Log.d("Retrofit", "Game code in CreateGameActivity: " + game.getGameCode());

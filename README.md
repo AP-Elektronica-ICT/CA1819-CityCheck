@@ -8,10 +8,10 @@
 
 ## Documentatie
 
-### Analyse verslag
 [Markdown versie](doc/README.md)
 
-[PDF versie](doc/CAPP_Verslag.pdf)
 
-### Presentatie verslag
+---
+
+### Pitching Presetnatie (Mod01)
 [PPTX versie](doc/Pitch.pptx)

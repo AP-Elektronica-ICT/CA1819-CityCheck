@@ -342,7 +342,7 @@ public class GameActivity extends FragmentActivity implements OnMapReadyCallback
                 //response verwerken
                 try {
                     String waarde = rtrn.getWaarde();
-                    Toast.makeText(GameActivity.this, waarde, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(GameActivity.this, waarde, Toast.LENGTH_SHORT).show();
                 } catch (Throwable err) {
                     Toast.makeText(GameActivity.this, "Error while trying to claim the location", Toast.LENGTH_SHORT).show();
                 }

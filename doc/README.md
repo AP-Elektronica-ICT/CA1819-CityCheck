@@ -130,8 +130,7 @@ Einde spel:
 * MySql Server
 
 ### Data model
-![](img/datamodel/ModelPic.png)
-
+![](img/datamodel/DBModelFinal.png)
 
 ### Architectuur
 

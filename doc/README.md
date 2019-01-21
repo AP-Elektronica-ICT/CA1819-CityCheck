@@ -1,3 +1,4 @@
+
 # Documentatie CityCheck
 
 ## City Check - analyse & Sprint 01
@@ -130,20 +131,105 @@ Einde spel:
 * MySql Server
 
 ### Data model
-![](img/datamodel/DBModelFinal.png)
+![DB](img/datamodel/DBModelFinal.png)
+
+---
 
 ### Architectuur
+- Native Android App
+XML, Java, GSON/JSON, ...
+- Angular Admin Web App
+- Google Maps API & Location API
+- Sensor Aanspraak (GPS) (binnen Android Java)
+- Retrofit API Client
+High level client
 
+
+### Frontend App
+![App](https://github.com/AP-Elektronica-ICT/CA1819-CityCheck/blob/master/doc/img/01_frontend.png)
+
+### Frontend Admin
+![Admin](https://github.com/AP-Elektronica-ICT/CA1819-CityCheck/blob/master/doc/img/02_Admin.png)
+
+### Backend
+![Backend](https://github.com/AP-Elektronica-ICT/CA1819-CityCheck/blob/master/doc/img/03_API.png)
 
 ### Deployment
 
 
+### Mobile APP
+
+Mobiele applicatie launched (als gesloten beta) op de google play store. Beschikbaar voor download door de spelers.
+
+![](https://github.com/AP-Elektronica-ICT/CA1819-CityCheck/blob/master/doc/img/04_AppBuild.png)
+
+
+### Admin Web App
+
+Web app gehost via firebase hosting op een gratis aangemaakt . tk domain.
+Via cmd stel je je firebase gegevens in, hierna maak je een production build van de applicatie. Deze plaats je in een folder samen met het firebase json bestand (enkeel settings) en hierop kan je dan firebase deploy uitvoeren om je nieuwe versie te launchen.
+
+![](https://github.com/AP-Elektronica-ICT/CA1819-CityCheck/blob/master/doc/img/05_AdminBuild.png)
+
+### Backend
+
+De backend wordt gehost op een raspberry pi 3B. Hierop hebben we een mysql server staan, een nginx server om inkomde requests te redirecten naar de localhost op poort 5000 om de pai te kunnen bereiken. De communicatie over de gebruikte poort is op het thuisnetwerken dan ook open gezet via port forwarding.
+
+![](https://github.com/AP-Elektronica-ICT/CA1819-CityCheck/blob/master/doc/img/06_RPIBuild.png)
+
 ### Code Guidelines
+-   Gebruik Solid Principles
+    
+-   Camel Case
+    
+-   public -> hoofdletter
+    
+-   private -> kleine letter
+    
+-   classes per verantwoordelijkheid
+    
+-   code overzichtelijk houden door op te splitsen in methoden
+    
+-   Repeating code vermijden (gebruik methods, classes, ...)
+    
+-   variabelen en methodes private en enkel als het echt nodig is andere access modifier
+
+(Gedeeltelijk) herhalende variabelen globaal gebruiken. (= geen herhaling):
+![](https://github.com/AP-Elektronica-ICT/CA1819-CityCheck/blob/master/doc/img/07_Strings.png)
+
+
+### Version Control
+
+-   Branches per onderdeel.
+    
+-   Development op feature branches
+    
+-   Merging naar onderdeel-branch
+    
+-   Samenvoeging eindproduct in master branch
+
+![](https://github.com/AP-Elektronica-ICT/CA1819-CityCheck/blob/master/doc/img/08_Git.png)
+
+
+### Testing
+
+Alsook testing op de meest gevoelige, belangrijke, ... Functies binnen de frontend app en de backend solution zin aanwezig in het project.
+Enkele voorbeelden van de reeks unit tests:
+
+![](https://github.com/AP-Elektronica-ICT/CA1819-CityCheck/blob/master/doc/img/09_test.png)
 
 
 ### Team Collaboration
 
-
+-   2 weken sprints
+    
+-   Samen bespreken waar we mee bezig zijn
+    
+-   Errors bekijken en samen oplossen
+    
+-   Samen bespreken wat er een volgende sprint kan gebeuren
+    
+-   Samen bekijken of vooropgestelde plan nog steeds goed is of eventueel aanpassingen doen voor een betere flow te krijgen
 
 
 ---
